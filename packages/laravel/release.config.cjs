@@ -13,6 +13,12 @@ const config = {
         assets: [],
       },
     ],
+    [
+      '@semantic-release/git',
+      {
+        assets: ['packages/laravel/package.json', '.yarn/versions/'],
+      },
+    ],
   ],
 }
 
