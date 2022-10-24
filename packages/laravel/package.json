@@ -20,7 +20,6 @@
     "prepare": "composer install",
     "build": "yarn run clean && microbundle --compress false",
     "clean": "rm -rf types && rm -rf build",
-    "prepublishOnly": "yarn run build",
     "dev": "yarn build watch",
     "test": "vendor/bin/pest"
   }

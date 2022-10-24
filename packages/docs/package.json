@@ -23,9 +23,8 @@
   "scripts": {
     "build": "vitepress build src",
     "clean": "rm -rf types && rm -rf build",
-    "prepublishOnly": "yarn run build",
     "dev": "vitepress dev src",
-    "release": "yarn run build"
+    "release": ""
   },
   "devDependencies": {
     "vitepress": "^1.0.0-alpha.22",
