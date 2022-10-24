@@ -26,7 +26,7 @@ const config = {
     [
       '@semantic-release/git',
       {
-        assets: ['packages/vue3/package.json', '.yarn/versions/'],
+        assets: ['packages/*/package.json', '.yarn/versions/'],
       },
     ],
   ],

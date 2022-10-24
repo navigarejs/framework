@@ -23,7 +23,12 @@ const config = {
         assets: [],
       },
     ],
-    '@semantic-release/git',
+    [
+      '@semantic-release/git',
+      {
+        assets: ['packages/*/package.json', '.yarn/versions/'],
+      },
+    ],
   ],
 }
 
