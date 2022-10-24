@@ -1,4 +1,4 @@
-name: release
+name: publish
 
 on:
   workflow_dispatch:
@@ -28,11 +28,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Release
+      - name: Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: yarn workspaces foreach release
+        run: yarn workspace ${{ inputs.package }} npm publish --access public
