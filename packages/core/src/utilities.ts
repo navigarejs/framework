@@ -92,7 +92,10 @@ export function shouldInterceptLink(
   }
 
   // Left mouse click
-  if (event.which !== 1 || ('button' in event ? event.button !== 0 : false)) {
+  if (
+    ('which' in event && event.which !== 1) ||
+    ('button' in event ? event.button !== 0 : false)
+  ) {
     return false
   }
 
