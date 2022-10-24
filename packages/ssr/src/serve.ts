@@ -12,10 +12,11 @@ import isArray from 'lodash.isarray'
 import isObject from 'lodash.isobject'
 import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
-
 // const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD
 const isProduction = process.env.NODE_ENV === 'production'
+
+// "require" is not available in modules anymore so we use this workaround
+const require = createRequire(import.meta.url)
 
 const pkg = safeParse(
   fs.readFileSync(path.join(__dirname, './../package.json'), 'utf-8'),
