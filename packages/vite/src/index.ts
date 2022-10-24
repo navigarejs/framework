@@ -31,7 +31,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
   defaultsDeep(options, {
     routes: Adapter.Laravel,
     configuration: Adapter.Laravel,
-    interval: 10000,
+    interval: 15000,
   })
   let currentRoutes: RawRoutes | null = null
   let currentConfiguration: Configuration | null = null
