@@ -1,6 +1,6 @@
 {
   "name": "@navigare/vue3",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "license": "MIT",
   "type": "module",
   "description": "The Vue 3 adapter for Navigare",
