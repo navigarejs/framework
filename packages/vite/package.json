@@ -49,6 +49,7 @@
     "@types/lodash.defaultsdeep": "^4.6.7",
     "@types/node": "^18.8.3",
     "@types/react": "^18.0.21",
+    "@types/semantic-release": "^17.2.4",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "@vitejs/plugin-vue-jsx": "^2.0.1",

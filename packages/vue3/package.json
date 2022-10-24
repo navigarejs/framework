@@ -47,6 +47,7 @@
     "@types/lodash.isobject": "^3.0.7",
     "@types/lodash.isstring": "^4.0.7",
     "@types/lodash.issymbol": "^4.0.7",
+    "@types/semantic-release": "^17.2.4",
     "@vue/server-renderer": "^3.2.41",
     "axios": "^1.0.0",
     "eslint": "^8.24.0",

@@ -1800,7 +1800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navigare/core@0.0.0-development, @navigare/core@workspace:packages/core":
+"@navigare/core@1.0.1, @navigare/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@navigare/core@workspace:packages/core"
   dependencies:
@@ -1820,6 +1820,7 @@ __metadata:
     "@types/lodash.merge": ^4.6.7
     "@types/lodash.uniq": ^4.5.7
     "@types/qs": ^6.9.7
+    "@types/semantic-release": ^17.2.4
     "@typescript-eslint/eslint-plugin": ^5.39.0
     "@typescript-eslint/parser": ^5.39.0
     axios: ^1.0.0
@@ -1868,10 +1869,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/example@workspace:packages/example"
   dependencies:
-    "@navigare/core": 0.0.0-development
-    "@navigare/ssr": 0.0.0-development
-    "@navigare/vite": 0.0.0-development
-    "@navigare/vue3": 0.0.0-development
+    "@navigare/core": 1.0.1
+    "@navigare/ssr": 1.0.1
+    "@navigare/vite": 1.0.1
+    "@navigare/vue3": 1.0.1
     "@prettier/plugin-php": ^0.19.1
     "@vitejs/plugin-vue": ^3.1.2
     autoprefixer: ^10.4.12
@@ -1893,11 +1894,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/ssr@0.0.0-development, @navigare/ssr@workspace:packages/ssr":
+"@navigare/ssr@1.0.1, @navigare/ssr@workspace:packages/ssr":
   version: 0.0.0-use.local
   resolution: "@navigare/ssr@workspace:packages/ssr"
   dependencies:
-    "@navigare/core": 0.0.0-development
+    "@navigare/core": 1.0.1
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/git": ^10.0.1
     "@types/body-parser": ^1.19.2
@@ -1907,6 +1908,7 @@ __metadata:
     "@types/lodash.isarray": ^4.0.7
     "@types/lodash.isobject": ^3.0.7
     "@types/node": ^18.8.3
+    "@types/semantic-release": ^17.2.4
     "@typescript-eslint/eslint-plugin": ^5.39.0
     "@typescript-eslint/parser": ^5.39.0
     body-parser: ^1.20.1
@@ -1926,14 +1928,14 @@ __metadata:
     vite: ^3.0.0
     vitest: ^0.23.4
   peerDependencies:
-    "@navigare/core": 0.0.0-development
+    "@navigare/core": 1.0.1
     vite: ^3.0.0
   bin:
     navigare: ./bin/navigare.js
   languageName: unknown
   linkType: soft
 
-"@navigare/vite@0.0.0-development, @navigare/vite@workspace:packages/vite":
+"@navigare/vite@1.0.1, @navigare/vite@workspace:packages/vite":
   version: 0.0.0-use.local
   resolution: "@navigare/vite@workspace:packages/vite"
   dependencies:
@@ -1942,8 +1944,8 @@ __metadata:
     "@babel/template": ^7.18.10
     "@babel/traverse": ^7.19.3
     "@babel/types": ^7.19.3
-    "@navigare/core": 0.0.0-development
-    "@navigare/ssr": 0.0.0-development
+    "@navigare/core": 1.0.1
+    "@navigare/ssr": 1.0.1
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/git": ^10.0.1
     "@types/babel__generator": ^7.6.4
@@ -1956,6 +1958,7 @@ __metadata:
     "@types/lodash.isstring": ^4.0.7
     "@types/node": ^18.8.3
     "@types/react": ^18.0.21
+    "@types/semantic-release": ^17.2.4
     "@typescript-eslint/eslint-plugin": ^5.39.0
     "@typescript-eslint/parser": ^5.39.0
     "@vitejs/plugin-vue-jsx": ^2.0.1
@@ -1976,16 +1979,16 @@ __metadata:
     vite: ^3.0.0
     vitest: ^0.23.4
   peerDependencies:
-    "@navigare/core": 0.0.0-development
+    "@navigare/core": 1.0.1
     vite: ^3.0.0
   languageName: unknown
   linkType: soft
 
-"@navigare/vue3@0.0.0-development, @navigare/vue3@workspace:packages/vue3":
+"@navigare/vue3@1.0.1, @navigare/vue3@workspace:packages/vue3":
   version: 0.0.0-use.local
   resolution: "@navigare/vue3@workspace:packages/vue3"
   dependencies:
-    "@navigare/core": 0.0.0-development
+    "@navigare/core": 1.0.1
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/git": ^10.0.1
     "@types/lodash.clonedeep": ^4.5.7
@@ -1997,6 +2000,7 @@ __metadata:
     "@types/lodash.isobject": ^3.0.7
     "@types/lodash.isstring": ^4.0.7
     "@types/lodash.issymbol": ^4.0.7
+    "@types/semantic-release": ^17.2.4
     "@vue/server-renderer": ^3.2.41
     "@vueuse/head": ^0.9.8
     axios: ^1.0.0
@@ -3064,6 +3068,15 @@ __metadata:
   version: 0.16.2
   resolution: "@types/scheduler@npm:0.16.2"
   checksum: b6b4dcfeae6deba2e06a70941860fb1435730576d3689225a421280b7742318d1548b3d22c1f66ab68e414f346a9542f29240bc955b6332c5b11e561077583bc
+  languageName: node
+  linkType: hard
+
+"@types/semantic-release@npm:^17.2.4":
+  version: 17.2.4
+  resolution: "@types/semantic-release@npm:17.2.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: b4a51db09fdb3fb823c1c826f21fc519ee37e81e238591d853ff556adee714e125314c0786b1ce3e99c32c6751df17c7008cf0d9aad9559d30fd5291eb942a33
   languageName: node
   linkType: hard
 
