@@ -37,6 +37,7 @@
   "devDependencies": {
     "@navigare/core": "0.0.0-development",
     "@navigare/ssr": "0.0.0-development",
+    "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/babel__generator": "^7.6.4",
     "@types/babel__template": "^7.4.1",

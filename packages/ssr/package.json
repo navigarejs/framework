@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@navigare/core": "0.0.0-development",
+    "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/body-parser": "^1.19.2",
     "@types/compression": "^1.7.2",
