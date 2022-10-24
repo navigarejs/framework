@@ -24,7 +24,7 @@
     "build": "vitepress build src",
     "clean": "rm -rf types && rm -rf build",
     "dev": "vitepress dev src",
-    "release": ""
+    "release": "yarn build && yarn semantic-release"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.1",
