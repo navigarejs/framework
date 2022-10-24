@@ -51,6 +51,7 @@
     "lodash.uniq": "^4.5.0"
   },
   "devDependencies": {
+    "@semantic-release/git": "^10.0.1",
     "@types/deepmerge": "^2.2.0",
     "@types/lodash.clonedeep": "^4.5.7",
     "@types/lodash.debounce": "^4.0.7",

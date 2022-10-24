@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@navigare/core": "0.0.0-development",
+    "@semantic-release/git": "^10.0.1",
     "@types/lodash.clonedeep": "^4.5.7",
     "@types/lodash.isarray": "^4.0.7",
     "@types/lodash.isboolean": "^3.0.7",
