@@ -1,0 +1,402 @@
+import { AxiosResponse, Canceler, CancelToken } from 'axios'
+import { IsEmptyObject } from 'type-fest'
+import Route from './Route'
+import { Default, Wildcard } from './symbols'
+
+// Router
+export type RouterOptions<TComponent> = {
+  initialPage: Page
+  initialComponents: Record<string, TComponent>
+  resolveComponent: ComponentResolver<TComponent>
+  rawRoutes?: RawRoutes
+  fragments?: Record<
+    string,
+    {
+      stacked?: boolean
+    }
+  >
+}
+
+export type ComponentResolver<TComponent> = (
+  name: string,
+) => Promise<TComponent>
+
+export type RouterLocation = {
+  href: string
+  host: string
+  hostname: string
+  origin: string
+  pathname: string
+  port: string
+  protocol: string
+  search: string
+  hash: string
+  state?: string | undefined
+}
+
+// Pages
+export type PageDefaults = Record<string, any>
+
+export type PageErrors = Record<string, string>
+
+export type PageErrorBag = Record<string, PageErrors>
+
+export interface PageProps {
+  [key: string]: unknown
+}
+
+export type PageRememberedState = Record<string, unknown>
+
+export type PageFragmentProps = Record<string, any>
+
+export type PageFragment = {
+  component: string
+
+  props: PageFragmentProps
+
+  rawRoute: RawRoute
+
+  location: RouterLocation
+
+  defaults: PageDefaults
+
+  parameters: Record<string, RouteParameter>
+}
+
+export type PageFragments = Record<string, PageFragment | PageFragment[] | null>
+
+export interface Page {
+  visitId: VisitId
+
+  fragments: PageFragments
+
+  props: PageProps & {
+    errors: PageErrors & PageErrorBag
+  }
+
+  rawRoute: RawRoute
+
+  location: RouterLocation
+
+  defaults: PageDefaults
+
+  parameters: Record<string, RouteParameter>
+
+  version: string | null
+
+  layout: string | null
+
+  // Refactor away
+  scrollRegions: Array<{ top: number; left: number }>
+  rememberedState: PageRememberedState
+  resolvedErrors: PageErrors
+}
+
+// Events
+export type EventsMap = {
+  before: {
+    parameters: [PendingVisit]
+    details: {
+      visit: PendingVisit
+    }
+    result: boolean | void
+  }
+
+  start: {
+    parameters: [PendingVisit]
+    details: {
+      visit: PendingVisit
+    }
+    result: void
+  }
+
+  progress: {
+    parameters: [VisitProgress | undefined]
+    details: {
+      progress: VisitProgress | undefined
+    }
+    result: void
+  }
+
+  finish: {
+    parameters: [ActiveVisit]
+    details: {
+      visit: ActiveVisit
+    }
+    result: void
+  }
+
+  cancel: {
+    parameters: [ActiveVisit]
+    details: {}
+    result: void
+  }
+
+  navigate: {
+    parameters: [Page, Page[], number, boolean]
+    details: {
+      page: Page
+      pages: Page[]
+      pageIndex: number
+      replace: boolean
+    }
+    result: void
+  }
+
+  success: {
+    parameters: [Page]
+    details: {
+      page: Page
+    }
+    result: void
+  }
+
+  error: {
+    parameters: [PageErrors]
+    details: {
+      errors: PageErrors
+    }
+    result: void
+  }
+
+  invalid: {
+    parameters: [AxiosResponse]
+    details: {
+      response: AxiosResponse
+    }
+    result: boolean | void
+  }
+
+  exception: {
+    parameters: [Error]
+    details: {
+      exception: Error
+    }
+    result: boolean | void
+  }
+}
+
+export type EventNames = keyof EventsMap
+
+export type Events = {
+  [Name in EventNames]: Event<Name>
+}
+
+export type Event<TEventName extends EventNames> = CustomEvent<
+  EventDetails<TEventName>
+>
+
+export type EventListeners = {
+  [Name in EventNames]: EventListener<Name>[]
+}
+
+export type EventParameters<TEventName extends EventNames> =
+  EventsMap[TEventName]['parameters']
+
+export type EventResult<TEventName extends EventNames> =
+  EventsMap[TEventName]['result']
+
+export type EventDetails<TEventName extends EventNames> =
+  EventsMap[TEventName]['details']
+
+export type EventTrigger<TEventName extends EventNames> = (
+  ...params: EventParameters<TEventName>
+) => CustomEvent<EventDetails<TEventName>>
+
+export type EventListener<TEventName extends EventNames> = (
+  event: Event<TEventName>,
+) => void // EventResult<TEventName>
+
+// Visits
+export type FormDataConvertible =
+  | Array<FormDataConvertible>
+  | Blob
+  | FormDataEntryValue
+  | Date
+  | boolean
+  | number
+  | null
+
+export type VisitData = Record<string, FormDataConvertible> | FormData
+
+export type VisitCancelToken = {
+  token?: CancelToken
+  cancel: Canceler
+}
+
+export type VisitPreserveStateOption =
+  | boolean
+  | string
+  | ((page: Page) => boolean)
+
+export type VisitProgress = {
+  loaded: number
+  total?: number
+  progress?: number
+  bytes: number
+  rate?: number
+  estimated?: number
+  upload?: boolean
+  download?: boolean
+}
+
+export type LocationVisit = {
+  preserveScroll: boolean
+}
+
+export type Visit = {
+  id: VisitId
+  method: RouteMethod
+  data: VisitData
+  replace: boolean
+  preserveScroll: VisitPreserveStateOption
+  preserveState: VisitPreserveStateOption
+  props: Array<string>
+  headers: Record<string, string>
+  errorBag: string | null
+  forceFormData: boolean
+  queryStringArrayFormat: QueryStringArrayFormat
+}
+
+export type VisitOptions = Partial<{
+  method: RawRouteMethod
+  data: VisitData
+  replace: boolean
+  preserveScroll: VisitPreserveStateOption
+  preserveState: VisitPreserveStateOption
+  props: Array<string>
+  headers: Record<string, string>
+  errorBag: string | null
+  forceFormData: boolean
+  queryStringArrayFormat: QueryStringArrayFormat
+  onBefore: EventListener<'before'>
+  onStart: EventListener<'start'>
+  onProgress: EventListener<'progress'>
+  onFinish: EventListener<'finish'>
+  onCancel: EventListener<'cancel'>
+  onSuccess: EventListener<'success'>
+  onError: EventListener<'error'>
+  onInvalid: EventListener<'invalid'>
+  onException: EventListener<'exception'>
+}>
+
+export type PendingVisit = Visit & {
+  url: URL
+  completed: boolean
+  cancelled: boolean
+  interrupted: boolean
+}
+
+export type ActiveVisit = PendingVisit & {
+  cancelToken: VisitCancelToken
+  cancel: () => void
+  interrupt: () => void
+  onBefore?: EventListener<'before'>
+  onStart?: EventListener<'start'>
+  onProgress?: EventListener<'progress'>
+  onFinish?: EventListener<'finish'>
+  onCancel?: EventListener<'cancel'>
+  onSuccess?: EventListener<'success'>
+  onError?: EventListener<'error'>
+  onInvalid?: EventListener<'invalid'>
+  onException?: EventListener<'exception'>
+}
+
+export type VisitId = string
+
+export type Component = unknown
+
+// Routes
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Routes {}
+
+export enum RouteMethod {
+  GET = 'get',
+  POST = 'post',
+  PUT = 'put',
+  PATCH = 'patch',
+  DELETE = 'delete',
+}
+
+export type RouteName = keyof Routes
+
+export type Routable<TRouteName extends RouteName = RouteName> =
+  | URL
+  | string
+  | Route<TRouteName>
+
+export interface BindableRouteParameter {
+  id: number | string
+}
+
+export type RouteParameter =
+  // | BindableRouteParameter
+  string | number | boolean | Record<string, any> | undefined | null
+
+/*export type RouteParameters<TParamValue = RouteParameter> = {
+  [key: string]: TParamValue
+}*/
+
+export type RouteParameters<TRouteName extends RouteName> =
+  Routes[TRouteName] extends {
+    bindings: any
+  }
+    ? IsEmptyObject<Routes[TRouteName]['bindings']> extends true
+      ? Record<never, never>
+      : Record<keyof Routes[TRouteName]['bindings'], RouteParameter>
+    : Record<never, never>
+
+export type RouteBindings = Record<string, string | null>
+
+export type RouteWheres = Record<string, string | null>
+
+export type RouteDefaults = Record<string, RouteParameter>
+
+export type RawRouteParameters<TRouteName extends RouteName> =
+  Routes[TRouteName] extends {
+    bindings: any
+  }
+    ? IsEmptyObject<Routes[TRouteName]['bindings']> extends true
+      ? Record<never, never>
+      : Record<
+          keyof Routes[TRouteName]['bindings'],
+          RouteParameter | typeof Default | typeof Wildcard
+        >
+    : Record<never, never>
+
+export type RawRouteMethod =
+  | 'GET'
+  | 'HEAD'
+  | 'POST'
+  | 'PATCH'
+  | 'PUT'
+  | 'DELETE'
+
+export type RawRoute<TName extends RouteName = RouteName> = {
+  name: TName
+  uri: string
+  methods: RawRouteMethod[]
+  method?: RawRouteMethod
+  domain?: string
+  bindings?: RouteBindings
+  parameters?: RouteParameters<TName>
+  wheres?: RouteWheres
+  components?: string[]
+}
+
+export type RawRoutes = Record<string, RawRoute>
+
+export enum QueryStringArrayFormat {
+  Indices = 'indices',
+  Brackets = 'brackets',
+}
+
+// Rendered
+export interface RenderedApp {
+  id: string
+  headTags: string
+  htmlAttrs: string
+  bodyAttrs: string
+  bodyTags: string
+  appHTML: string
+}

@@ -1,0 +1,16 @@
+{
+  "extends": "./../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./build",
+
+    "module": "ESNext",
+
+    "lib": ["ES2020"],
+    "types": ["node"],
+
+    "declaration": true,
+    "declarationDir": "types",
+
+    "typeRoots": ["./node_modules/@types"]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@navigare/laravel",
+  "version": "0.0.0-development",
+  "license": "MIT",
+  "private": true,
+  "description": "A framework for creating server-driven single page apps.",
+  "contributors": [
+    "Julian Hundeloh <github@julian.fyi>"
+  ],
+  "homepage": "https://jaulz.github.io/navigare/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaulz/navigare.git",
+    "directory": "packages/laravel"
+  },
+  "bugs": {
+    "url": "https://github.com/jaulz/navigare/issues"
+  },
+  "scripts": {
+    "prepare": "composer install",
+    "build": "yarn run clean && microbundle --compress false",
+    "clean": "rm -rf types && rm -rf build",
+    "prepublishOnly": "yarn run build",
+    "dev": "yarn build watch",
+    "test": "vendor/bin/pest"
+  }
+}

@@ -1,0 +1,102 @@
+// Vitest Snapshot v1
+
+exports[`Vue > replaces routes in Vue components (*.ts) 1`] = `
+"
+import { defineComponent } from \\"../../../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js\\";
+import { route } from \\"@navigare/core\\";
+const Component = defineComponent({
+  setup() {
+    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [\\"pages/Welcome.vue\\"] });
+    return {
+      rawRoute
+    };
+  },
+  template: \`
+    <div>Hello World</div>
+    <div>{{rawRoute}}</div>
+    <div>{{route('welcome')}}</div>
+  \`
+});
+defineComponent({
+  components: {
+    Component
+  },
+  template: \`
+    <component />
+  \`
+});
+"
+`;
+
+exports[`Vue > replaces routes in Vue components (*.vue) 1`] = `
+"
+import { defineComponent, openBlock, createElementBlock, Fragment, createElementVNode, toDisplayString } from \\"../../../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js\\";
+import { route } from \\"@navigare/core\\";
+const _sfc_main = defineComponent({
+  setup() {
+    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [\\"pages/Welcome.vue\\"] });
+    return {
+      rawRoute
+    };
+  }
+});
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+const _hoisted_1 = /* @__PURE__ */ createElementVNode(\\"div\\", null, \\"Hello World\\", -1);
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock(Fragment, null, [_hoisted_1, createElementVNode(\\"div\\", null, toDisplayString(_ctx.rawRoute), 1), createElementVNode(\\"div\\", null, toDisplayString(route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [\\"pages/Welcome.vue\\"] })), 1)], 64);
+}
+const Component = /* @__PURE__ */ _export_sfc(_sfc_main, [[\\"render\\", _sfc_render]]);
+defineComponent({
+  components: {
+    Component
+  }
+});
+"
+`;
+
+exports[`Vue > replaces routes in Vue components with TSX 1`] = `
+"
+import { defineComponent, createVNode, Fragment, createTextVNode } from \\"../../../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js\\";
+import { route } from \\"@navigare/core\\";
+defineComponent({
+  name: \\"Component\\",
+  setup() {
+    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [\\"pages/Welcome.vue\\"] });
+    return {
+      rawRoute
+    };
+  },
+  render(props) {
+    return createVNode(Fragment, null, [createVNode(\\"div\\", null, [createTextVNode(\\"Hello World\\")]), createVNode(\\"div\\", null, [props.rawRoute]), createVNode(\\"div\\", null, [route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [\\"pages/Welcome.vue\\"] })])]);
+  }
+});
+"
+`;
+
+exports[`Vue > replaces routes in Vue components with setup sugar 1`] = `
+"
+import { defineComponent, openBlock, createElementBlock, Fragment, createElementVNode, toDisplayString, unref } from \\"../../../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js\\";
+import { route } from \\"@navigare/core\\";
+const _hoisted_1 = /* @__PURE__ */ createElementVNode(\\"div\\", null, \\"Hello World\\", -1);
+const _sfc_main = /* @__PURE__ */ defineComponent({
+  __name: \\"Setup\\",
+  setup(__props) {
+    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [\\"pages/Welcome.vue\\"] });
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock(Fragment, null, [_hoisted_1, createElementVNode(\\"div\\", null, toDisplayString(route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [\\"pages/Welcome.vue\\"] })), 1), createElementVNode(\\"div\\", null, toDisplayString(unref(rawRoute)), 1)], 64);
+    };
+  }
+});
+defineComponent({
+  components: {
+    Setup: _sfc_main
+  }
+});
+"
+`;

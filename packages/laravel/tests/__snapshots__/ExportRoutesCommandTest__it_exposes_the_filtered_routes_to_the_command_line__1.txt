@@ -1,0 +1,1 @@
+{"url":"http:\/\/localhost","port":null,"defaults":{},"routes":{"postComments.index":{"uri":"posts\/{post}\/comments","methods":["GET","HEAD"]}}}

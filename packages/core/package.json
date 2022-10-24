@@ -1,0 +1,86 @@
+{
+  "name": "@navigare/core",
+  "version": "0.0.0-development",
+  "license": "MIT",
+  "type": "module",
+  "description": "A framework for creating server-driven single page apps.",
+  "contributors": [
+    "Julian Hundeloh <github@julian.fyi>"
+  ],
+  "homepage": "https://jaulz.github.io/navigare/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaulz/navigare.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/jaulz/navigare/issues"
+  },
+  "files": [
+    "build",
+    "types"
+  ],
+  "source": "./src/index.ts",
+  "exports": {
+    "require": "./build/index.cjs",
+    "default": "./build/index.modern.js"
+  },
+  "main": "./build/index.js",
+  "unpkg": "./build/index.umd.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "yarn run clean && microbundle --compress false",
+    "clean": "rm -rf types && rm -rf build",
+    "prepublishOnly": "yarn run build",
+    "dev": "yarn build watch",
+    "test": "vitest",
+    "release": "yarn semantic-release"
+  },
+  "dependencies": {
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.debounce": "^4.0.8",
+    "lodash.get": "^4.4.2",
+    "lodash.isarray": "^4.0.0",
+    "lodash.isboolean": "^3.0.3",
+    "lodash.isfunction": "^3.0.9",
+    "lodash.isnumber": "^3.0.3",
+    "lodash.isobject": "^3.0.2",
+    "lodash.isstring": "^4.0.1",
+    "lodash.issymbol": "^4.0.1",
+    "lodash.merge": "^4.6.2",
+    "lodash.uniq": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/deepmerge": "^2.2.0",
+    "@types/lodash.clonedeep": "^4.5.7",
+    "@types/lodash.debounce": "^4.0.7",
+    "@types/lodash.get": "^4.4.7",
+    "@types/lodash.isarray": "^4.0.7",
+    "@types/lodash.isboolean": "^3.0.7",
+    "@types/lodash.isfunction": "^3.0.7",
+    "@types/lodash.isnumber": "^3.0.7",
+    "@types/lodash.isobject": "^3.0.7",
+    "@types/lodash.isstring": "^4.0.7",
+    "@types/lodash.issymbol": "^4.0.7",
+    "@types/lodash.merge": "^4.6.7",
+    "@types/lodash.uniq": "^4.5.7",
+    "@types/qs": "^6.9.7",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
+    "axios": "^1.0.0",
+    "eslint": "^8.24.0",
+    "jsdom": "^20.0.1",
+    "lodash.isboolean": "^3.0.3",
+    "microbundle": "^0.15.1",
+    "qs": "^6.9.0",
+    "semantic-release": "^19.0.5",
+    "semantic-release-monorepo": "^7.0.5",
+    "type-fest": "^3.0.0",
+    "typescript": "^4.8.4",
+    "vitest": "^0.24.1"
+  },
+  "peerDependencies": {
+    "axios": "^1.0.0",
+    "qs": "^6.9.0"
+  }
+}

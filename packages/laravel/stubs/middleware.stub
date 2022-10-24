@@ -1,0 +1,41 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Http\Request;
+
+class {{ class }} extends \Jaulz\Navigare\Middleware
+{
+    /**
+     * The root template that's loaded on the first page visit.
+     *
+     * @see https://jaulz.github.io/navigare/server-side-setup#root-template
+     * @var string
+     */
+    protected $rootView = 'app';
+
+    /**
+     * Determines the current asset version.
+     *
+     * @see https://jaulz.github.io/navigare/asset-versioning
+     * @param  \Illuminate\Http\Request  $request
+     * @return string|null
+     */
+    public function version(Request $request): ?string
+    {
+        return parent::version($request);
+    }
+
+    /**
+     * Extend response, i.e. with shared fragments.
+     *
+     * @see https://jaulz.github.io/navigare/extend-response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Jaulz\Navigare\Response  $response
+     * @return void
+     */
+    public function extend(Request $request, NavigareResponse $response): void
+    {
+
+    }
+}

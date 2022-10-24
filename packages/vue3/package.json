@@ -1,0 +1,80 @@
+{
+  "name": "@navigare/vue3",
+  "version": "0.0.0-development",
+  "license": "MIT",
+  "type": "module",
+  "description": "The Vue 3 adapter for Navigare",
+  "contributors": [
+    "Julian Hundeloh <github@julian.fyi>"
+  ],
+  "homepage": "https://jaulz.github.io/navigare/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaulz/navigare.git",
+    "directory": "packages/vue3"
+  },
+  "bugs": {
+    "url": "https://github.com/jaulz/navigare/issues"
+  },
+  "source": "src/index.ts",
+  "exports": {
+    "require": "./build/index.cjs",
+    "default": "./build/index.modern.js"
+  },
+  "main": "./build/index.js",
+  "unpkg": "./build/index.umd.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "yarn run clean && microbundle --compress false",
+    "clean": "rm -rf types && rm -rf build",
+    "prepublishOnly": "npm run build",
+    "dev": "yarn build watch",
+    "test": "vitest",
+    "release": "yarn semantic-release"
+  },
+  "devDependencies": {
+    "@navigare/core": "0.0.0-development",
+    "@types/lodash.clonedeep": "^4.5.7",
+    "@types/lodash.isarray": "^4.0.7",
+    "@types/lodash.isboolean": "^3.0.7",
+    "@types/lodash.isequal": "^4.5.6",
+    "@types/lodash.isfunction": "^3.0.7",
+    "@types/lodash.isnumber": "^3.0.7",
+    "@types/lodash.isobject": "^3.0.7",
+    "@types/lodash.isstring": "^4.0.7",
+    "@types/lodash.issymbol": "^4.0.7",
+    "@vue/server-renderer": "^3.2.41",
+    "axios": "^1.0.0",
+    "eslint": "^8.24.0",
+    "microbundle": "^0.15.1",
+    "qs": "^6.11.0",
+    "semantic-release": "^19.0.5",
+    "semantic-release-monorepo": "^7.0.5",
+    "type-fest": "^3.0.0",
+    "vitest": "^0.24.3",
+    "vue": "^3.2.41"
+  },
+  "peerDependencies": {
+    "@navigare/core": "^0.0.1",
+    "@vue/compiler-core": "^3.2.41",
+    "@vue/compiler-dom": "^3.2.41",
+    "@vue/reactivity": "^3.2.41",
+    "@vue/runtime-core": "^3.2.41",
+    "@vue/runtime-dom": "^3.2.41",
+    "@vue/server-renderer": "^3.2.41",
+    "vue": "^3.2.41"
+  },
+  "dependencies": {
+    "@navigare/core": "^0.0.1",
+    "@vueuse/head": "^0.9.8",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.isarray": "^4.0.0",
+    "lodash.isboolean": "^3.0.3",
+    "lodash.isequal": "^4.5.0",
+    "lodash.isfunction": "^3.0.9",
+    "lodash.isnumber": "^3.0.3",
+    "lodash.isobject": "^3.0.2",
+    "lodash.isstring": "^4.0.1",
+    "lodash.issymbol": "^4.0.1"
+  }
+}

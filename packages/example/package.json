@@ -1,0 +1,30 @@
+{
+  "name": "@navigare/example",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "navigare bootstrap/ssr/ssr.mjs",
+    "dev": "vite",
+    "build": "vite build && vite build --ssr"
+  },
+  "dependencies": {
+    "@navigare/ssr": "0.0.0-development",
+    "axios": "^1.1.3",
+    "qs": "^6.11.0"
+  },
+  "devDependencies": {
+    "@navigare/core": "0.0.0-development",
+    "@navigare/vite": "0.0.0-development",
+    "@navigare/vue3": "0.0.0-development",
+    "@prettier/plugin-php": "^0.19.1",
+    "@vitejs/plugin-vue": "^3.1.2",
+    "autoprefixer": "^10.4.12",
+    "laravel-vite-plugin": "^0.6.1",
+    "lodash": "^4.17.21",
+    "postcss": "^8.4.18",
+    "prettier": "^2.7.1",
+    "tailwindcss": "^3.1.8",
+    "vite": "^3.0.0",
+    "vue": "^3.2.41"
+  }
+}

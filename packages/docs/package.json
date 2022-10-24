@@ -1,0 +1,34 @@
+{
+  "name": "@navigare/docs",
+  "version": "0.0.0-development",
+  "license": "MIT",
+  "private": true,
+  "description": "A framework for creating server-driven single page apps.",
+  "contributors": [
+    "Julian Hundeloh <github@julian.fyi>"
+  ],
+  "homepage": "https://jaulz.github.io/navigare/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaulz/navigare.git",
+    "directory": "packages/docs"
+  },
+  "bugs": {
+    "url": "https://github.com/jaulz/navigare/issues"
+  },
+  "files": [
+    "build",
+    "types"
+  ],
+  "scripts": {
+    "build": "vitepress build src",
+    "clean": "rm -rf types && rm -rf build",
+    "prepublishOnly": "yarn run build",
+    "dev": "vitepress dev src",
+    "release": "yarn run build"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0-alpha.22",
+    "vue": "^3.2.41"
+  }
+}

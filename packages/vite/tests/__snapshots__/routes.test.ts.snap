@@ -1,0 +1,64 @@
+// Vitest Snapshot v1
+
+exports[`reads routes from Laravel 1`] = `
+{
+  "welcome": {
+    "bindings": {
+      "name": null,
+    },
+    "components": [
+      "pages/Welcome.vue",
+    ],
+    "domain": "navigare.test",
+    "method": "GET",
+    "methods": [
+      "GET",
+      "HEAD",
+    ],
+    "name": "welcome",
+    "uri": "welcome/{name?}",
+  },
+}
+`;
+
+exports[`reads routes from file 1`] = `
+{
+  "welcome": {
+    "bindings": {
+      "name": null,
+    },
+    "components": [
+      "pages/Welcome.vue",
+    ],
+    "domain": "navigare.test",
+    "method": "GET",
+    "methods": [
+      "GET",
+      "HEAD",
+    ],
+    "name": "welcome",
+    "uri": "welcome/{name?}",
+  },
+}
+`;
+
+exports[`reads routes from the given option object 1`] = `
+{
+  "welcome": {
+    "bindings": {
+      "name": null,
+    },
+    "components": [
+      "pages/Welcome.vue",
+    ],
+    "domain": "navigare.test",
+    "method": "GET",
+    "methods": [
+      "GET",
+      "HEAD",
+    ],
+    "name": "welcome",
+    "uri": "welcome/{name?}",
+  },
+}
+`;

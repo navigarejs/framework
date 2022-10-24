@@ -1,0 +1,17 @@
+{
+  "extends": "./../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./build",
+
+    "module": "CommonJS",
+
+    "lib": ["ES2020"],
+    "types": ["node"],
+    "jsx": "react",
+
+    "declaration": true,
+    "declarationDir": "types",
+
+    "typeRoots": ["./node_modules/@types"]
+  }
+}

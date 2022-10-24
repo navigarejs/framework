@@ -1,0 +1,82 @@
+{
+  "name": "@navigare/vite",
+  "version": "0.0.0-development",
+  "license": "MIT",
+  "type": "commonjs",
+  "description": "A framework for creating server-driven single page apps.",
+  "keywords": [
+    "vite-plugin"
+  ],
+  "contributors": [
+    "Julian Hundeloh <github@julian.fyi>"
+  ],
+  "homepage": "https://jaulz.github.io/navigare/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaulz/navigare.git",
+    "directory": "packages/vite"
+  },
+  "bugs": {
+    "url": "https://github.com/jaulz/navigare/issues"
+  },
+  "files": [
+    "build",
+    "types"
+  ],
+  "source": "./src/index.ts",
+  "main": "./build/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "prepare": "chmod 777 ./tests/artisan.js",
+    "build": "yarn run clean && tsc -p tsconfig.build.json",
+    "clean": "rm -rf types && rm -rf build",
+    "prepublishOnly": "yarn run build",
+    "dev": "tsc-watch -p tsconfig.build.json",
+    "test": "vitest",
+    "release": "yarn semantic-release"
+  },
+  "devDependencies": {
+    "@navigare/core": "0.0.0-development",
+    "@navigare/ssr": "0.0.0-development",
+    "@types/babel__generator": "^7.6.4",
+    "@types/babel__template": "^7.4.1",
+    "@types/babel__traverse": "^7.18.2",
+    "@types/debug": "^4.1.7",
+    "@types/lodash.defaultsdeep": "^4.6.7",
+    "@types/node": "^18.8.3",
+    "@types/react": "^18.0.21",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
+    "@vitejs/plugin-vue-jsx": "^2.0.1",
+    "eslint": "^8.24.0",
+    "react": "^18.2.0",
+    "rollup": "^2.79.1",
+    "semantic-release": "^19.0.5",
+    "semantic-release-monorepo": "^7.0.5",
+    "tsc-watch": "^5.0.3",
+    "typescript": "^4.8.4",
+    "vite": "^3.0.0",
+    "vitest": "^0.23.4"
+  },
+  "peerDependencies": {
+    "@navigare/core": "0.0.0-development",
+    "vite": "^3.0.0"
+  },
+  "dependencies": {
+    "@babel/generator": "^7.19.3",
+    "@babel/parser": "^7.19.3",
+    "@babel/template": "^7.18.10",
+    "@babel/traverse": "^7.19.3",
+    "@babel/types": "^7.19.3",
+    "@types/lodash.isarray": "^4.0.7",
+    "@types/lodash.isobject": "^3.0.7",
+    "@types/lodash.isstring": "^4.0.7",
+    "chalk": "^4.0.0",
+    "debug": "^4.3.4",
+    "execa": "^5.0.0",
+    "lodash.defaultsdeep": "^4.6.1",
+    "lodash.isarray": "^4.0.0",
+    "lodash.isobject": "^3.0.2",
+    "lodash.isstring": "^4.0.1"
+  }
+}

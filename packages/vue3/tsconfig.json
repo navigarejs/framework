@@ -1,0 +1,14 @@
+{
+  "extends": "./../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./build",
+
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "types": [],
+
+    "declaration": true,
+    "declarationDir": "types",
+
+    "typeRoots": ["./node_modules/@types"]
+  }
+}

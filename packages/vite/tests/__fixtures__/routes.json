@@ -1,0 +1,11 @@
+{
+  "welcome": {
+    "name": "welcome",
+    "uri": "welcome/{name?}",
+    "method": "GET",
+    "methods": ["GET", "HEAD"],
+    "domain": "navigare.test",
+    "bindings": { "name": null },
+    "components": ["pages/Welcome.vue"]
+  }
+}
