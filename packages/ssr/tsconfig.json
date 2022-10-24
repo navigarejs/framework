@@ -3,9 +3,9 @@
   "compilerOptions": {
     "outDir": "./build",
 
-    "module": "ESNext",
+    "module": "esnext",
 
-    "lib": ["ES2020"],
+    "lib": ["ES2022"],
     "types": ["node"],
 
     "declaration": true,

@@ -6,27 +6,27 @@ import express from 'express'
 import { createServer, ViteDevServer } from 'vite'
 import { Options, Server } from './types'
 import fs from 'fs'
+import path from 'path'
 import getPort from 'get-port'
 import isArray from 'lodash.isarray'
 import isObject from 'lodash.isobject'
+import { createRequire } from 'module'
+
+const require = createRequire(import.meta.url)
 
 // const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD
 const isProduction = process.env.NODE_ENV === 'production'
 
-const pkg = /*safeParse(
+const pkg = safeParse(
   fs.readFileSync(path.join(__dirname, './../package.json'), 'utf-8'),
-) as { version: string }*/ {
-  version: '0.0.1',
-}
+) as { version: string }
 
-const pluginPkg = /*safeParse(
+const pluginPkg = safeParse(
   fs.readFileSync(
     path.join(require.resolve('@navigare/core'), './../../package.json'),
     'utf-8',
   ),
-) as { version: string }*/ {
-  version: '0.0.1',
-}
+) as { version: string }
 
 export default async function (
   options: Partial<Options> = {
@@ -214,9 +214,6 @@ export default async function (
         appHTML: renderedPage.appHTML || '',
       }
     } catch (exception: any) {
-      // If an error is caught, let Vite fix the stracktrace so it maps back to
-      // your actual source code.
-      vite?.ssrFixStacktrace(exception)
       logger?.error(exception)
       return emptyResponse
     }
