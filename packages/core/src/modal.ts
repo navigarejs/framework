@@ -14,7 +14,9 @@ export default {
 
     const page = document.createElement('html')
     page.innerHTML = html
-    page.querySelectorAll('a').forEach((a) => a.setAttribute('target', '_top'))
+    page
+      .querySelectorAll('a')
+      .forEach((link) => link.setAttribute('target', '_top'))
 
     this.modal = document.createElement('div')
     this.modal.style.position = 'fixed'
