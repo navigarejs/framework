@@ -8,14 +8,14 @@
     "build": "vite build && vite build --ssr"
   },
   "dependencies": {
-    "@navigare/ssr": "0.0.0-development",
+    "@navigare/ssr": "1.0.1",
     "axios": "^1.1.3",
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@navigare/core": "0.0.0-development",
-    "@navigare/vite": "0.0.0-development",
-    "@navigare/vue3": "0.0.0-development",
+    "@navigare/core": "1.0.1",
+    "@navigare/vite": "1.0.1",
+    "@navigare/vue3": "1.0.1",
     "@prettier/plugin-php": "^0.19.1",
     "@vitejs/plugin-vue": "^3.1.2",
     "autoprefixer": "^10.4.12",
