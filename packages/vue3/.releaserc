@@ -1,4 +1,4 @@
 {
   "extends": "semantic-release-monorepo",
-  "branches": ["master"]
+  "branches": ["main"]
 }
