@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: yarn install --immutable --immutable-cache --check-cache
+        run: yarn install --immutable
 
       - name: Run tests
         run: yarn workspace @navigare/core test
@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: yarn install --immutable --immutable-cache --check-cache
+        run: yarn install --immutable
 
       - name: Build core
         run: yarn workspace @navigare/core build
@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: yarn install --immutable --immutable-cache --check-cache
+        run: yarn install --immutable
 
       - name: Build core
         run: yarn workspace @navigare/core build
