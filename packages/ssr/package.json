@@ -1,9 +1,8 @@
 {
   "name": "@navigare/ssr",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "license": "MIT",
   "type": "module",
-  "private": false,
   "description": "A framework for creating server-driven single page apps.",
   "contributors": [
     "Julian Hundeloh <github@julian.fyi>"
