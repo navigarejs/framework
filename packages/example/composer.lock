@@ -2140,7 +2140,7 @@
     },
     {
       "name": "psr/event-dispatcher",
-      "version": "1.0.0",
+      "version": "0.0.0-development",
       "source": {
         "type": "git",
         "url": "https://github.com/php-fig/event-dispatcher.git",
