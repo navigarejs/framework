@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "type": "commonjs",
+  "private": false,
   "description": "A framework for creating server-driven single page apps.",
   "keywords": [
     "vite-plugin"

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "type": "module",
+  "private": false,
   "description": "The Vue 3 adapter for Navigare",
   "contributors": [
     "Julian Hundeloh <github@julian.fyi>"
