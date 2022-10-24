@@ -2,9 +2,21 @@ name: release
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+    inputs:
+      packacge:
+        description: 'Packacge'
+        required: true
+        default: '@navigare/core'
+        type: choice
+        options:
+          - '@navigare/core'
+          - '@navigare/laravel'
+          - '@navigare/ssr'
+          - '@navigare/vite'
+          - '@navigare/vue3'
+#  push:
+#    branches:
+#      - main
 
 jobs:
   all:
@@ -23,4 +35,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: yarn release
+        run: yarn workspace ${{ inputs.package }} release
