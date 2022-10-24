@@ -32,7 +32,8 @@
     "semantic-release": "^18.0.0",
     "semantic-release-monorepo": "^7.0.5",
     "vitepress": "^1.0.0-alpha.22",
-    "vue": "^3.2.41"
+    "vue": "^3.2.41",
+    "esbuild-linux-64": "0.14.54"
   },
   "dependencies": {
     "@vueuse/core": "^9.3.1"
