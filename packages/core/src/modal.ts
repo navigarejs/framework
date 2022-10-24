@@ -36,9 +36,11 @@ export default {
     document.body.prepend(this.modal)
     originalOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+
     if (!iframe.contentWindow) {
       throw new Error('iframe not yet ready.')
     }
+
     iframe.contentWindow.document.open()
     iframe.contentWindow.document.write(page.outerHTML)
     iframe.contentWindow.document.close()
