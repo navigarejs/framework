@@ -1852,6 +1852,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/docs@workspace:packages/docs"
   dependencies:
+    "@vueuse/core": ^9.3.1
     vitepress: ^1.0.0-alpha.22
     vue: ^3.2.41
   languageName: unknown
@@ -3012,6 +3013,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/web-bluetooth@npm:^0.0.16":
+  version: 0.0.16
+  resolution: "@types/web-bluetooth@npm:0.0.16"
+  checksum: f68a630d062202a25c46d48686ebae1cf429dc70b4578fcf13b8357b2db63e4aedfb6f6d752bd388366be46ebd19c1c9de45f8a15c2631bb79e904fdfc454f94
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:^5.39.0":
   version: 5.39.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.39.0"
@@ -3432,6 +3440,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vueuse/core@npm:^9.3.1":
+  version: 9.3.1
+  resolution: "@vueuse/core@npm:9.3.1"
+  dependencies:
+    "@types/web-bluetooth": ^0.0.16
+    "@vueuse/metadata": 9.3.1
+    "@vueuse/shared": 9.3.1
+    vue-demi: "*"
+  checksum: 36dacdfde462b46bcdb0ec0e8cb2c915d816922daa712b4ac6d992385ad7b42ea71b9ddcf54b46ba00f96b8d7e360741b43c20f1896e553900841d2a9cb0f480
+  languageName: node
+  linkType: hard
+
 "@vueuse/head@npm:^0.9.8":
   version: 0.9.8
   resolution: "@vueuse/head@npm:0.9.8"
@@ -3452,6 +3472,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vueuse/metadata@npm:9.3.1":
+  version: 9.3.1
+  resolution: "@vueuse/metadata@npm:9.3.1"
+  checksum: 2aec6683570afa1657d62e91353da2cb69472e46b3ed3551b5039347481aa13afa09d240f63b33707c9075713395f39993a88095f81a017a614bd3da1614a012
+  languageName: node
+  linkType: hard
+
 "@vueuse/shared@npm:8.9.4":
   version: 8.9.4
   resolution: "@vueuse/shared@npm:8.9.4"
@@ -3469,7 +3496,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/shared@npm:^9.2.0, @vueuse/shared@npm:^9.3.0":
+"@vueuse/shared@npm:9.3.1, @vueuse/shared@npm:^9.2.0, @vueuse/shared@npm:^9.3.0":
   version: 9.3.1
   resolution: "@vueuse/shared@npm:9.3.1"
   dependencies:
