@@ -1,10 +1,13 @@
+let originalOverflow: string = ''
+
 export default {
   modal: null,
+
   listener: null,
 
   show(html: Record<string, unknown> | string): void {
     if (typeof html === 'object') {
-      html = `All navigare requests must receive a valid navigare response, however a plain JSON response was received.<hr>${JSON.stringify(
+      html = `All Navigare requests must receive a valid Navigare response, however a plain JSON response was received.<hr>${JSON.stringify(
         html,
       )}`
     }
@@ -31,6 +34,7 @@ export default {
     this.modal.appendChild(iframe)
 
     document.body.prepend(this.modal)
+    originalOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     if (!iframe.contentWindow) {
       throw new Error('iframe not yet ready.')
@@ -46,13 +50,16 @@ export default {
   hide(): void {
     this.modal.outerHTML = ''
     this.modal = null
-    document.body.style.overflow = 'visible'
+
+    document.body.style.overflow = originalOverflow
     document.removeEventListener('keydown', this.listener)
   },
 
   hideOnEscape(event: KeyboardEvent): void {
-    if (event.keyCode === 27) {
-      this.hide()
+    if (event.keyCode !== 27) {
+      return
     }
+
+    this.hide()
   },
 }
