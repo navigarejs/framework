@@ -86,7 +86,7 @@ export default async function (
     response.send(`
       <form id="form" method="post" action="/">
         <div>
-          <textarea name="page" id="page" cols="120" rows="15"></textarea>
+          <textarea name="page" id="page" cols="120" rows="12"></textarea>
         </div>
 
         <button type="button" onclick="format()">Format</button>
