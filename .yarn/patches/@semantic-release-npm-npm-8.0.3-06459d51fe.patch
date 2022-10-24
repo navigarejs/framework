@@ -1,0 +1,13 @@
+diff --git a/lib/prepare.js b/lib/prepare.js
+index 25fb8ee1822a0d74a3bd23973f0fb1d849ac8ed0..43a13a6860bf4ca8f523e6b8da784d2aa83fdba1 100644
+--- a/lib/prepare.js
++++ b/lib/prepare.js
+@@ -9,7 +9,7 @@ module.exports = async (npmrc, {tarballDir, pkgRoot}, {cwd, env, stdout, stderr,
+ 
+   const versionResult = execa(
+     'npm',
+-    ['version', version, '--userconfig', npmrc, '--no-git-tag-version', '--allow-same-version'],
++    ['version', version, '--userconfig', npmrc, '--no-git-tag-version', '--allow-same-version', '--no-workspaces-update'],
+     {
+       cwd: basePath,
+       env,

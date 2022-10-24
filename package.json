@@ -25,5 +25,8 @@
   "packageManager": "yarn@3.2.4",
   "dependencies": {
     "prettier": "^2.7.1"
+  },
+  "resolutions": {
+    "@semantic-release/npm@^8.0.0": "patch:@semantic-release/npm@npm%3A8.0.3#./.yarn/patches/@semantic-release-npm-npm-8.0.3-06459d51fe.patch"
   }
 }

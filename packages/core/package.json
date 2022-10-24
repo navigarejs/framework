@@ -74,7 +74,7 @@
     "lodash.isboolean": "^3.0.3",
     "microbundle": "^0.15.1",
     "qs": "^6.9.0",
-    "semantic-release": "^19.0.5",
+    "semantic-release": "^18.0.0",
     "semantic-release-monorepo": "^7.0.5",
     "type-fest": "^3.0.0",
     "typescript": "^4.8.4",
