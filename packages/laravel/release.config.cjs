@@ -8,6 +8,15 @@ const config = {
     '@semantic-release/commit-analyzer',
     '@semantic-release/changelog',
     [
+      '@semantic-release/exec',
+      {
+        verifyConditionsCmd: '',
+        prepareCmd:
+          "yarn version ${nextRelease.version} && echo 'version=${nextRelease.version}' >> $GITHUB_OUTPUT",
+        publishCmd: 'yarn prerelease',
+      },
+    ],
+    [
       '@semantic-release/github',
       {
         assets: [],

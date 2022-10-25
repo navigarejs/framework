@@ -29,9 +29,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Pre-release
-        run: yarn workspace ${{ matrix.package }} run prerelease
-
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
