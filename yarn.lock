@@ -2640,9 +2640,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@semantic-release/npm@patch:@semantic-release/npm@npm%3A8.0.3#./.yarn/patches/@semantic-release-npm-npm-8.0.3-06459d51fe.patch::locator=root-workspace-0b6124%40workspace%3A.":
+"@semantic-release/npm@patch:@semantic-release/npm@npm%3A8.0.3#./.yarn/patches/@semantic-release-npm-npm-8.0.3-06459d51fe.patch::locator=Navigare%40workspace%3A.":
   version: 8.0.3
-  resolution: "@semantic-release/npm@patch:@semantic-release/npm@npm%3A8.0.3#./.yarn/patches/@semantic-release-npm-npm-8.0.3-06459d51fe.patch::version=8.0.3&hash=1eff7a&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@semantic-release/npm@patch:@semantic-release/npm@npm%3A8.0.3#./.yarn/patches/@semantic-release-npm-npm-8.0.3-06459d51fe.patch::version=8.0.3&hash=1eff7a&locator=Navigare%40workspace%3A."
   dependencies:
     "@semantic-release/error": ^3.0.0
     aggregate-error: ^3.0.0
@@ -3645,6 +3645,17 @@ __metadata:
   checksum: 2605fa124260c61bad38bb65eba30d2f72216a78e94d0ab19b11b4e0327d572b8d530c0c9cc3b0764f727ad26d39e00bf7ebad57781ca6368394d73169c59e46
   languageName: node
   linkType: hard
+
+"Navigare@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "Navigare@workspace:."
+  dependencies:
+    husky: ^8.0.1
+    prettier: ^2.7.1
+    pretty-quick: ^3.1.3
+    typescript: ^4.8.4
+  languageName: unknown
+  linkType: soft
 
 "abab@npm:^2.0.6":
   version: 2.0.6
@@ -11005,17 +11016,6 @@ __metadata:
   checksum: 9034814383ca5bdb4bea6d499270aeb31cdb0bb884f81b0c6a1d19c63cc973f040e6ee09b7af8a7169dd231c090f4b44ef8b99c4bfdf884aceeb3dcefb8cfa14
   languageName: node
   linkType: hard
-
-"root-workspace-0b6124@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "root-workspace-0b6124@workspace:."
-  dependencies:
-    husky: ^8.0.1
-    prettier: ^2.7.1
-    pretty-quick: ^3.1.3
-    typescript: ^4.8.4
-  languageName: unknown
-  linkType: soft
 
 "run-parallel@npm:^1.1.9":
   version: 1.2.0
