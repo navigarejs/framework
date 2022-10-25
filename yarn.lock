@@ -2039,7 +2039,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/ssr@1.0.1, @navigare/ssr@workspace:packages/ssr":
+"@navigare/ssr@1.0.11, @navigare/ssr@^1.0.3, @navigare/ssr@workspace:packages/ssr":
   version: 0.0.0-use.local
   resolution: "@navigare/ssr@workspace:packages/ssr"
   dependencies:
@@ -2084,29 +2084,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/ssr@npm:^1.0.3":
-  version: 1.0.10
-  resolution: "@navigare/ssr@npm:1.0.10"
-  dependencies:
-    "@types/lodash.isarray": ^4.0.7
-    body-parser: ^1.20.1
-    chalk: ^4.0.0
-    compression: ^1.7.4
-    debug: ^4.3.4
-    express: ^4.18.2
-    get-port: ^5
-    lodash.castarray: ^4.4.0
-    lodash.isarray: ^4.0.0
-    lodash.isobject: ^3.0.2
-  peerDependencies:
-    "@navigare/core": 1.0.1
-    vite: ^3.0.0
-  bin:
-    navigare: ./bin/navigare.js
-  checksum: 94b48fa50cd453d4e4a018c7e471e6d5dcbaa473b71126bf5424932f64615f091734bf2a51d14b1ac752e69e54010da0285b1252d672f1ace19bc3b6e3ad5018
-  languageName: node
-  linkType: hard
-
 "@navigare/vite@npm:^1.0.3":
   version: 1.0.9
   resolution: "@navigare/vite@npm:1.0.9"
@@ -2143,7 +2120,7 @@ __metadata:
     "@babel/traverse": ^7.19.3
     "@babel/types": ^7.19.3
     "@navigare/core": 1.0.13
-    "@navigare/ssr": 1.0.1
+    "@navigare/ssr": 1.0.11
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
