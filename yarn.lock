@@ -1945,7 +1945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navigare/core@1.0.12, @navigare/core@^1.0.3, @navigare/core@^1.0.4, @navigare/core@workspace:packages/core":
+"@navigare/core@1.0.13, @navigare/core@^1.0.13, @navigare/core@^1.0.4, @navigare/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@navigare/core@workspace:packages/core"
   dependencies:
@@ -2014,7 +2014,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/example@workspace:packages/example"
   dependencies:
-    "@navigare/core": ^1.0.3
+    "@navigare/core": ^1.0.13
     "@navigare/ssr": ^1.0.3
     "@navigare/vite": ^1.0.3
     "@navigare/vue3": ^1.0.3
@@ -2043,7 +2043,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/ssr@workspace:packages/ssr"
   dependencies:
-    "@navigare/core": 1.0.12
+    "@navigare/core": 1.0.13
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
@@ -2077,7 +2077,7 @@ __metadata:
     vite: ^3.0.0
     vitest: ^0.24.3
   peerDependencies:
-    "@navigare/core": 1.0.12
+    "@navigare/core": 1.0.13
     vite: ^3.0.0
   bin:
     navigare: ./bin/navigare.js
@@ -2142,7 +2142,7 @@ __metadata:
     "@babel/template": ^7.18.10
     "@babel/traverse": ^7.19.3
     "@babel/types": ^7.19.3
-    "@navigare/core": 1.0.12
+    "@navigare/core": 1.0.13
     "@navigare/ssr": 1.0.1
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
@@ -2180,7 +2180,7 @@ __metadata:
     vitest: ^0.24.3
     vue: ^3.2.41
   peerDependencies:
-    "@navigare/core": 1.0.12
+    "@navigare/core": 1.0.13
     vite: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -2218,7 +2218,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/vue3@workspace:packages/vue3"
   dependencies:
-    "@navigare/core": ^1.0.4
+    "@navigare/core": ^1.0.13
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
@@ -2256,7 +2256,7 @@ __metadata:
     vitest: ^0.24.3
     vue: ^3.2.41
   peerDependencies:
-    "@navigare/core": ^1.0.3
+    "@navigare/core": ^1.0.13
     vue: ^3.2.41
   languageName: unknown
   linkType: soft
