@@ -83,7 +83,7 @@
     "semantic-release-monorepo": "^7.0.5",
     "type-fest": "^3.0.0",
     "typescript": "^4.8.4",
-    "vitest": "^0.24.1"
+    "vitest": "^0.24.3"
   },
   "peerDependencies": {
     "axios": "^1.0.0",
