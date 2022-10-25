@@ -40,6 +40,9 @@ jobs:
         run: yarn workspace @navigare/docs run build
 
       - name: Debug
+        run: git status
+
+      - name: Debug
         run: ls packages
 
       - name: Debug
