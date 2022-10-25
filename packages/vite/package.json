@@ -41,7 +41,7 @@
     "clean": "rm -rf types && rm -rf build",
     "dev": "tsc-watch -p tsconfig.build.json",
     "test": "vitest",
-    "prerelease": "yarn --cwd ../core build && yarn --cwd ../ssr build && yarn build",
+    "prerelease": "yarn ../core build && yarn ../ssr build && yarn build",
     "release": "yarn semantic-release"
   },
   "devDependencies": {
