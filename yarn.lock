@@ -1945,7 +1945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navigare/core@1.0.13, @navigare/core@^1.0.13, @navigare/core@^1.0.4, @navigare/core@workspace:packages/core":
+"@navigare/core@1.0.13, @navigare/core@^1.0.13, @navigare/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@navigare/core@workspace:packages/core"
   dependencies:
@@ -2136,36 +2136,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/vue3@npm:^1.0.3":
-  version: 1.0.9
-  resolution: "@navigare/vue3@npm:1.0.9"
-  dependencies:
-    "@navigare/core": ^1.0.4
-    "@vueuse/head": ^0.9.8
-    lodash.castarray: ^4.4.0
-    lodash.clonedeep: ^4.5.0
-    lodash.isarray: ^4.0.0
-    lodash.isboolean: ^3.0.3
-    lodash.isequal: ^4.5.0
-    lodash.isfunction: ^3.0.9
-    lodash.isnumber: ^3.0.3
-    lodash.isobject: ^3.0.2
-    lodash.isstring: ^4.0.1
-    lodash.issymbol: ^4.0.1
-  peerDependencies:
-    "@navigare/core": ^1.0.3
-    "@vue/compiler-core": ^3.2.41
-    "@vue/compiler-dom": ^3.2.41
-    "@vue/reactivity": ^3.2.41
-    "@vue/runtime-core": ^3.2.41
-    "@vue/runtime-dom": ^3.2.41
-    "@vue/server-renderer": ^3.2.41
-    vue: ^3.2.41
-  checksum: 2300941c9cddeb18be1e922ccf052b728081a984d5a2cc76589cf1db473bf02187a1b3846114db02c0ddf3f082c9253aa47da302627db23f6adcf338d5b2fc9b
-  languageName: node
-  linkType: hard
-
-"@navigare/vue3@workspace:packages/vue3":
+"@navigare/vue3@^1.0.3, @navigare/vue3@workspace:packages/vue3":
   version: 0.0.0-use.local
   resolution: "@navigare/vue3@workspace:packages/vue3"
   dependencies:
