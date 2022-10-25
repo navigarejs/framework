@@ -11,7 +11,7 @@ return [
     |
     | Do note that enabling these options will NOT automatically make SSR work,
     | as a separate rendering service needs to be available. To learn more,
-    | please visit https://jaulz.github.io/navigare/server-side-rendering
+    | please visit https://navigarejs.github.io/framework/server-side-rendering
     |
     */
   'ssr' => [

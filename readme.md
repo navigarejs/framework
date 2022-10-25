@@ -8,7 +8,7 @@
 npm install @navigare/core
 ```
 
-Navigare lets you quickly build a modern single-page app using classic server-side routing and controllers. Right now, we support Vue3 and Laravel only but the library is designed to work with other front-end and back-end frameworks as well. Find the full documentation [here](https://jaulz.github.io/navigare/).
+Navigare lets you quickly build a modern single-page app using classic server-side routing and controllers. Right now, we support Vue3 and Laravel only but the library is designed to work with other front-end and back-end frameworks as well. Find the full documentation [here](https://navigarejs.github.io/framework/).
 
 ## Acknowledgment
 
@@ -16,7 +16,7 @@ Thanks a lot to the maintainers of [Inertia](https://inertiajs.com/) and [Ziggy]
 
 ## Contributing
 
-If you're interested in contributing to Navigare, please read our [contributing guide](https://github.com/jaulz/navigare/blob/master/.github/CONTRIBUTING.md).
+If you're interested in contributing to Navigare, please read our [contributing guide](https://github.com/navigarejs/framework/blob/master/.github/CONTRIBUTING.md).
 
 ## Sponsors
 

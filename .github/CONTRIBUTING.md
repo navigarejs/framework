@@ -7,7 +7,7 @@ Thanks for your interest in contributing to Navigare!
 To make local Navigare development easier, the project has been setup as a monorepo using [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/). To set it up, start by cloning the repository on your system.
 
 ```sh
-git clone https://github.com/jaulz/navigare.git navigare
+git clone https://github.com/navigarejs/framework.git navigare
 cd navigare
 ```
 

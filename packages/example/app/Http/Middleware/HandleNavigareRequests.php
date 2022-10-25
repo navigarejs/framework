@@ -27,7 +27,7 @@ class HandleNavigareRequests extends \Jaulz\Navigare\Middleware
   /**
    * Determines the current asset version.
    *
-   * @see https://jaulz.github.io/navigare/asset-versioning
+   * @see https://navigarejs.github.io/framework/asset-versioning
    * @param  \Illuminate\Http\Request  $request
    * @return string|null
    */
@@ -39,7 +39,7 @@ class HandleNavigareRequests extends \Jaulz\Navigare\Middleware
   /**
    * Extend response, i.e. with shared fragments.
    *
-   * @see https://jaulz.github.io/navigare/extend-response
+   * @see https://navigarejs.github.io/framework/extend-response
    * @param  \Illuminate\Http\Request  $request
    * @param  \Jaulz\Navigare\Response  $response
    * @return void

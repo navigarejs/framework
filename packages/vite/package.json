@@ -19,14 +19,14 @@
       "url": "https://github.com/sponsors/jaulz"
     }
   ],
-  "homepage": "https://jaulz.github.io/navigare/",
+  "homepage": "https://navigarejs.github.io/framework/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jaulz/navigare.git",
+    "url": "https://github.com/navigarejs/framework.git",
     "directory": "packages/vite"
   },
   "bugs": {
-    "url": "https://github.com/jaulz/navigare/issues"
+    "url": "https://github.com/navigarejs/framework/issues"
   },
   "files": [
     "build",

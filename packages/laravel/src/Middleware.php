@@ -13,7 +13,7 @@ class Middleware
   /**
    * The root template that's loaded on the first page visit.
    *
-   * @see https://jaulz.github.io/navigare/server-side-setup#root-template
+   * @see https://navigarejs.github.io/framework/server-side-setup#root-template
    *
    * @var string
    */
@@ -49,7 +49,7 @@ class Middleware
   /**
    * Determines the current asset version.
    *
-   * @see https://jaulz.github.io/navigare/asset-versioning
+   * @see https://navigarejs.github.io/framework/asset-versioning
    *
    * @deprecated
    * @param  \Illuminate\Http\Request  $request
@@ -63,7 +63,7 @@ class Middleware
   /**
    * Determines the current asset version.
    *
-   * @see https://jaulz.github.io/navigare/asset-versioning
+   * @see https://navigarejs.github.io/framework/asset-versioning
    *
    * @param  \Illuminate\Http\Request  $request
    * @return string|null
@@ -89,7 +89,7 @@ class Middleware
    * Defines the props that are shared by default.
    * It is used by Inertia but is not recommended for Navigare.
    *
-   * @see https://jaulz.github.io/navigare/inertia
+   * @see https://navigarejs.github.io/framework/inertia
    * @deprecated
    * @param  \Illuminate\Http\Request  $request
    * @return array
@@ -102,7 +102,7 @@ class Middleware
   /**
    * Extend response, i.e. with shared fragments.
    *
-   * @see https://jaulz.github.io/navigare/extend-response
+   * @see https://navigarejs.github.io/framework/extend-response
    * @param  \Illuminate\Http\Request  $request
    * @param  \Jaulz\Navigare\Response  $response
    * @return void
