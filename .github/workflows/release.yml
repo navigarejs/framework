@@ -12,11 +12,11 @@ jobs:
     strategy:
       matrix:
         package:
-          - '@navigare/core'
-          - '@navigare/ssr'
-          - '@navigare/vite'
-          - '@navigare/vue3'
-          - '@navigare/laravel'
+          - laravel
+          - core
+          - ssr
+          - vite
+          - vue3
       fail-fast: false
       max-parallel: 1
 
@@ -28,7 +28,7 @@ jobs:
           ref: 'main'
 
       - name: Get changes
-        uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721
+        uses: dorny/paths-filter@v2.11.1
         id: changes
         with:
           filters: |
@@ -45,4 +45,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DEBUG: 'semantic-release:*'
-        run: yarn workspace ${{ matrix.package }} run release
+        run: yarn workspace @navigare/${{ matrix.package }} run release
