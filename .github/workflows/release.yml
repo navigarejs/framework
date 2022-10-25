@@ -6,8 +6,19 @@ on:
       - main
 
 jobs:
-  all:
+  packages:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        package:
+          - '@navigare/core'
+          - '@navigare/ssr'
+          - '@navigare/vite'
+          - '@navigare/vue3'
+          - '@navigare/laravel'
+      fail-fast: false
+      max-parallel: 1
 
     steps:
       - name: Checkout code
@@ -23,4 +34,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DEBUG: '*'
-        run: yarn workspaces foreach --topological run release
+        run: yarn workspace ${{ matrix.package }} run release
