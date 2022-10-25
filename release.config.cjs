@@ -33,7 +33,7 @@ const createConfiguration = (publishCmd) => {
             'yarn',
             'git add ../../yarn.lock',
             'git add ../../packages/*/package.json',
-            'git add ../../.yarn/versions',
+            'git add ../../.yarn',
             'git commit -m "chore(release): ${nextRelease.version} [skip ci]" -m "${nextRelease.notes}"',
             'git push',
           ].join(' && '),
