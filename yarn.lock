@@ -1856,11 +1856,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/docs@workspace:packages/docs"
   dependencies:
-    "@semantic-release/changelog": ^6.0.1
-    "@semantic-release/git": ^10.0.1
     "@vueuse/core": ^9.3.1
-    semantic-release: ^18.0.0
-    semantic-release-monorepo: ^7.0.5
     vitepress: ^1.0.0-alpha.22
     vue: ^3.2.41
   languageName: unknown
