@@ -21,7 +21,7 @@
     "build": "",
     "dev": "",
     "test": "vendor/bin/pest",
-    "prerelease": "",
+    "prepack": "",
     "release": ""
   }
 }

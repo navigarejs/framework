@@ -36,12 +36,12 @@
   "main": "./build/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "prepare": "chmod 777 ./tests/artisan.js",
+    "prepare": "yarn ../core build && yarn ../ssr build",
     "build": "yarn run clean && tsc -p tsconfig.build.json",
     "clean": "rm -rf types && rm -rf build",
     "dev": "tsc-watch -p tsconfig.build.json",
-    "test": "vitest",
-    "prerelease": "yarn ../core build && yarn ../ssr build && yarn build",
+    "test": "chmod 777 ./tests/artisan.js && vitest",
+    "prepack": "yarn ../core build 1> /dev/null && yarn ../ssr build 1> /dev/null && yarn build 1> /dev/null",
     "release": "yarn semantic-release"
   },
   "devDependencies": {

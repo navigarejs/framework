@@ -3,9 +3,9 @@ name: tests
 on:
   push:
     branches:
-      #      - main
+      - main
       - development
-#  pull_request:
+  pull_request:
 
 jobs:
   core:

@@ -13,7 +13,7 @@ const config = {
         verifyConditionsCmd: '',
         prepareCmd:
           "yarn version ${nextRelease.version} && echo 'version=${nextRelease.version}' >> $GITHUB_OUTPUT",
-        publishCmd: 'yarn prerelease',
+        publishCmd: 'yarn prepack',
       },
     ],
     [
