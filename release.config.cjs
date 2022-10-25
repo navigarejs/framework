@@ -1,14 +1,19 @@
-const createConfiguration = (publishCmd) => {
+const createConfiguration = (publishCmd, plugins = []) => {
   /**
    * @type {import('semantic-release').Options}
    */
   const configuration = {
     extends: 'semantic-release-monorepo',
+
     branches: ['main'],
+
     plugins: [
       '@semantic-release/commit-analyzer',
+
       '@semantic-release/release-notes-generator',
+
       '@semantic-release/changelog',
+
       [
         '@semantic-release/exec',
         {
@@ -20,12 +25,14 @@ const createConfiguration = (publishCmd) => {
           publishCmd,
         },
       ],
+
       [
         '@semantic-release/github',
         {
           assets: [],
         },
       ],
+
       [
         '@semantic-release/exec',
         {
@@ -39,6 +46,8 @@ const createConfiguration = (publishCmd) => {
           ].join(' && '),
         },
       ],
+
+      ...plugins,
     ],
   }
 
