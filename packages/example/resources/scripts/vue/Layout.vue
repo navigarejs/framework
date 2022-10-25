@@ -71,8 +71,6 @@ defineProps({
 })
 
 const router = useRouter()
-
-const a = ssrContextKey
 </script>
 
 <style>

@@ -10,6 +10,12 @@
   "contributors": [
     "Julian Hundeloh <github@julian.fyi>"
   ],
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/jaulz"
+    }
+  ],
   "homepage": "https://jaulz.github.io/navigare/",
   "repository": {
     "type": "git",
