@@ -29,8 +29,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Build
-        run: yarn workspace ${{ matrix.package }} run build
+      - name: Pre-release
+        run: yarn workspace ${{ matrix.package }} run prerelease
 
       - name: Release
         env:

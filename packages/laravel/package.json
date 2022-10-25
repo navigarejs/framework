@@ -18,9 +18,8 @@
   },
   "scripts": {
     "prepare": "composer install",
-    "build": "yarn run clean && microbundle --compress false",
-    "clean": "rm -rf types && rm -rf build",
-    "dev": "yarn build watch",
+    "build": "",
+    "dev": "",
     "test": "vendor/bin/pest",
     "release": ""
   }

@@ -38,6 +38,7 @@
     "clean": "rm -rf types && rm -rf build",
     "dev": "yarn build watch",
     "test": "vitest",
+    "prerelease": "yarn --cwd ../core build && yarn build",
     "release": "yarn semantic-release"
   },
   "devDependencies": {
