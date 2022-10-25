@@ -71,7 +71,7 @@
     "vue": "^3.2.41"
   },
   "dependencies": {
-    "@navigare/core": "^0.0.1",
+    "@navigare/core": "^1.0.4",
     "@vueuse/head": "^0.9.8",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isarray": "^4.0.0",
