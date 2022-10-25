@@ -39,25 +39,10 @@ jobs:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: yarn workspace @navigare/docs run build
 
-      - name: Debug
-        run: git status
-
-      - name: Debug
-        run: ls packages
-
-      - name: Debug
-        run: ls packages/docs
-
-      - name: Debug
-        run: ls packages/docs/.vitepress
-
-      - name: Debug
-        run: ls packages/docs/.vitepress/dist
-
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v1
         with:
-          path: './packages/docs/.vitepress/dist'
+          path: packages/docs/src/.vitepress/dist/
 
       - name: Deploy to GitHub Pages
         id: deployment
