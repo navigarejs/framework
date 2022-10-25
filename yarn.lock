@@ -2084,33 +2084,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/vite@npm:^1.0.3":
-  version: 1.0.9
-  resolution: "@navigare/vite@npm:1.0.9"
-  dependencies:
-    "@babel/generator": ^7.19.3
-    "@babel/parser": ^7.19.3
-    "@babel/template": ^7.18.10
-    "@babel/traverse": ^7.19.3
-    "@babel/types": ^7.19.3
-    "@types/lodash.isarray": ^4.0.7
-    "@types/lodash.isobject": ^3.0.7
-    "@types/lodash.isstring": ^4.0.7
-    chalk: ^4.0.0
-    debug: ^4.3.4
-    execa: ^5.0.0
-    lodash.defaultsdeep: ^4.6.1
-    lodash.isarray: ^4.0.0
-    lodash.isobject: ^3.0.2
-    lodash.isstring: ^4.0.1
-  peerDependencies:
-    "@navigare/core": 1.0.1
-    vite: ^3.0.0
-  checksum: 089ae384ff120647b55c92a9a5c9d69cbaad741aa7c3bdd67e62bc6500c299c7c5f34986928c1afcb444b75a17230d71deaffff8da348784d57a3c06fea8a468
-  languageName: node
-  linkType: hard
-
-"@navigare/vite@workspace:packages/vite":
+"@navigare/vite@^1.0.3, @navigare/vite@workspace:packages/vite":
   version: 0.0.0-use.local
   resolution: "@navigare/vite@workspace:packages/vite"
   dependencies:
