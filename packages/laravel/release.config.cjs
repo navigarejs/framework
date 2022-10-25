@@ -15,7 +15,7 @@ const configuration = {
           'git remote add laravel git@github.com:navigarejs/laravel.git',
           'git subtree split --prefix=packages/laravel -b split',
           'git checkout split',
-          'git push --force --upstream laravel split:main',
+          'git push --force --set-upstream laravel split:main',
         ].join(' && '),
       },
     ],
