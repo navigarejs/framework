@@ -21,4 +21,4 @@ const configuration = {
   ],
 }
 
-module.exports = config
+module.exports = configuration
