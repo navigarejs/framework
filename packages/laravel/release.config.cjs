@@ -11,8 +11,10 @@ const config = {
       '@semantic-release/exec',
       {
         verifyConditionsCmd: '',
-        prepareCmd:
-          "yarn version ${nextRelease.version} && echo 'version=${nextRelease.version}' >> $GITHUB_OUTPUT",
+        prepareCmd: [
+          'yarn version ${nextRelease.version}',
+          "echo 'version=${nextRelease.version}' >> $GITHUB_OUTPUT",
+        ].join(' && '),
         publishCmd: 'yarn prepack',
       },
     ],
@@ -23,9 +25,14 @@ const config = {
       },
     ],
     [
-      '@semantic-release/git',
+      '@semantic-release/exec',
       {
-        assets: ['packages/*/package.json', '.yarn/versions/'],
+        prepareCmd: [
+          'git add ../../packages/*/package.json',
+          'git add ../../.yarn/versions',
+          'git commit -m "chore(release): ${nextRelease.version} [skip ci]" -m "${nextRelease.notes}"',
+          'git push',
+        ].join(' && '),
       },
     ],
   ],
