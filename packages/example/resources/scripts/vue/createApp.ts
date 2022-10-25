@@ -1,9 +1,9 @@
 import '../../css/app.css'
-import { createNavigareApp } from '@navigare/vue3'
-import { createApp as createVueApp, h } from 'vue'
-import { Page } from '@navigare/core'
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import Layout from './Layout.vue'
+import { Page } from '@navigare/core'
+import { createNavigareApp } from '@navigare/vue3'
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+import { createApp as createVueApp, h } from 'vue'
 
 export default function createApp(initialPage?: Page) {
   return createNavigareApp({

@@ -1,4 +1,3 @@
-import isArray from 'lodash.isarray'
 import {
   ComponentResolver,
   Page,
@@ -8,15 +7,16 @@ import {
   RouterOptions,
   VisitData,
 } from './types'
-import { stringify, parse } from 'qs'
-import merge from 'lodash.merge'
 import {
   FormDataConvertible,
   RouteMethod,
   QueryStringArrayFormat,
 } from './types'
-import uniq from 'lodash.uniq'
 import castArray from 'lodash.castarray'
+import isArray from 'lodash.isarray'
+import merge from 'lodash.merge'
+import uniq from 'lodash.uniq'
+import { stringify, parse } from 'qs'
 
 export function isSSR(): boolean {
   return typeof window === 'undefined'

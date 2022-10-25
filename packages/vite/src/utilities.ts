@@ -1,7 +1,7 @@
+import { PhpFinderOptions } from './types'
 import c from 'chalk'
 import * as execa from 'execa'
 import { loadEnv } from 'vite'
-import { PhpFinderOptions } from './types'
 
 export function parseUrl(href?: string) {
   if (!href) {

@@ -1,5 +1,4 @@
-import type { PropType } from 'vue'
-import { defineComponent, h } from 'vue'
+import useRouter from './useRouter'
 import {
   shouldInterceptLink,
   RawRouteMethod,
@@ -9,9 +8,10 @@ import {
   RouteName,
   RouteMethod,
 } from '@navigare/core'
-import isFunction from 'lodash.isfunction'
-import useRouter from './useRouter'
 import isArray from 'lodash.isarray'
+import isFunction from 'lodash.isfunction'
+import type { PropType } from 'vue'
+import { defineComponent, h } from 'vue'
 
 const ensureFunction = (func: unknown): (() => void) | undefined => {
   if (!isFunction(func)) {

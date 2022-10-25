@@ -1,8 +1,6 @@
 /**
  * @vitest-environment jsdom
  */
-
-import { describe, expect, it } from 'vitest'
 import {
   Default,
   PartialRoute,
@@ -11,6 +9,7 @@ import {
   RouterLocation,
   Wildcard,
 } from '../src'
+import { describe, expect, it } from 'vitest'
 
 const location: RouterLocation = {
   href: 'https://navigare.test:443/',

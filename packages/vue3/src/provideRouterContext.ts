@@ -1,6 +1,6 @@
-import { DefineComponent, InjectionKey, markRaw, provide, reactive } from 'vue'
 import { ContextOf } from './types'
 import { Router } from '@navigare/core'
+import { DefineComponent, InjectionKey, markRaw, provide, reactive } from 'vue'
 
 export const RouterContext: InjectionKey<{
   router: Router<DefineComponent>

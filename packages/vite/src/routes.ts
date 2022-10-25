@@ -1,10 +1,10 @@
+import { Options, Adapter } from './types'
+import { callArtisan, findPhpPath } from './utilities'
+import { RawRoutes, throwError } from '@navigare/core'
 import makeDebugger from 'debug'
-import fs from 'node:fs'
 import isObject from 'lodash.isobject'
 import isString from 'lodash.isstring'
-import { callArtisan, findPhpPath } from './utilities'
-import { Options, Adapter } from './types'
-import { RawRoutes, throwError } from '@navigare/core'
+import fs from 'node:fs'
 
 const CONFIG_ARTISAN_COMMAND = 'navigare:routes'
 const debug = makeDebugger('navigare:laravel:routes')

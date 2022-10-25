@@ -1,11 +1,18 @@
-import modal from './modal'
-import debounce from 'lodash.debounce'
+import PartialRoute from './PartialRoute'
+import Route from './Route'
 import {
-  default as Axios,
-  AxiosResponse,
-  AxiosResponseHeaders,
-  RawAxiosResponseHeaders,
-} from 'axios'
+  createBeforeEvent,
+  createCancelEvent,
+  createErrorEvent,
+  createExceptionEvent,
+  createFinishEvent,
+  createInvalidEvent,
+  createNavigateEvent,
+  createProgressEvent,
+  createStartEvent,
+  createSuccessEvent,
+} from './events'
+import modal from './modal'
 import {
   ActiveVisit,
   LocationVisit,
@@ -32,18 +39,6 @@ import {
   Event as RouterEvent,
 } from './types'
 import {
-  createBeforeEvent,
-  createCancelEvent,
-  createErrorEvent,
-  createExceptionEvent,
-  createFinishEvent,
-  createInvalidEvent,
-  createNavigateEvent,
-  createProgressEvent,
-  createStartEvent,
-  createSuccessEvent,
-} from './events'
-import {
   isSSR,
   resolveComponents,
   throwError,
@@ -56,11 +51,16 @@ import {
   createEmitter,
   mapRouteMethod,
 } from './utilities'
-import Route from './Route'
+import {
+  default as Axios,
+  AxiosResponse,
+  AxiosResponseHeaders,
+  RawAxiosResponseHeaders,
+} from 'axios'
+import cloneDeep from 'lodash.clonedeep'
+import debounce from 'lodash.debounce'
 import isArray from 'lodash.isarray'
 import uniq from 'lodash.uniq'
-import PartialRoute from './PartialRoute'
-import cloneDeep from 'lodash.clonedeep'
 
 export default class Router<TComponent> {
   protected options: RouterOptions<TComponent>

@@ -1,7 +1,7 @@
-import { it, expect } from 'vitest'
 import { getRoutes } from '../src/routes'
 import { Adapter } from '../src/types'
 import { artisan, fixture } from './utilities'
+import { it, expect } from 'vitest'
 
 it('reads routes from the given option object', async () => {
   const result = await getRoutes(

@@ -1,7 +1,7 @@
-import { inject, reactive } from 'vue'
 import { injectRouterContext } from './injectRouterContext'
 import { PageFragmentContext } from './providePageFragmentContext'
 import { ContextOf } from './types'
+import { inject, reactive } from 'vue'
 
 export function injectPageFragmentContext(): ContextOf<
   typeof PageFragmentContext

@@ -1,11 +1,11 @@
-import { computed, markRaw, reactive, ref } from 'vue'
+import { FormControl, FormErrors, FormOptions } from './types'
 import useRouter from './useRouter'
 import { VisitData, Routable, VisitProgress, getKeys } from '@navigare/core'
-import { FormControl, FormErrors, FormOptions } from './types'
-import isFunction from 'lodash.isfunction'
-import isEqual from 'lodash.isequal'
 import cloneDeep from 'lodash.clonedeep'
 import isArray from 'lodash.isarray'
+import isEqual from 'lodash.isequal'
+import isFunction from 'lodash.isfunction'
+import { computed, markRaw, reactive, ref } from 'vue'
 
 const globalDisabled = ref(false)
 

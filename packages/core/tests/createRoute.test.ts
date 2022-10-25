@@ -1,8 +1,6 @@
 /**
  * @vitest-environment jsdom
  */
-
-import { expect, it } from 'vitest'
 import {
   PartialRoute,
   RawRoute,
@@ -11,6 +9,7 @@ import {
   Wildcard,
 } from '../src'
 import createRoute from '../src/createRoute'
+import { expect, it } from 'vitest'
 
 const rawRoutes: Record<string, RawRoute> = {
   home: {

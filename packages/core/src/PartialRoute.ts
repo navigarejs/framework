@@ -1,4 +1,4 @@
-import isObject from 'lodash.isobject'
+import { Default, Wildcard } from './symbols'
 import {
   RouteMethod,
   RouteParameters,
@@ -9,11 +9,11 @@ import {
   Routable,
 } from './types'
 import { getKeys, isNotNull, mapRouteMethod, throwError } from './utilities'
-import isBoolean from 'lodash.isboolean'
-import isSymbol from 'lodash.issymbol'
 import get from 'lodash.get'
-import { Default, Wildcard } from './symbols'
+import isBoolean from 'lodash.isboolean'
+import isObject from 'lodash.isobject'
 import isString from 'lodash.isstring'
+import isSymbol from 'lodash.issymbol'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default class PartialRoute<TName extends RouteName> {

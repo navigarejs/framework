@@ -1,7 +1,7 @@
-import { it, expect } from 'vitest'
 import { getConfiguration } from '../src/configuration'
 import { Adapter } from '../src/types'
 import { artisan, fixture } from './utilities'
+import { it, expect } from 'vitest'
 
 it('reads configuration from the given option object', async () => {
   const configuration = await getConfiguration(

@@ -1,8 +1,8 @@
-import { RawRoutes, throwError } from '@navigare/core'
-import { Server as SSRServer, serveSSR } from '@navigare/ssr'
-import { loadEnv } from 'vite'
-import { parse } from '@babel/parser'
+import { getConfiguration } from './configuration'
+import { getRoutes, writeTypes } from './routes'
+import { Options, Adapter, Configuration, Plugin } from './types'
 import generate from '@babel/generator'
+import { parse } from '@babel/parser'
 import traverse, { NodePath } from '@babel/traverse'
 import {
   isImportSpecifier,
@@ -22,10 +22,10 @@ import {
   importSpecifier,
   stringLiteral,
 } from '@babel/types'
-import { Options, Adapter, Configuration, Plugin } from './types'
-import { getRoutes, writeTypes } from './routes'
-import { getConfiguration } from './configuration'
+import { RawRoutes, throwError } from '@navigare/core'
+import { Server as SSRServer, serveSSR } from '@navigare/ssr'
 import defaultsDeep from 'lodash.defaultsdeep'
+import { loadEnv } from 'vite'
 
 export default function createNavigarePlugin(options: Options = {}): Plugin {
   defaultsDeep(options, {

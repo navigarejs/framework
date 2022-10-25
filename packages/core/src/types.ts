@@ -1,7 +1,7 @@
-import { AxiosResponse, Canceler, CancelToken } from 'axios'
-import { IsEmptyObject } from 'type-fest'
 import Route from './Route'
 import { Default, Wildcard } from './symbols'
+import { AxiosResponse, Canceler, CancelToken } from 'axios'
+import { IsEmptyObject } from 'type-fest'
 
 // Router
 export type RouterOptions<TComponent> = {

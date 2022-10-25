@@ -1,3 +1,6 @@
+import DefaultLayout from './DefaultLayout'
+import provideRouterContext from './provideRouterContext'
+import { EventListener, Router, RouterOptions } from '@navigare/core'
 import {
   defineComponent,
   h,
@@ -7,9 +10,6 @@ import {
   onMounted,
   onUnmounted,
 } from 'vue'
-import { EventListener, Router, RouterOptions } from '@navigare/core'
-import provideRouterContext from './provideRouterContext'
-import DefaultLayout from './DefaultLayout'
 
 export default defineComponent({
   name: 'NavigareApp',

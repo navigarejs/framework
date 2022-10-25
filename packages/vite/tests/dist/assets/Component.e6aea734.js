@@ -5,6 +5,7 @@ import {
   createTextVNode,
 } from '../../../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js'
 import { route } from '@navigare/core'
+
 defineComponent({
   name: 'Component',
   setup() {

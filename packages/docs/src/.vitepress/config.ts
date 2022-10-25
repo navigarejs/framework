@@ -1,6 +1,6 @@
-import { defineConfig } from 'vitepress'
-import path from 'node:path'
 import fs from 'node:fs'
+import path from 'node:path'
+import { defineConfig } from 'vitepress'
 
 const isCI = !!process.env.CI
 

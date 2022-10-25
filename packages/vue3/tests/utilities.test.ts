@@ -1,6 +1,6 @@
+import { getVNodeText } from '../src/utilities'
 import { describe, expect, it } from 'vitest'
 import { defineComponent, h, render } from 'vue'
-import { getVNodeText } from '../src/utilities'
 
 describe('getVNodeText', () => {
   it('returns text of built-in components', () => {

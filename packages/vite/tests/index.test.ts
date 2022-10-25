@@ -1,11 +1,11 @@
-import path from 'node:path'
-import { describe, expect, it } from 'vitest'
-import { build as vite } from 'vite'
+import navigare from '../src'
+import routes from './__fixtures__/routes.json'
+import { fixture } from './utilities'
 import vue from '@vitejs/plugin-vue'
 import vueJSX from '@vitejs/plugin-vue-jsx'
-import navigare from '../src'
-import { fixture } from './utilities'
-import routes from './__fixtures__/routes.json'
+import path from 'node:path'
+import { build as vite } from 'vite'
+import { describe, expect, it } from 'vitest'
 
 /*
 const copy = (value: string) => {

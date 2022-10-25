@@ -1,7 +1,7 @@
-import { defineComponent, h, PropType } from 'vue'
 import providePageFragmentContext from './providePageFragmentContext'
-import { PageFragment } from '@navigare/core'
 import useRouter from './useRouter'
+import { PageFragment } from '@navigare/core'
+import { defineComponent, h, PropType } from 'vue'
 
 export default defineComponent({
   name: 'PageFragmentContext',

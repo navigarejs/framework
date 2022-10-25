@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
 import { PageFragment, RawRoute, RouterLocation } from '../src'
 import { getInitialFragments, mergeFragments } from '../src/utilities'
+import { describe, expect, it } from 'vitest'
 
 const location: RouterLocation = {
   href: 'https://navigare.test:443/',

@@ -1,7 +1,7 @@
-import { throwError } from '@navigare/core'
-import { inject } from 'vue'
 import { RouterContext } from './provideRouterContext'
 import { ContextOf } from './types'
+import { throwError } from '@navigare/core'
+import { inject } from 'vue'
 
 export function injectRouterContext(): ContextOf<typeof RouterContext> {
   const context = inject(RouterContext)

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-
 import { serve } from './../build/index.esm.js'
 import path from 'node:path'
+
 ;(async () => {
   const input = process.argv[2]
   const finalInput = input ? path.join(process.cwd(), input) : undefined

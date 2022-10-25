@@ -1,6 +1,6 @@
+import { ContextOf, FormControl } from './types'
 import { VisitData } from '@navigare/core'
 import { InjectionKey, markRaw, provide, reactive } from 'vue'
-import { ContextOf, FormControl } from './types'
 
 export const FormContext: InjectionKey<{
   form: FormControl<VisitData>

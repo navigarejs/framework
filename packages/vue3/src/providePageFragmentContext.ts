@@ -1,7 +1,7 @@
-import { computed, InjectionKey, provide, reactive } from 'vue'
 import { ContextOf } from './types'
-import { PageFragment, Page } from '@navigare/core'
 import useRouter from './useRouter'
+import { PageFragment, Page } from '@navigare/core'
+import { computed, InjectionKey, provide, reactive } from 'vue'
 
 export const PageFragmentContext: InjectionKey<{
   fragment: PageFragment | null

@@ -1,5 +1,5 @@
-import { defineComponent, h } from 'vue'
 import PageFragments from './PageFragments'
+import { defineComponent, h } from 'vue'
 
 export default defineComponent({
   name: 'DefaultLayout',

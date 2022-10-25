@@ -1,8 +1,8 @@
+import { FormControl } from './types'
+import useRouter from './useRouter'
 import { RawRouteMethod, VisitData } from '@navigare/core'
 import { computed, PropType, ref } from 'vue'
 import { defineComponent, h } from 'vue'
-import { FormControl } from './types'
-import useRouter from './useRouter'
 
 export default defineComponent({
   name: 'NavigareForm',

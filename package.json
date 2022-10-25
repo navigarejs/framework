@@ -24,7 +24,8 @@
   "scripts": {
     "prepare": "husky install && yarn workspaces foreach run build",
     "dev": "yarn workspaces foreach --interlaced --parallel --verbose run dev",
-    "release": "yarn workspaces foreach --verbose run release"
+    "release": "yarn workspaces foreach --verbose run release",
+    "format": "prettier --write ."
   },
   "packageManager": "yarn@3.2.4",
   "dependencies": {

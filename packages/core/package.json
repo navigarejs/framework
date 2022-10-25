@@ -64,6 +64,7 @@
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "@trivago/prettier-plugin-sort-imports": "^3.4.0",
     "@types/deepmerge": "^2.2.0",
     "@types/lodash.castarray": "^4.4.7",
     "@types/lodash.clonedeep": "^4.5.7",

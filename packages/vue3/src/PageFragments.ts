@@ -1,7 +1,7 @@
-import { computed, VNode, defineComponent, h } from 'vue'
+import PageFragment from './PageFragment'
 import useRouter from './useRouter'
 import isArray from 'lodash.isarray'
-import PageFragment from './PageFragment'
+import { computed, VNode, defineComponent, h } from 'vue'
 
 export default defineComponent({
   name: 'PageFragments',

@@ -1,3 +1,5 @@
+import type App from './App'
+import type plugin from './plugin'
 import {
   ActiveVisit,
   ComponentResolver,
@@ -9,10 +11,8 @@ import {
   VisitOptions,
   VisitProgress,
 } from '@navigare/core'
-import { InjectionKey, App as VueApp, DefineComponent } from 'vue'
-import type App from './App'
-import type plugin from './plugin'
 import { HeadClient } from '@vueuse/head'
+import { InjectionKey, App as VueApp, DefineComponent } from 'vue'
 
 export type App = {
   app: VueApp

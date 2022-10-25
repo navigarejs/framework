@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import { PartialRoute, RawRoute, Route, Wildcard } from '../src'
+import { describe, expect, it } from 'vitest'
 
 const rawRoutes: Record<string, RawRoute> = {
   home: {

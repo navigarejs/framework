@@ -1,7 +1,7 @@
+import { App } from './types'
 import { RenderedApp } from '@navigare/core'
 import { renderToString } from '@vue/server-renderer'
 import { renderHeadToString } from '@vueuse/head'
-import { App } from './types'
 
 export default async function renderApp({
   id,

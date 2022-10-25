@@ -1,4 +1,5 @@
 import { _ as e, c as t, o as a, a as o } from './app.63ff3b23.js'
+
 const u =
     '{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"index.md"}',
   s = {},

@@ -1,3 +1,5 @@
+import { injectRouterContext } from './injectRouterContext'
+import usePageFragment from './usePageFragment'
 import {
   PartialRoute,
   Routable,
@@ -14,8 +16,6 @@ import {
   reactive,
   ref,
 } from 'vue'
-import { injectRouterContext } from './injectRouterContext'
-import usePageFragment from './usePageFragment'
 
 export default function useRouter() {
   const { router } = injectRouterContext()

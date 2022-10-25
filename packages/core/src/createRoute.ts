@@ -1,10 +1,10 @@
-import { ConditionalPick } from 'type-fest'
 import PartialRoute from './PartialRoute'
 import Route from './Route'
 import { Default, Wildcard } from './symbols'
 import { RawRoute, RawRouteParameters, RouteName } from './types'
-import type { IsEmptyObject } from 'type-fest'
 import isFunction from 'lodash.isfunction'
+import { ConditionalPick } from 'type-fest'
+import type { IsEmptyObject } from 'type-fest'
 
 export default function createRoute<
   TName extends RouteName,

@@ -1,4 +1,6 @@
 import AppVue from './App'
+import plugin from './plugin'
+import { Options, App } from './types'
 import {
   Page,
   throwError,
@@ -6,8 +8,6 @@ import {
   isSSR,
   safeParse,
 } from '@navigare/core'
-import { Options, App } from './types'
-import plugin from './plugin'
 import { createHead } from '@vueuse/head'
 
 export default async function createApp({

@@ -1,10 +1,10 @@
-import fs from 'node:fs'
-import makeDebugger from 'debug'
-import { callArtisan, findPhpPath } from './utilities'
 import { Options, Configuration, Adapter } from './types'
+import { callArtisan, findPhpPath } from './utilities'
+import { throwError } from '@navigare/core'
+import makeDebugger from 'debug'
 import isObject from 'lodash.isobject'
 import isString from 'lodash.isstring'
-import { throwError } from '@navigare/core'
+import fs from 'node:fs'
 
 const CONFIG_ARTISAN_COMMAND = 'navigare:config'
 const debug = makeDebugger('navigare:laravel:config')

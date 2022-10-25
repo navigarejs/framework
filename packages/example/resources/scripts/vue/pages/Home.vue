@@ -56,8 +56,8 @@
 </template>
 
 <script lang="ts" setup>
-import { NavigareLink, useRouter, NavigareHead } from '@navigare/vue3'
 import { route } from '@navigare/core'
+import { NavigareLink, useRouter, NavigareHead } from '@navigare/vue3'
 
 defineProps({
   greeting: String,
