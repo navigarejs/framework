@@ -2,6 +2,8 @@ import { defineConfig } from 'vitepress'
 import path from 'node:path'
 import fs from 'node:fs'
 
+const isCI = !!process.env.CI
+
 const color = '#FC5C7D'
 
 const github = 'jaulz/navigare'
@@ -29,6 +31,8 @@ export default async function () {
     appearance: true,
 
     lastUpdated: true,
+
+    base: isCI ? '/navigare' : undefined,
 
     head: [
       ['meta', { property: 'og:type', content: 'website' }],
