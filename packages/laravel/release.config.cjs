@@ -11,7 +11,7 @@ const configuration = {
       '@semantic-release/exec',
       {
         prepareCmd: [
-          'cd ..',
+          'cd ../..',
           'git remote add laravel git@github.com:navigarejs/laravel.git',
           'git subtree split --prefix=packages/laravel -b split',
           'git checkout split',
