@@ -5,6 +5,12 @@ const config = {
   extends: 'semantic-release-monorepo',
   branches: ['main'],
   plugins: [
+    [
+      '@semantic-release/exec',
+      {
+        verifyConditionsCmd: 'git pull',
+      },
+    ],
     '@semantic-release/commit-analyzer',
     '@semantic-release/release-notes-generator',
     '@semantic-release/changelog',

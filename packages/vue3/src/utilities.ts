@@ -2,6 +2,7 @@ import isArray from 'lodash.isarray'
 import isFunction from 'lodash.isfunction'
 import isObject from 'lodash.isobject'
 import { Slot, VNode } from 'vue'
+import castArray from 'lodash.castarray'
 
 function getVNodesText(children: VNode[]): string {
   return children
@@ -25,7 +26,5 @@ export function getVNodeText(
     return ''
   }
 
-  return getVNodesText(
-    isFunction(vnode) ? vnode() : isArray(vnode) ? vnode : [vnode],
-  )
+  return getVNodesText(isFunction(vnode) ? vnode() : castArray(vnode))
 }

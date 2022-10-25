@@ -39,6 +39,7 @@
     "release": "yarn semantic-release"
   },
   "dependencies": {
+    "lodash.castarray": "^4.4.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
@@ -57,6 +58,7 @@
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@types/deepmerge": "^2.2.0",
+    "@types/lodash.castarray": "^4.4.7",
     "@types/lodash.clonedeep": "^4.5.7",
     "@types/lodash.debounce": "^4.0.7",
     "@types/lodash.get": "^4.4.7",

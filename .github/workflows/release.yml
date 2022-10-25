@@ -22,4 +22,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: yarn workspaces foreach run release
+          DEBUG: '*'
+        run: yarn workspaces foreach --topological run release

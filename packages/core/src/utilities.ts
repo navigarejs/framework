@@ -16,6 +16,7 @@ import {
   QueryStringArrayFormat,
 } from './types'
 import uniq from 'lodash.uniq'
+import castArray from 'lodash.castarray'
 
 export function isSSR(): boolean {
   return typeof window === 'undefined'
@@ -195,10 +196,7 @@ export function mergeFragments(
       // Keep accumulating stacked fragments as long as the next one is not empty
       if (isArray(mergedFragment)) {
         if (nextFragment) {
-          mergedFragment = [
-            ...mergedFragment,
-            ...(isArray(nextFragment) ? nextFragment : [nextFragment]),
-          ]
+          mergedFragment = [...mergedFragment, ...castArray(nextFragment)]
         } else {
           mergedFragment = []
         }

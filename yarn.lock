@@ -1808,6 +1808,7 @@ __metadata:
     "@semantic-release/exec": ^6.0.3
     "@semantic-release/git": ^10.0.1
     "@types/deepmerge": ^2.2.0
+    "@types/lodash.castarray": ^4.4.7
     "@types/lodash.clonedeep": ^4.5.7
     "@types/lodash.debounce": ^4.0.7
     "@types/lodash.get": ^4.4.7
@@ -1827,6 +1828,7 @@ __metadata:
     axios: ^1.0.0
     eslint: ^8.24.0
     jsdom: ^20.0.1
+    lodash.castarray: ^4.4.0
     lodash.clonedeep: ^4.5.0
     lodash.debounce: ^4.0.8
     lodash.get: ^4.4.2
@@ -1903,6 +1905,7 @@ __metadata:
     "@types/compression": ^1.7.2
     "@types/debug": ^4.1.7
     "@types/express": ^4.17.14
+    "@types/lodash.castarray": ^4.4.7
     "@types/lodash.isarray": ^4.0.7
     "@types/lodash.isobject": ^3.0.7
     "@types/node": ^18.8.3
@@ -1916,6 +1919,7 @@ __metadata:
     eslint: ^8.24.0
     express: ^4.18.2
     get-port: ^5
+    lodash.castarray: ^4.4.0
     lodash.isarray: ^4.0.0
     lodash.isobject: ^3.0.2
     microbundle: ^0.15.1
@@ -1991,6 +1995,7 @@ __metadata:
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@semantic-release/git": ^10.0.1
+    "@types/lodash.castarray": ^4.4.7
     "@types/lodash.clonedeep": ^4.5.7
     "@types/lodash.isarray": ^4.0.7
     "@types/lodash.isboolean": ^3.0.7
@@ -2005,6 +2010,7 @@ __metadata:
     "@vueuse/head": ^0.9.8
     axios: ^1.0.0
     eslint: ^8.24.0
+    lodash.castarray: ^4.4.0
     lodash.clonedeep: ^4.5.0
     lodash.isarray: ^4.0.0
     lodash.isboolean: ^3.0.3
@@ -2813,6 +2819,15 @@ __metadata:
   version: 7.0.11
   resolution: "@types/json-schema@npm:7.0.11"
   checksum: 527bddfe62db9012fccd7627794bd4c71beb77601861055d87e3ee464f2217c85fca7a4b56ae677478367bbd248dbde13553312b7d4dbc702a2f2bbf60c4018d
+  languageName: node
+  linkType: hard
+
+"@types/lodash.castarray@npm:^4.4.7":
+  version: 4.4.7
+  resolution: "@types/lodash.castarray@npm:4.4.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 4b14bcd1748359df388e45033086252b46712251001a9580487e2d4b12a37228eca1a14d71962b7ef9708876838edc74d0cd3a823b2c584411e943662f89d0fb
   languageName: node
   linkType: hard
 
@@ -8020,6 +8035,13 @@ __metadata:
   version: 4.2.1
   resolution: "lodash.capitalize@npm:4.2.1"
   checksum: d9195f31d48c105206f1099946d8bbc8ab71435bc1c8708296992a31a992bb901baf120fdcadd773098ac96e62a79e6b023ee7d26a2deb0d6c6aada930e6ad0a
+  languageName: node
+  linkType: hard
+
+"lodash.castarray@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "lodash.castarray@npm:4.4.0"
+  checksum: fca8c7047e0ae2738b0b2503fb00157ae0ff6d8a1b716f87ed715b22560e09de438c75b65e01a7e44ceb41c5b31dce2eb576e46db04beb9c699c498e03cbd00f
   languageName: node
   linkType: hard
 
