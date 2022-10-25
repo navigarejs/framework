@@ -1988,6 +1988,7 @@ __metadata:
     lodash.merge: ^4.6.2
     lodash.uniq: ^4.5.0
     microbundle: ^0.15.1
+    prettier: ^2.7.1
     qs: ^6.9.0
     semantic-release: ^19.0.5
     semantic-release-monorepo: ^7.0.5
@@ -1999,6 +2000,30 @@ __metadata:
     qs: ^6.9.0
   languageName: unknown
   linkType: soft
+
+"@navigare/core@npm:^1.0.3, @navigare/core@npm:^1.0.4":
+  version: 1.0.11
+  resolution: "@navigare/core@npm:1.0.11"
+  dependencies:
+    lodash.castarray: ^4.4.0
+    lodash.clonedeep: ^4.5.0
+    lodash.debounce: ^4.0.8
+    lodash.get: ^4.4.2
+    lodash.isarray: ^4.0.0
+    lodash.isboolean: ^3.0.3
+    lodash.isfunction: ^3.0.9
+    lodash.isnumber: ^3.0.3
+    lodash.isobject: ^3.0.2
+    lodash.isstring: ^4.0.1
+    lodash.issymbol: ^4.0.1
+    lodash.merge: ^4.6.2
+    lodash.uniq: ^4.5.0
+  peerDependencies:
+    axios: ^1.0.0
+    qs: ^6.9.0
+  checksum: f56694f4a646626d60f1b3085720dae2f91541739e973b6dd82c2237b3412c8b1fdc2f001b6bb344b65903e2d67f19aebf70f13ef95d491f6efa0f6e473ce186
+  languageName: node
+  linkType: hard
 
 "@navigare/docs@workspace:packages/docs":
   version: 0.0.0-use.local
@@ -2014,10 +2039,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/example@workspace:packages/example"
   dependencies:
-    "@navigare/core": 1.0.1
-    "@navigare/ssr": 1.0.1
-    "@navigare/vite": 1.0.1
-    "@navigare/vue3": 1.0.1
+    "@navigare/core": ^1.0.3
+    "@navigare/ssr": ^1.0.3
+    "@navigare/vite": ^1.0.3
+    "@navigare/vue3": ^1.0.3
     "@prettier/plugin-php": ^0.19.1
     "@vitejs/plugin-vue": ^3.1.2
     autoprefixer: ^10.4.12
@@ -2070,6 +2095,7 @@ __metadata:
     lodash.isarray: ^4.0.0
     lodash.isobject: ^3.0.2
     microbundle: ^0.15.1
+    prettier: ^2.7.1
     semantic-release: ^19.0.5
     semantic-release-monorepo: ^7.0.5
     tsc-watch: ^5.0.3
@@ -2084,7 +2110,56 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/vite@1.0.1, @navigare/vite@workspace:packages/vite":
+"@navigare/ssr@npm:^1.0.3":
+  version: 1.0.10
+  resolution: "@navigare/ssr@npm:1.0.10"
+  dependencies:
+    "@types/lodash.isarray": ^4.0.7
+    body-parser: ^1.20.1
+    chalk: ^4.0.0
+    compression: ^1.7.4
+    debug: ^4.3.4
+    express: ^4.18.2
+    get-port: ^5
+    lodash.castarray: ^4.4.0
+    lodash.isarray: ^4.0.0
+    lodash.isobject: ^3.0.2
+  peerDependencies:
+    "@navigare/core": 1.0.1
+    vite: ^3.0.0
+  bin:
+    navigare: ./bin/navigare.js
+  checksum: 94b48fa50cd453d4e4a018c7e471e6d5dcbaa473b71126bf5424932f64615f091734bf2a51d14b1ac752e69e54010da0285b1252d672f1ace19bc3b6e3ad5018
+  languageName: node
+  linkType: hard
+
+"@navigare/vite@npm:^1.0.3":
+  version: 1.0.9
+  resolution: "@navigare/vite@npm:1.0.9"
+  dependencies:
+    "@babel/generator": ^7.19.3
+    "@babel/parser": ^7.19.3
+    "@babel/template": ^7.18.10
+    "@babel/traverse": ^7.19.3
+    "@babel/types": ^7.19.3
+    "@types/lodash.isarray": ^4.0.7
+    "@types/lodash.isobject": ^3.0.7
+    "@types/lodash.isstring": ^4.0.7
+    chalk: ^4.0.0
+    debug: ^4.3.4
+    execa: ^5.0.0
+    lodash.defaultsdeep: ^4.6.1
+    lodash.isarray: ^4.0.0
+    lodash.isobject: ^3.0.2
+    lodash.isstring: ^4.0.1
+  peerDependencies:
+    "@navigare/core": 1.0.1
+    vite: ^3.0.0
+  checksum: 089ae384ff120647b55c92a9a5c9d69cbaad741aa7c3bdd67e62bc6500c299c7c5f34986928c1afcb444b75a17230d71deaffff8da348784d57a3c06fea8a468
+  languageName: node
+  linkType: hard
+
+"@navigare/vite@workspace:packages/vite":
   version: 0.0.0-use.local
   resolution: "@navigare/vite@workspace:packages/vite"
   dependencies:
@@ -2121,6 +2196,7 @@ __metadata:
     lodash.isarray: ^4.0.0
     lodash.isobject: ^3.0.2
     lodash.isstring: ^4.0.1
+    prettier: ^2.7.1
     react: ^18.2.0
     rollup: ^2.79.1
     semantic-release: ^19.0.5
@@ -2129,17 +2205,47 @@ __metadata:
     typescript: ^4.8.4
     vite: ^3.0.0
     vitest: ^0.24.3
+    vue: ^3.2.41
   peerDependencies:
     "@navigare/core": 1.0.1
     vite: ^3.0.0
   languageName: unknown
   linkType: soft
 
-"@navigare/vue3@1.0.1, @navigare/vue3@workspace:packages/vue3":
+"@navigare/vue3@npm:^1.0.3":
+  version: 1.0.9
+  resolution: "@navigare/vue3@npm:1.0.9"
+  dependencies:
+    "@navigare/core": ^1.0.4
+    "@vueuse/head": ^0.9.8
+    lodash.castarray: ^4.4.0
+    lodash.clonedeep: ^4.5.0
+    lodash.isarray: ^4.0.0
+    lodash.isboolean: ^3.0.3
+    lodash.isequal: ^4.5.0
+    lodash.isfunction: ^3.0.9
+    lodash.isnumber: ^3.0.3
+    lodash.isobject: ^3.0.2
+    lodash.isstring: ^4.0.1
+    lodash.issymbol: ^4.0.1
+  peerDependencies:
+    "@navigare/core": ^1.0.3
+    "@vue/compiler-core": ^3.2.41
+    "@vue/compiler-dom": ^3.2.41
+    "@vue/reactivity": ^3.2.41
+    "@vue/runtime-core": ^3.2.41
+    "@vue/runtime-dom": ^3.2.41
+    "@vue/server-renderer": ^3.2.41
+    vue: ^3.2.41
+  checksum: 2300941c9cddeb18be1e922ccf052b728081a984d5a2cc76589cf1db473bf02187a1b3846114db02c0ddf3f082c9253aa47da302627db23f6adcf338d5b2fc9b
+  languageName: node
+  linkType: hard
+
+"@navigare/vue3@workspace:packages/vue3":
   version: 0.0.0-use.local
   resolution: "@navigare/vue3@workspace:packages/vue3"
   dependencies:
-    "@navigare/core": 1.0.1
+    "@navigare/core": ^1.0.4
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@semantic-release/git": ^10.0.1
@@ -2170,6 +2276,7 @@ __metadata:
     lodash.isstring: ^4.0.1
     lodash.issymbol: ^4.0.1
     microbundle: ^0.15.1
+    prettier: ^2.7.1
     qs: ^6.11.0
     semantic-release: ^19.0.5
     semantic-release-monorepo: ^7.0.5
@@ -2178,12 +2285,6 @@ __metadata:
     vue: ^3.2.41
   peerDependencies:
     "@navigare/core": ^1.0.3
-    "@vue/compiler-core": ^3.2.41
-    "@vue/compiler-dom": ^3.2.41
-    "@vue/reactivity": ^3.2.41
-    "@vue/runtime-core": ^3.2.41
-    "@vue/runtime-dom": ^3.2.41
-    "@vue/server-renderer": ^3.2.41
     vue: ^3.2.41
   languageName: unknown
   linkType: soft

@@ -88,6 +88,7 @@
     "jsdom": "^20.0.1",
     "lodash.isboolean": "^3.0.3",
     "microbundle": "^0.15.1",
+    "prettier": "^2.7.1",
     "qs": "^6.9.0",
     "semantic-release": "^19.0.5",
     "semantic-release-monorepo": "^7.0.5",
