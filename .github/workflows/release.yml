@@ -33,6 +33,7 @@ jobs:
         with:
           filters: |
             package:
+              - 'yarn.lock'
               - 'packages/${{ matrix.package }}/**'
 
       - name: Install dependencies
