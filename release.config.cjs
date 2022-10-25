@@ -31,6 +31,7 @@ const createConfiguration = (publishCmd) => {
         {
           prepareCmd: [
             'yarn',
+            'git add ../../yarn.lock',
             'git add ../../packages/*/yarn.lock',
             'git add ../../packages/*/package.json',
             'git add ../../.yarn/versions',

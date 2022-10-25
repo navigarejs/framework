@@ -1945,7 +1945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navigare/core@1.0.1, @navigare/core@workspace:packages/core":
+"@navigare/core@1.0.12, @navigare/core@^1.0.3, @navigare/core@^1.0.4, @navigare/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@navigare/core@workspace:packages/core"
   dependencies:
@@ -2000,30 +2000,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/core@npm:^1.0.3, @navigare/core@npm:^1.0.4":
-  version: 1.0.11
-  resolution: "@navigare/core@npm:1.0.11"
-  dependencies:
-    lodash.castarray: ^4.4.0
-    lodash.clonedeep: ^4.5.0
-    lodash.debounce: ^4.0.8
-    lodash.get: ^4.4.2
-    lodash.isarray: ^4.0.0
-    lodash.isboolean: ^3.0.3
-    lodash.isfunction: ^3.0.9
-    lodash.isnumber: ^3.0.3
-    lodash.isobject: ^3.0.2
-    lodash.isstring: ^4.0.1
-    lodash.issymbol: ^4.0.1
-    lodash.merge: ^4.6.2
-    lodash.uniq: ^4.5.0
-  peerDependencies:
-    axios: ^1.0.0
-    qs: ^6.9.0
-  checksum: f56694f4a646626d60f1b3085720dae2f91541739e973b6dd82c2237b3412c8b1fdc2f001b6bb344b65903e2d67f19aebf70f13ef95d491f6efa0f6e473ce186
-  languageName: node
-  linkType: hard
-
 "@navigare/docs@workspace:packages/docs":
   version: 0.0.0-use.local
   resolution: "@navigare/docs@workspace:packages/docs"
@@ -2067,7 +2043,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/ssr@workspace:packages/ssr"
   dependencies:
-    "@navigare/core": 1.0.1
+    "@navigare/core": 1.0.12
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
@@ -2101,7 +2077,7 @@ __metadata:
     vite: ^3.0.0
     vitest: ^0.24.3
   peerDependencies:
-    "@navigare/core": 1.0.1
+    "@navigare/core": 1.0.12
     vite: ^3.0.0
   bin:
     navigare: ./bin/navigare.js
@@ -2166,7 +2142,7 @@ __metadata:
     "@babel/template": ^7.18.10
     "@babel/traverse": ^7.19.3
     "@babel/types": ^7.19.3
-    "@navigare/core": 1.0.1
+    "@navigare/core": 1.0.12
     "@navigare/ssr": 1.0.1
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
@@ -2204,7 +2180,7 @@ __metadata:
     vitest: ^0.24.3
     vue: ^3.2.41
   peerDependencies:
-    "@navigare/core": 1.0.1
+    "@navigare/core": 1.0.12
     vite: ^3.0.0
   languageName: unknown
   linkType: soft
