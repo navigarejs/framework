@@ -28,10 +28,10 @@
     "release": ""
   },
   "devDependencies": {
-    "vitepress": "^1.0.0-alpha.22",
+    "vitepress": "^1.0.0-draft.8",
     "vue": "^3.2.41"
   },
   "dependencies": {
-    "@vueuse/core": "^9.3.1"
+    "@vueuse/core": "^9.4.0"
   }
 }
