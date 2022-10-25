@@ -1951,7 +1951,6 @@ __metadata:
   dependencies:
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
-    "@semantic-release/git": ^10.0.1
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
     "@types/deepmerge": ^2.2.0
     "@types/lodash.castarray": ^4.4.7
@@ -2071,7 +2070,6 @@ __metadata:
     "@navigare/core": 1.0.1
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
-    "@semantic-release/git": ^10.0.1
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
     "@types/body-parser": ^1.19.2
     "@types/compression": ^1.7.2
@@ -2172,7 +2170,6 @@ __metadata:
     "@navigare/ssr": 1.0.1
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
-    "@semantic-release/git": ^10.0.1
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
     "@types/babel__generator": ^7.6.4
     "@types/babel__template": ^7.4.1
@@ -2248,7 +2245,6 @@ __metadata:
     "@navigare/core": ^1.0.4
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
-    "@semantic-release/git": ^10.0.1
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
     "@types/lodash.castarray": ^4.4.7
     "@types/lodash.clonedeep": ^4.5.7
@@ -2822,24 +2818,6 @@ __metadata:
   peerDependencies:
     semantic-release: ">=18.0.0"
   checksum: c6ad2f02ff01a4709c4914f560d0343efea9afe993c733ff971da8bf89604a1460d87b26a1a2ace5992c5ace8e8d384cf314504e0c4b623fc8433e8e8d9e2fe0
-  languageName: node
-  linkType: hard
-
-"@semantic-release/git@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "@semantic-release/git@npm:10.0.1"
-  dependencies:
-    "@semantic-release/error": ^3.0.0
-    aggregate-error: ^3.0.0
-    debug: ^4.0.0
-    dir-glob: ^3.0.0
-    execa: ^5.0.0
-    lodash: ^4.17.4
-    micromatch: ^4.0.0
-    p-reduce: ^2.0.0
-  peerDependencies:
-    semantic-release: ">=18.0.0"
-  checksum: b0a346acaf13d1bbd8d8d895bb0dee025dd6d4742769b5dd875018fff8fcfe0f5414299dbe1ed026e53b8f8b04eeceef49a3d56c5f6506016c656df95d2ced04
   languageName: node
   linkType: hard
 
@@ -8738,7 +8716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromatch@npm:^4.0.0, micromatch@npm:^4.0.2, micromatch@npm:^4.0.4":
+"micromatch@npm:^4.0.2, micromatch@npm:^4.0.4":
   version: 4.0.5
   resolution: "micromatch@npm:4.0.5"
   dependencies:
