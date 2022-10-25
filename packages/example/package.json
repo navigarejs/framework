@@ -13,7 +13,7 @@
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@navigare/core": "^1.0.14",
+    "@navigare/core": "^1.0.15",
     "@navigare/vite": "^1.0.11",
     "@navigare/vue3": "^1.0.10",
     "@prettier/plugin-php": "^0.19.1",
