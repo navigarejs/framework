@@ -20,7 +20,7 @@ export default defineComponent({
       required: true,
     },
 
-    layoutComponent: {
+    Layout: {
       type: Object as PropType<DefineComponent>,
       required: false,
       default: () => DefaultLayout,
@@ -51,7 +51,7 @@ export default defineComponent({
     provideRouterContext(router)
 
     return () => {
-      return h(props.layoutComponent, {
+      return h(props.Layout, {
         layout: layout.value,
       })
     }
