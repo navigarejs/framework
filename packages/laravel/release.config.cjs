@@ -23,7 +23,7 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
         -X POST
         -H "Accept: application/vnd.github+json"
         -H "Authorization: Bearer ${process.env.LARAVEL_GIT_TOKEN}"
-        -d '{ "event_type": "synchronize", "client_payload": { "version": "\${nextRelease.version}" } }'
+        -d '{ "event_type": "synchronize", "client_payload": {} }'
         --fail-with-body
         https://api.github.com/repos/navigarejs/laravel/dispatches
       `),

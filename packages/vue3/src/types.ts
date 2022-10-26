@@ -28,7 +28,7 @@ export type Options = {
   title?: (title: string) => string
   initialPage?: Page
   rawRoutes?: RawRoutes
-  layoutComponent?: DefineComponent
+  Layout?: DefineComponent
   fragments?: RouterOptions<DefineComponent>['fragments']
 }
 

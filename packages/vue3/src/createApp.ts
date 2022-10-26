@@ -17,7 +17,7 @@ export default async function createApp({
   // title,
   initialPage,
   rawRoutes,
-  layoutComponent,
+  Layout,
   fragments,
 }: Options): Promise<App> {
   const initialPageWithFallback =
@@ -47,7 +47,7 @@ export default async function createApp({
         rawRoutes,
         fragments,
       },
-      layoutComponent,
+      Layout,
     },
     plugin,
   })

@@ -25,7 +25,7 @@ export default function createApp(initialPage?: Page) {
 
     initialPage,
 
-    layoutComponent: Layout,
+    Layout,
 
     fragments: {
       modal: {
