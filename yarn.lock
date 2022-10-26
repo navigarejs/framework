@@ -2032,7 +2032,7 @@ __metadata:
   resolution: "@navigare/example@workspace:packages/example"
   dependencies:
     "@navigare/core": ^1.0.17
-    "@navigare/ssr": ^1.0.13
+    "@navigare/ssr": ^1.0.14
     "@navigare/vite": ^1.0.12
     "@navigare/vue3": ^1.0.13
     "@prettier/plugin-php": ^0.19.1
@@ -2062,7 +2062,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/ssr@1.0.13, @navigare/ssr@^1.0.13, @navigare/ssr@workspace:packages/ssr":
+"@navigare/ssr@1.0.14, @navigare/ssr@^1.0.14, @navigare/ssr@workspace:packages/ssr":
   version: 0.0.0-use.local
   resolution: "@navigare/ssr@workspace:packages/ssr"
   dependencies:
@@ -2120,7 +2120,7 @@ __metadata:
     "@babel/traverse": ^7.19.3
     "@babel/types": ^7.19.3
     "@navigare/core": 1.0.15
-    "@navigare/ssr": 1.0.13
+    "@navigare/ssr": 1.0.14
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
