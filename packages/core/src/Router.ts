@@ -50,6 +50,7 @@ import {
   hasFiles,
   createEmitter,
   mapRouteMethod,
+  safe,
 } from './utilities'
 import {
   default as Axios,
@@ -60,6 +61,7 @@ import {
 import cloneDeep from 'lodash.clonedeep'
 import debounce from 'lodash.debounce'
 import isArray from 'lodash.isarray'
+import isObject from 'lodash.isobject'
 import uniq from 'lodash.uniq'
 
 export default class Router<TComponent> {
@@ -937,22 +939,40 @@ export default class Router<TComponent> {
     data: VisitData
   } {
     let finalHref =
-      routable instanceof Route
-        ? routable.getHref(
-            this.location,
-            data instanceof FormData ? {} : data,
-            {
-              queryStringArrayFormat: options.queryStringArrayFormat,
-            },
-          )
-        : routable instanceof URL
+      routable instanceof URL
         ? routable.href
+        : routable instanceof Route || isObject(routable)
+        ? safe(() => {
+            return routable.getHref(
+              this.location,
+              data instanceof FormData ? {} : data,
+              {
+                queryStringArrayFormat: options.queryStringArrayFormat,
+              },
+            )
+          })
         : routable
     let finalData = data
     const method =
       routable instanceof Route
         ? routable.method
         : mapRouteMethod(options.method) ?? RouteMethod.GET
+
+    // Check if the route was resolved
+    if (!finalHref) {
+      throwError(
+        `the routable "${JSON.stringify(
+          routable,
+        )}" could not be resolved properly`,
+      )
+    }
+
+    // Check if there is potentially an issue with the setup
+    if (isObject(routable) && !(routable instanceof Route)) {
+      console.warn(
+        `It seems that there is an issue with Navigare. Maybe you have two different versions of \`@navigare/core\` installed?`,
+      )
+    }
 
     if (
       (hasFiles(data) || options.forceFormData) &&

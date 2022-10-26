@@ -1,9 +1,11 @@
 import createApp from './createApp'
-import { Page } from '@navigare/core'
+import { RenderApp } from '@navigare/ssr'
 import { renderNavigareApp } from '@navigare/vue3'
 
-export default async function ssr(initialPage: Page) {
-  const app = await createApp(initialPage)
+const renderApp: RenderApp = async (page, manifest) => {
+  const app = await createApp(page)
 
-  return await renderNavigareApp(app)
+  return await renderNavigareApp(app, manifest)
 }
+
+export default renderApp

@@ -1,5 +1,6 @@
+import { Page, RenderedApp } from '@navigare/core'
 import { Express } from 'express-serve-static-core'
-import { ViteDevServer, LogOptions, LogErrorOptions } from 'vite'
+import { ViteDevServer, LogOptions, LogErrorOptions, Manifest } from 'vite'
 
 export interface Server {
   app: Express
@@ -10,6 +11,7 @@ export interface Server {
 
 export interface Options {
   input: string
+  manifest: string
   host: string
   port: number
   logger: Logger
@@ -26,3 +28,9 @@ export interface Logger {
   warnOnce(msg: string, options?: LogOptions): void
   error(msg: string, options?: LogErrorOptions): void
 }
+
+export type RenderApp = (
+  page: Page,
+  manifest: Manifest,
+  vite?: ViteDevServer,
+) => Promise<RenderedApp>

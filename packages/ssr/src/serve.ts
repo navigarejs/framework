@@ -1,4 +1,6 @@
+import { getCoreVersion, getVersion } from './internals'
 import { Options, Server } from './types'
+import { renderHead } from './utilities'
 import { Page, RenderedApp, safeParse, throwError } from '@navigare/core'
 import bodyParser from 'body-parser'
 import chalk from 'chalk'
@@ -8,26 +10,10 @@ import fs from 'fs'
 import getPort from 'get-port'
 import isArray from 'lodash.isarray'
 import isObject from 'lodash.isobject'
-import { createRequire } from 'module'
-import path from 'path'
-import { createServer, ViteDevServer } from 'vite'
+import { createServer, Manifest, ViteDevServer } from 'vite'
 
 // const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD
 const isProduction = process.env.NODE_ENV === 'production'
-
-// "require" is not available in modules anymore so we use this workaround
-const require = createRequire(import.meta.url)
-
-const pkg = safeParse(
-  fs.readFileSync(path.join(__dirname, './../package.json'), 'utf-8'),
-) as { version: string }
-
-const pluginPkg = safeParse(
-  fs.readFileSync(
-    path.join(require.resolve('@navigare/core'), './../../package.json'),
-    'utf-8',
-  ),
-) as { version: string }
 
 export default async function (
   options: Partial<Options> = {
@@ -36,6 +22,7 @@ export default async function (
 ): Promise<Server> {
   const {
     input,
+    manifest,
     logger,
     host = '0.0.0.0',
     port = 13714,
@@ -143,26 +130,44 @@ export default async function (
     `)
   })
   const render = async (page: Page | null): Promise<RenderedApp> => {
-    const finalInput = input || vite?.config.build.rollupOptions.input
-    const firstInput = isArray(finalInput)
-      ? finalInput[0]
-      : isObject(finalInput)
-      ? finalInput[Object.keys(finalInput)[0]]
-      : finalInput
+    const viteInput = vite?.config.build.rollupOptions.input
+    const finalViteInput = isArray(viteInput)
+      ? viteInput[0]
+      : isObject(viteInput)
+      ? viteInput[Object.keys(viteInput)[0]]
+      : viteInput
 
-    if (!firstInput) {
-      throwError('no SSR input file was specified')
+    /*// Try to fallback to manifest
+      if (!manifest) {
+        let viteManifest = vite?.config.build.manifest
+        if (viteManifest === true) {
+            viteManifest = path.resolve(vite?.config.build.outDir ?? '', 'manifest.json')
+        }
+        
+        if (viteManifest && fs.existsSync(viteManifest)) {
+          throwError(`manifest file "${input}" does not exist`)
+        }
+      }*/
+
+    if (!input && !finalViteInput) {
+      throwError('no input file was specified')
     }
 
-    if (!fs.existsSync(firstInput)) {
-      throwError(`SSR input file "${firstInput}" does not exist`)
+    if (input && !fs.existsSync(input)) {
+      throwError(`input file "${input}" does not exist`)
+    }
+
+    if (manifest && !fs.existsSync(manifest)) {
+      throwError(`manifest file "${manifest}" does not exist`)
     }
 
     logger?.info(`${chalk.yellow(`→ ${page?.location.href || '(empty)'}`)}`)
 
     // Prepare empty response that will be used in case of errors or empty requests
+    const modules = new Set<string>()
     const emptyResponse = {
       id,
+      modules,
       htmlAttrs,
       headTags,
       bodyAttrs,
@@ -186,20 +191,48 @@ export default async function (
 
     // Return rendered page
     try {
-      const { default: ssr } = (
-        isProduction
+      const loadedInput = (
+        input
           ? // @ts-ignore
-            (await import(firstInput)).default
-          : await vite!.ssrLoadModule(firstInput, {
+            (await import(input)).default
+          : await vite!.ssrLoadModule(finalViteInput!, {
               fixStacktrace: true,
             })
       ) as any
-      const manifest = isProduction
-        ? {} // await import('../public/js/ssr-manifest.json')
-        : {}
+      const loadedManifest: Manifest | null = manifest
+        ? safeParse<Manifest>(await fs.promises.readFile(manifest, 'utf-8'))
+        : /*new Proxy(
+            {},
+            {
+              get(_target, _id: string): ManifestChunk | undefined {
+                const module = vite?.moduleGraph.getModuleById(path.join(vite?.config.root || '', id))
+                const hmrPort = Number(vite?.config.server.hmr?.port)
+                
+                if (!module) {
+                  return undefined
+                }
 
-      // Try to render
-      const renderedPage = await ssr(page, manifest, vite)
+                return {
+                  file: module.url,
+                }
+
+                return undefined
+              },
+            },
+          )*/ null
+
+      // Render page
+      const renderedPage = await loadedInput.default(
+        page,
+        loadedManifest || {},
+        vite,
+      )
+
+      // Render head
+      const renderedHead = renderHead(
+        renderedPage.modules,
+        loadedManifest || {},
+      )
 
       // Log how long it took to render the page
       logger?.info(
@@ -208,8 +241,9 @@ export default async function (
 
       return {
         id,
+        modules: renderedPage.modules || modules,
         htmlAttrs: renderedPage.htmlAttrs || htmlAttrs,
-        headTags: renderedPage.headTags || headTags,
+        headTags: `${renderedPage.headTags || headTags}${renderedHead}`,
         bodyAttrs: renderedPage.bodyAttrs || bodyAttrs,
         bodyTags: renderedPage.bodyTags || bodyTags,
         appHTML: renderedPage.appHTML || '',
@@ -245,14 +279,14 @@ export default async function (
           printUrls() {
             logger?.info(
               `\n  ${chalk.magenta(
-                `${chalk.bold('NAVIGARE')} v${
-                  pkg.version
-                }  plugin v${chalk.bold(pluginPkg.version)}`,
+                `${chalk.bold('NAVIGARE')} v${getVersion()}  core v${chalk.bold(
+                  getCoreVersion(),
+                )}`,
               )}\n`,
             )
             logger?.info(
               `  ${chalk.magenta('➜')}  ${chalk.bold('SSR')}: ${chalk.cyan(
-                `http://${host}:${port}`,
+                `http://${host}:${finalPort}`,
               )}`,
             )
           },

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "navigare bootstrap/ssr/ssr.mjs",
+    "start": "navigare serve --manifest bootstrap/ssr/manifest.json bootstrap/ssr/ssr.mjs",
     "dev": "vite",
     "build": "vite build && vite build --ssr"
   },

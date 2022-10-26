@@ -394,6 +394,7 @@ export enum QueryStringArrayFormat {
 // Rendered
 export interface RenderedApp {
   id: string
+  modules: Set<string>
   headTags: string
   htmlAttrs: string
   bodyAttrs: string

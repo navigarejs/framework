@@ -1938,7 +1938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navigare/core@^1.0.15, @navigare/core@^1.0.16, @navigare/core@workspace:packages/core":
+"@navigare/core@1.0.16, @navigare/core@^1.0.15, @navigare/core@^1.0.16, @navigare/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@navigare/core@workspace:packages/core"
   dependencies:
@@ -2066,7 +2066,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/ssr@workspace:packages/ssr"
   dependencies:
-    "@navigare/core": 1.0.15
+    "@navigare/core": 1.0.16
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
@@ -2077,12 +2077,14 @@ __metadata:
     "@types/lodash.castarray": ^4.4.7
     "@types/lodash.isarray": ^4.0.7
     "@types/lodash.isobject": ^3.0.7
+    "@types/lodash.isstring": ^4.0.7
     "@types/node": ^18.11.5
     "@types/semantic-release": ^17.2.4
     "@typescript-eslint/eslint-plugin": ^5.41.0
     "@typescript-eslint/parser": ^5.41.0
     body-parser: ^1.20.1
     chalk: ^4.1.2
+    commander: ^9.4.1
     compression: ^1.7.4
     debug: ^4.3.4
     eslint: ^8.26.0
@@ -2091,6 +2093,7 @@ __metadata:
     lodash.castarray: ^4.4.0
     lodash.isarray: ^4.0.0
     lodash.isobject: ^3.0.2
+    lodash.isstring: ^4.0.1
     microbundle: ^0.15.1
     prettier: ^2.7.1
     semantic-release: ^19.0.5
@@ -4808,6 +4811,13 @@ __metadata:
   version: 7.2.0
   resolution: "commander@npm:7.2.0"
   checksum: 53501cbeee61d5157546c0bef0fedb6cdfc763a882136284bed9a07225f09a14b82d2a84e7637edfd1a679fb35ed9502fd58ef1d091e6287f60d790147f68ddc
+  languageName: node
+  linkType: hard
+
+"commander@npm:^9.4.1":
+  version: 9.4.1
+  resolution: "commander@npm:9.4.1"
+  checksum: bfb18e325a5bdf772763c2213d5c7d9e77144d944124e988bcd8e5e65fb6d45d5d4e86b09155d0f2556c9a59c31e428720e57968bcd050b2306e910a0bf3cf13
   languageName: node
   linkType: hard
 

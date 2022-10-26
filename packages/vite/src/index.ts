@@ -54,6 +54,12 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
     async config(configuration, { mode, command }) {
       const serving = command === 'serve'
 
+      // Enable manifest
+      configuration.build = {
+        ...configuration.build,
+        manifest: true,
+      }
+
       // Set SSR mode
       ssr = !!configuration.build?.ssr
 

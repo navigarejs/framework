@@ -1,6 +1,6 @@
 import { App } from './types'
 import { RenderedApp } from '@navigare/core'
-import { renderToString } from '@vue/server-renderer'
+import { renderToString, SSRContext } from '@vue/server-renderer'
 import { renderHeadToString } from '@vueuse/head'
 
 export default async function renderApp({
@@ -8,11 +8,13 @@ export default async function renderApp({
   app,
   head,
 }: App): Promise<RenderedApp> {
-  const appHTML = await renderToString(app)
+  const metadata: SSRContext = {}
+  const appHTML = await renderToString(app, metadata)
   const { headTags, htmlAttrs, bodyAttrs, bodyTags } = renderHeadToString(head)
 
   return {
     id,
+    modules: metadata.modules instanceof Set ? metadata.modules : new Set(),
     headTags,
     htmlAttrs,
     bodyAttrs,

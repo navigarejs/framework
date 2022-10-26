@@ -28,6 +28,7 @@ class HttpGateway implements Gateway
         ->throw()
         ->json();
     } catch (Exception $e) {
+      dump($e);
       return null;
     }
 

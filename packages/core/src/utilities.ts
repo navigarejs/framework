@@ -415,9 +415,15 @@ export function mapRouteMethod(
   return RouteMethod.GET
 }
 
-export function safeParse(input: string): unknown {
-  try {
+export function safeParse<TOutput = unknown>(input: string): TOutput | null {
+  return safe<TOutput>(() => {
     return JSON.parse(input)
+  })
+}
+
+export function safe<TOutput>(callback: () => TOutput): TOutput | null {
+  try {
+    return callback()
   } catch (error) {
     return null
   }
