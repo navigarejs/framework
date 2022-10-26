@@ -3,6 +3,7 @@
 namespace Navigare\Ssr;
 
 use Exception;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
@@ -21,14 +22,20 @@ class HttpGateway implements Gateway
       return null;
     }
 
-    $url = Config::get('navigare.ssr.url', 'http://127.0.0.1:13714/render');
+    $protocol = Config::get('navigare.ssr.protocol', 'http');
+    $host = Config::get('navigare.ssr.host', '127.0.0.1');
+    $port = Config::get('navigare.ssr.port', 13714);
+    $path = Config::get('navigare.ssr.path', '');
 
     try {
-      $response = Http::post($url, $page)
+      $response = Http::post(
+        $protocol . '://' . $host . ':' . $port . '/' . $path,
+        $page
+      )
         ->throw()
         ->json();
-    } catch (Exception $e) {
-      dump($e);
+    } catch (RequestException $e) {
+      dd($e->getResponse());
       return null;
     }
 

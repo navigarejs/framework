@@ -17,9 +17,11 @@ export const writeTypes = async (
   routes: RawRoutes,
 ): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
-    const oldContent = fs.readFileSync(path, {
-      encoding: 'utf-8',
-    })
+    const oldContent =
+      fs.existsSync(path) &&
+      fs.readFileSync(path, {
+        encoding: 'utf-8',
+      })
     const newContent = `import '@navigare/core'
 
 declare module '@navigare/core' {

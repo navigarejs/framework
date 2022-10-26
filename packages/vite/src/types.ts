@@ -10,7 +10,8 @@ export enum Adapter {
 export type Configuration = {
   ssr: {
     enabled: boolean
-    url: string
+    port: number
+    host: string
   }
   testing: {
     ensure_pages_exist: boolean

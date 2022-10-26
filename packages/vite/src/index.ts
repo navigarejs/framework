@@ -25,6 +25,7 @@ import {
 import { RawRoutes, throwError } from '@navigare/core'
 import { Server as SSRServer, serveSSR } from '@navigare/ssr'
 import defaultsDeep from 'lodash.defaultsdeep'
+import path from 'path'
 import { loadEnv } from 'vite'
 
 export default function createNavigarePlugin(options: Options = {}): Plugin {
@@ -103,8 +104,17 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
           currentRoutes = await getRoutes(options, env)
 
           // Write types
-          if (currentConfiguration) {
-            await writeTypes(currentConfiguration?.types.path, currentRoutes)
+          if (currentRoutes) {
+            // await writeTypes(currentConfiguration?.types.path, currentRoutes)
+            await writeTypes(
+              path.join(
+                require.resolve('@navigare/core'),
+                '..',
+                '..',
+                'routes.d.ts',
+              ),
+              currentRoutes,
+            )
           }
         } catch (error) {
           if (error instanceof Error) {
@@ -148,6 +158,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
       // Start SSR server
       ssrServer = await serveSSR({
         logger: server.config.logger,
+        port: currentConfiguration?.ssr.port,
       })
 
       server.httpServer?.once('listening', () => {

@@ -17,7 +17,11 @@ return [
   'ssr' => [
     'enabled' => true,
 
-    'url' => 'http://127.0.0.1:13714/',
+    'protocol' => 'http',
+
+    'host' => '127.0.0.1',
+
+    'port' => 13714,
   ],
 
   /*
