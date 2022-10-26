@@ -23,6 +23,9 @@ jobs:
       changes: ${{ steps.changes.outputs.package }}
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Get changes
         uses: dorny/paths-filter@v2.11.1
         id: changes
