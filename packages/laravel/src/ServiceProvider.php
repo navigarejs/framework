@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare;
+namespace Navigare;
 
 use Illuminate\Foundation\Testing\TestResponse as LegacyTestResponse;
 use Illuminate\Http\Request;
@@ -8,9 +8,9 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Illuminate\Testing\TestResponse;
 use Illuminate\View\FileViewFinder;
-use Jaulz\Navigare\Ssr\Gateway;
-use Jaulz\Navigare\Ssr\HttpGateway;
-use Jaulz\Navigare\Testing\TestResponseMacros;
+use Navigare\Ssr\Gateway;
+use Navigare\Ssr\HttpGateway;
+use Navigare\Testing\TestResponseMacros;
 use LogicException;
 use ReflectionException;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare;
+namespace Navigare;
 
 use Illuminate\Support\Facades\App;
 

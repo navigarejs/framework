@@ -10,7 +10,7 @@
   "require": {
     "php": "^8.0.2",
     "guzzlehttp/guzzle": "^7.2",
-    "jaulz/navigare-laravel": "dev-main",
+    "navigare/laravel": "dev-main",
     "laravel/framework": "^9.19",
     "laravel/sanctum": "^3.0",
     "laravel/tinker": "^2.7"

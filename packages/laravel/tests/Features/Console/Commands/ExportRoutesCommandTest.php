@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\File;
-use Jaulz\Navigare\Console\Commands\ExportRoutesCommand;
+use Navigare\Console\Commands\ExportRoutesCommand;
 use function Spatie\Snapshots\assertMatchesSnapshot;
 
 it('exposes the routes to the command line', function () {

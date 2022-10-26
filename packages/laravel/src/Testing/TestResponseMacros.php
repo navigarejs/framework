@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Testing;
+namespace Navigare\Testing;
 
 use Closure;
 use Illuminate\Testing\Fluent\AssertableJson;

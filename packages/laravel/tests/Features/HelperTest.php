@@ -1,10 +1,10 @@
 <?php
 
-namespace Jaulz\Navigare\Tests;
+namespace Navigare\Tests;
 
-use Jaulz\Navigare\Navigare;
-use Jaulz\Navigare\Response;
-use Jaulz\Navigare\ResponseFactory;
+use Navigare\Navigare;
+use Navigare\Response;
+use Navigare\ResponseFactory;
 
 class HelperTest extends TestCase
 {

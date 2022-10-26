@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Tests;
+namespace Navigare\Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
@@ -37,8 +37,8 @@ class ServiceProviderTest extends TestCase
     $this->assertEquals('/', $route->uri);
     $this->assertEquals(
       [
-        'uses' => '\Jaulz\Navigare\Controller@__invoke',
-        'controller' => '\Jaulz\Navigare\Controller',
+        'uses' => '\Navigare\Controller@__invoke',
+        'controller' => '\Navigare\Controller',
       ],
       $route->action
     );

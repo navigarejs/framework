@@ -14,11 +14,11 @@
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use Jaulz\Navigare\Tests\TestCase;
+use Navigare\Tests\TestCase;
 use Pest\TestSuite;
 
-uses(Jaulz\Navigare\Tests\TestCase::class)->in('Unit');
-uses(Jaulz\Navigare\Tests\TestCase::class)->in('Features');
+uses(Navigare\Tests\TestCase::class)->in('Unit');
+uses(Navigare\Tests\TestCase::class)->in('Features');
 
 /*
 |--------------------------------------------------------------------------

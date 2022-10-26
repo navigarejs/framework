@@ -1,9 +1,9 @@
 <?php
 
-namespace Jaulz\Navigare\Tests;
+namespace Navigare\Tests;
 
 use Illuminate\Http\Request;
-use Jaulz\Navigare\LazyProp;
+use Navigare\LazyProp;
 
 class LazyPropTest extends TestCase
 {

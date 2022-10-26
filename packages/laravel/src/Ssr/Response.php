@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Ssr;
+namespace Navigare\Ssr;
 
 class Response
 {

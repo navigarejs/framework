@@ -5,9 +5,9 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Jaulz\Navigare\Response as NavigareResponse;
+use Navigare\Response as NavigareResponse;
 
-class HandleNavigareRequests extends \Jaulz\Navigare\Middleware
+class HandleNavigareRequests extends \Navigare\Middleware
 {
   /**
    * Sets the root template that's loaded on the first page visit.
@@ -41,7 +41,7 @@ class HandleNavigareRequests extends \Jaulz\Navigare\Middleware
    *
    * @see https://navigarejs.github.io/framework/extend-response
    * @param  \Illuminate\Http\Request  $request
-   * @param  \Jaulz\Navigare\Response  $response
+   * @param  \Navigare\Response  $response
    * @return void
    */
   public function extend(Request $request, NavigareResponse $response): void

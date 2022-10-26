@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Testing\Concerns;
+namespace Navigare\Testing\Concerns;
 
 use Closure;
 use Illuminate\Support\Arr;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Tests\Stubs;
+namespace Navigare\Tests\Stubs;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 

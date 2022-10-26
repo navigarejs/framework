@@ -1,11 +1,11 @@
 <?php
 
-namespace Jaulz\Navigare\Tests;
+namespace Navigare\Tests;
 
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
-use Jaulz\Navigare\Controller;
-use Jaulz\Navigare\Tests\Stubs\ExampleMiddleware;
+use Navigare\Controller;
+use Navigare\Tests\Stubs\ExampleMiddleware;
 
 class ControllerTest extends TestCase
 {

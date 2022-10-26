@@ -16,7 +16,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Jaulz\\Navigare\\": "src"
+      "Navigare\\": "src"
     },
     "files": [
       "./helpers.php"
@@ -24,7 +24,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Jaulz\\Navigare\\Tests\\": "tests/"
+      "Navigare\\Tests\\": "tests/"
     }
   },
   "require": {
@@ -43,7 +43,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Jaulz\\Navigare\\ServiceProvider"
+        "Navigare\\ServiceProvider"
       ]
     }
   },

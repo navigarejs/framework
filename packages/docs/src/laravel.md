@@ -1,5 +1,5 @@
 Publish config via
 
 ```bash
-php artisan vendor:publish --provider="Jaulz\Navigare\ServiceProvider"
+php artisan vendor:publish --provider="Navigare\ServiceProvider"
 ```

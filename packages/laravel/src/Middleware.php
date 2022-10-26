@@ -1,11 +1,11 @@
 <?php
 
-namespace Jaulz\Navigare;
+namespace Navigare;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Jaulz\Navigare\Response as NavigareResponse;
+use Navigare\Response as NavigareResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class Middleware
@@ -104,7 +104,7 @@ class Middleware
    *
    * @see https://navigarejs.github.io/framework/extend-response
    * @param  \Illuminate\Http\Request  $request
-   * @param  \Jaulz\Navigare\Response  $response
+   * @param  \Navigare\Response  $response
    * @return void
    */
   public function extend(Request $request, NavigareResponse $response): void

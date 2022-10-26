@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Tests;
+namespace Navigare\Tests;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Blade;
@@ -9,9 +9,9 @@ use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\View;
-use Jaulz\Navigare\Directive;
-use Jaulz\Navigare\Ssr\Gateway;
-use Jaulz\Navigare\Tests\Stubs\FakeGateway;
+use Navigare\Directive;
+use Navigare\Ssr\Gateway;
+use Navigare\Tests\Stubs\FakeGateway;
 use Mockery as m;
 
 class DirectiveTest extends TestCase

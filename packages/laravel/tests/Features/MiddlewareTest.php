@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Tests;
+namespace Navigare\Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
-use Jaulz\Navigare\Navigare;
-use Jaulz\Navigare\Middleware;
-use Jaulz\Navigare\Tests\Stubs\ExampleMiddleware;
+use Navigare\Navigare;
+use Navigare\Middleware;
+use Navigare\Tests\Stubs\ExampleMiddleware;
 
 class MiddlewareTest extends TestCase
 {

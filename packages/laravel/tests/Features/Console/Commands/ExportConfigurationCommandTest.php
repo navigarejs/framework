@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\File;
-use Jaulz\Navigare\Console\Commands\ExportConfigurationCommand;
+use Navigare\Console\Commands\ExportConfigurationCommand;
 use function Spatie\Snapshots\assertMatchesSnapshot;
 
 it('exposes the configuration contents to the command line', function () {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Jaulz\Navigare\Console\Commands;
+namespace Navigare\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Jaulz\Navigare\Routes;
+use Navigare\Routes;
 
 class ExportRoutesCommand extends Command
 {

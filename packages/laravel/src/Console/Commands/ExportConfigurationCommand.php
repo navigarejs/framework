@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Console\Commands;
+namespace Navigare\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;

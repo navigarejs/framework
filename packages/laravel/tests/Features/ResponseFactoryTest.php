@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Tests;
+namespace Navigare\Tests;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\RedirectResponse;
@@ -8,10 +8,10 @@ use Illuminate\Http\Response;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
-use Jaulz\Navigare\Navigare;
-use Jaulz\Navigare\LazyProp;
-use Jaulz\Navigare\ResponseFactory;
-use Jaulz\Navigare\Tests\Stubs\ExampleMiddleware;
+use Navigare\Navigare;
+use Navigare\LazyProp;
+use Navigare\ResponseFactory;
+use Navigare\Tests\Stubs\ExampleMiddleware;
 
 class ResponseFactoryTest extends TestCase
 {

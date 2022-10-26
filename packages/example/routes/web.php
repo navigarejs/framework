@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
-use Jaulz\Navigare\Navigare;
+use Navigare\Navigare;
 
 /*
 |--------------------------------------------------------------------------

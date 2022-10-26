@@ -1,11 +1,11 @@
 <?php
 
-namespace Jaulz\Navigare\Tests\Stubs;
+namespace Navigare\Tests\Stubs;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
-use Jaulz\Navigare\Ssr\Gateway;
-use Jaulz\Navigare\Ssr\Response;
+use Navigare\Ssr\Gateway;
+use Navigare\Ssr\Response;
 
 class FakeGateway implements Gateway
 {

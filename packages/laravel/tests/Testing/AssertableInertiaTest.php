@@ -1,9 +1,9 @@
 <?php
 
-namespace Jaulz\Navigare\Tests\Testing;
+namespace Navigare\Tests\Testing;
 
-use Jaulz\Navigare\Navigare;
-use Jaulz\Navigare\Tests\TestCase;
+use Navigare\Navigare;
+use Navigare\Tests\TestCase;
 use PHPUnit\Framework\AssertionFailedError;
 
 class AssertableNavigareTest extends TestCase

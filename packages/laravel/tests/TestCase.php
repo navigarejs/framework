@@ -1,12 +1,12 @@
 <?php
 
-namespace Jaulz\Navigare\Tests;
+namespace Navigare\Tests;
 
 use Illuminate\Foundation\Testing\TestResponse as LegacyTestResponse;
 use Illuminate\Support\Facades\View;
 use Illuminate\Testing\TestResponse;
-use Jaulz\Navigare\Navigare;
-use Jaulz\Navigare\ServiceProvider;
+use Navigare\Navigare;
+use Navigare\ServiceProvider;
 use LogicException;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase

@@ -1,9 +1,9 @@
 <?php
 
-namespace Jaulz\Navigare\Tests\Stubs;
+namespace Navigare\Tests\Stubs;
 
 use Illuminate\Http\Request;
-use Jaulz\Navigare\Middleware;
+use Navigare\Middleware;
 
 class ExampleMiddleware extends Middleware
 {

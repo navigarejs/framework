@@ -1,11 +1,11 @@
 <?php
 
-namespace Jaulz\Navigare\Tests\Testing;
+namespace Navigare\Tests\Testing;
 
 use Illuminate\Testing\Fluent\AssertableJson;
-use Jaulz\Navigare\Navigare;
-use Jaulz\Navigare\Testing\Assert;
-use Jaulz\Navigare\Tests\TestCase;
+use Navigare\Navigare;
+use Navigare\Testing\Assert;
+use Navigare\Tests\TestCase;
 
 class TestResponseMacrosTest extends TestCase
 {

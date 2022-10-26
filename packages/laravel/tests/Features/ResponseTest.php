@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaulz\Navigare\Tests;
+namespace Navigare\Tests;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,9 +11,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Fluent;
 use Illuminate\View\View;
-use Jaulz\Navigare\LazyProp;
-use Jaulz\Navigare\Response;
-use Jaulz\Navigare\Tests\Stubs\FakeResource;
+use Navigare\LazyProp;
+use Navigare\Response;
+use Navigare\Tests\Stubs\FakeResource;
 use Mockery;
 
 class ResponseTest extends TestCase

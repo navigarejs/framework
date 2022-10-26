@@ -4,7 +4,7 @@ namespace {{ namespace }};
 
 use Illuminate\Http\Request;
 
-class {{ class }} extends \Jaulz\Navigare\Middleware
+class {{ class }} extends \Navigare\Middleware
 {
     /**
      * The root template that's loaded on the first page visit.
@@ -31,7 +31,7 @@ class {{ class }} extends \Jaulz\Navigare\Middleware
      *
      * @see https://navigarejs.github.io/framework/extend-response
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Jaulz\Navigare\Response  $response
+     * @param  \Navigare\Response  $response
      * @return void
      */
     public function extend(Request $request, NavigareResponse $response): void
