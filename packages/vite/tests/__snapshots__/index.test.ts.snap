@@ -25,6 +25,7 @@ defineComponent({
     <component />
   \`
 });
+
 "
 `;
 
@@ -57,6 +58,7 @@ defineComponent({
     Component
   }
 });
+
 "
 `;
 
@@ -76,6 +78,7 @@ defineComponent({
     return createVNode(Fragment, null, [createVNode(\\"div\\", null, [createTextVNode(\\"Hello World\\")]), createVNode(\\"div\\", null, [props.rawRoute]), createVNode(\\"div\\", null, [route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [\\"pages/Welcome.vue\\"] })])]);
   }
 });
+
 "
 `;
 
@@ -98,5 +101,6 @@ defineComponent({
     Setup: _sfc_main
   }
 });
+
 "
 `;

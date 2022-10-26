@@ -1993,30 +1993,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/core@npm:1.0.15":
-  version: 1.0.15
-  resolution: "@navigare/core@npm:1.0.15"
-  dependencies:
-    lodash.castarray: ^4.4.0
-    lodash.clonedeep: ^4.5.0
-    lodash.debounce: ^4.0.8
-    lodash.get: ^4.4.2
-    lodash.isarray: ^4.0.0
-    lodash.isboolean: ^3.0.3
-    lodash.isfunction: ^3.0.9
-    lodash.isnumber: ^3.0.3
-    lodash.isobject: ^3.0.2
-    lodash.isstring: ^4.0.1
-    lodash.issymbol: ^4.0.1
-    lodash.merge: ^4.6.2
-    lodash.uniq: ^4.5.0
-  peerDependencies:
-    axios: ^1.0.0
-    qs: ^6.9.0
-  checksum: e3fcb3728be133dda69723a67487e02b6bd42c7919cbf0ca754ef44d1b8a2601ab9a5290939f235d74565e3c0b63b6b5f806659c9fed2d9af789faa3129d9520
-  languageName: node
-  linkType: hard
-
 "@navigare/docs@workspace:packages/docs":
   version: 0.0.0-use.local
   resolution: "@navigare/docs@workspace:packages/docs"
@@ -2119,7 +2095,7 @@ __metadata:
     "@babel/template": ^7.18.10
     "@babel/traverse": ^7.19.3
     "@babel/types": ^7.19.3
-    "@navigare/core": 1.0.15
+    "@navigare/core": 1.0.17
     "@navigare/ssr": 1.0.14
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
