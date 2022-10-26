@@ -11,8 +11,8 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
         -H "Authorization: Bearer ${process.env.LARAVEL_GIT_TOKEN}"
         https://api.github.com/repos/navigarejs/laravel
       `
-        .map((line) => line.trim())
         .split('\n')
+        .map((line) => line.trim())
         .join(' '),
       prepareCmd: `curl
         -X POST
@@ -21,8 +21,8 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
         -d '{ "event_type": "synchronize", "client_payload": { "message": "chore(release): \${nextRelease.version} [skip ci]" } }',
         https://api.github.com/repos/navigarejs/laravel/dispatches
       `
-        .map((line) => line.trim())
         .split('\n')
+        .map((line) => line.trim())
         .join(' '),
     },
   ],

@@ -31,6 +31,8 @@ const createConfiguration = (publishCmd, plugins = []) => {
         '@semantic-release/github',
         {
           assets: [],
+          // We can enable this once https://github.com/semantic-release/github/pull/487 was merged
+          releasedLabels: false,
         },
       ],
 
