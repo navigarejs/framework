@@ -8,55 +8,46 @@ on:
   pull_request:
 
 jobs:
-  core:
+  javascript:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        package:
+          - laravel
+          - ssr
+          - vite
+          - vue3
+      fail-fast: false
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get changes
+        uses: dorny/paths-filter@v2.11.1
+        id: changes
+        with:
+          filters: |
+            package:
+              - 'yarn.lock'
+              - 'packages/${{ matrix.package }}/**'
 
       - name: Install dependencies
+        if: steps.changes.outputs.package == 'true'
         run: yarn install --immutable
 
-      - name: Run tests
-        run: yarn workspace @navigare/core test
+      - name: Prepack
+        if: steps.changes.outputs.package == 'true'
+        run: yarn workspace @navigare/${{ matrix.package }} prepack
 
-  vite:
-    runs-on: ubuntu-latest
+      - name: Test
+        if: steps.changes.outputs.package == 'true'
+        run: yarn workspace @navigare/${{ matrix.package }} test
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Build core
-        run: yarn workspace @navigare/core build
-
-      - name: Build SSR
-        run: yarn workspace @navigare/ssr build
-
-      - name: Run tests
-        run: yarn workspace @navigare/vite test
-
-  vue3:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Build core
-        run: yarn workspace @navigare/core build
-
-      - name: Run tests
-        run: yarn workspace @navigare/vue3 test
-
-  laravel:
+  php:
     runs-on: ubuntu-latest
 
     if: false
@@ -123,5 +114,5 @@ jobs:
           max_attempts: 5
           command: composer update --${{ matrix.stability }} --no-interaction
 
-      - name: Run tests
+      - name: Test
         run: yarn workspace @navigare/laravel test

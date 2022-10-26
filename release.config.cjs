@@ -21,6 +21,7 @@ const createConfiguration = (publishCmd, plugins = []) => {
           prepareCmd: [
             'yarn version ${nextRelease.version}',
             "echo 'version=${nextRelease.version}' >> $GITHUB_OUTPUT",
+            'cp ../../README.md README.md',
           ].join(' && '),
           publishCmd,
         },
