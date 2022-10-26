@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      changes: ${{ steps.changes.outputs }}
+      changes: ${{ steps.changes.outputs.package }}
 
     steps:
       - name: Get changes
@@ -37,7 +37,7 @@ jobs:
     needs:
       - check
 
-    if: needs.changes.outputs.changes.outputs.package == 'true'
+    if: needs.changes.outputs.changes == 'true'
 
     environment:
       name: github-pages
