@@ -34,7 +34,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    if: steps.changes.outputs.package == 'true'
+    needs:
+      - check
+
+    if: needs.changes.outputs.changes.outputs.package == 'true'
 
     environment:
       name: github-pages
