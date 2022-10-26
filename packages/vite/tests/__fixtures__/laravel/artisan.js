@@ -10,8 +10,8 @@ const command = process.argv.splice(2).join(' ')
 if (command === 'php artisan navigare:config') {
   printJson(
     fs.readFileSync(
-      path.resolve(__dirname, '__fixtures__/configuration.json'),
-      { encoding: 'utf-8' },
+      path.resolve(__dirname, '..', 'configuration.json'),
+      'utf-8',
     ),
   )
   process.exit(0)
@@ -19,9 +19,7 @@ if (command === 'php artisan navigare:config') {
 
 if (command === 'php artisan navigare:routes') {
   printJson(
-    fs.readFileSync(path.resolve(__dirname, '__fixtures__/routes.json'), {
-      encoding: 'utf-8',
-    }),
+    fs.readFileSync(path.resolve(__dirname, '..', 'routes.json'), 'utf-8'),
   )
   process.exit(0)
 }

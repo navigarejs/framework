@@ -41,7 +41,7 @@ it('reads configuration from file', async () => {
 })
 
 it('reads configuration from Laravel', async () => {
-  process.env.TEST_ARTISAN_SCRIPT = artisan
+  process.env.TEST_ARTISAN_SCRIPT = artisan()
 
   const configuration = await getConfiguration(
     {

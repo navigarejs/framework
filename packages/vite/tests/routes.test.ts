@@ -36,7 +36,7 @@ it('reads routes from file', async () => {
 })
 
 it('reads routes from Laravel', async () => {
-  process.env.TEST_ARTISAN_SCRIPT = artisan
+  process.env.TEST_ARTISAN_SCRIPT = artisan()
 
   const routes = await getRoutes(
     {
