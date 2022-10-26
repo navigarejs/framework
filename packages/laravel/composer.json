@@ -1,7 +1,7 @@
 {
-  "name": "jaulz/laravel-navigare",
+  "name": "navigare/laravel",
   "type": "library",
-  "description": "The Laravel adapter for Navigare.",
+  "description": "A framework for creating server-driven single page apps.",
   "keywords": [
     "laravel",
     "navigare"

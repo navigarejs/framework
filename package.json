@@ -3,7 +3,7 @@
   "version": "0.0.0-development",
   "private": true,
   "description": "A framework for creating server-driven single page apps.",
-  "homepage": "https://jaulz.github.io/navigare/",
+  "homepage": "https://navigarejs.github.io/framework/",
   "license": "MIT",
   "workspaces": {
     "packages": [

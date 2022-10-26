@@ -16,14 +16,14 @@
       "url": "https://github.com/sponsors/jaulz"
     }
   ],
-  "homepage": "https://jaulz.github.io/navigare/",
+  "homepage": "https://navigarejs.github.io/framework/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jaulz/navigare.git",
+    "url": "https://navigarejs.github.com/framework.git",
     "directory": "packages/ssr"
   },
   "bugs": {
-    "url": "https://github.com/jaulz/navigare/issues"
+    "url": "https://navigarejs.github.com/framework/issues"
   },
   "bin": {
     "navigare": "./bin/navigare.js"

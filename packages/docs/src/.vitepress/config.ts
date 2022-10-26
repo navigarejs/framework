@@ -32,7 +32,7 @@ export default async function () {
 
     lastUpdated: true,
 
-    base: isCI ? '/navigare' : undefined,
+    base: isCI ? '/framework' : undefined,
 
     head: [
       ['meta', { property: 'og:type', content: 'website' }],
@@ -53,7 +53,7 @@ export default async function () {
         copyright:
           'Made by <a class="underline" href="https://twitter.com/jaulz">Julian Hundeloh</a>',
         message:
-          'Released under the <a href="https://github.com/jaulz/navigare/blob/main/LICENSE">MIT License</a>.',
+          'Released under the <a href="https://navigarejs.github.com/framework/blob/main/LICENSE">MIT License</a>.',
       },
 
       editLink: {
