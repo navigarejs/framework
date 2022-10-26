@@ -1,6 +1,6 @@
 {
   "name": "@navigare/laravel",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "license": "MIT",
   "private": true,
   "description": "A framework for creating server-driven single page apps.",
