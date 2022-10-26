@@ -16,8 +16,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    outputs:
+      changes: ${{ steps.changes.outputs }}
+
+    steps:
+      - name: Get changes
+        uses: dorny/paths-filter@v2.11.1
+        id: changes
+        with:
+          filters: |
+            package:
+              - 'packages/docs/**'
+
   deploy:
     runs-on: ubuntu-latest
+
+    if: steps.changes.outputs.package == 'true'
 
     environment:
       name: github-pages
