@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/logo.svg" style="width: 80px;" />
+  <img src="https://raw.githubusercontent.com/navigarejs/framework/main/assets/logo.svg" style="width: 80px;" />
 </div>
 
 <h1 align="center">Navigare</h1>
