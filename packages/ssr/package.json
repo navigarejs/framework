@@ -19,7 +19,7 @@
   "homepage": "https://navigarejs.github.io/framework/",
   "repository": {
     "type": "git",
-    "url": "https://navigarejs.github.com/framework.git",
+    "url": "https://github.com/navigarejs/framework.git",
     "directory": "packages/ssr"
   },
   "bugs": {
