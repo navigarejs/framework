@@ -38,6 +38,8 @@ const createConfiguration = (publishCmd, plugins = []) => {
         },
       ],
 
+      ...plugins,
+
       [
         '@semantic-release/exec',
         {
@@ -52,8 +54,6 @@ const createConfiguration = (publishCmd, plugins = []) => {
           ].join(' && '),
         },
       ],
-
-      ...plugins,
     ],
   }
 
