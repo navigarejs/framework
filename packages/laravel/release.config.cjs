@@ -29,7 +29,7 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
         -H "Authorization: Bearer ${process.env.LARAVEL_GIT_TOKEN}"
         --fail-with-body
         https://api.github.com/repos/navigarejs/laravel
-        && echo 0
+        && echo ''
       `),
       prepareCmd: run(`curl
         --silent
