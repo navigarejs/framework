@@ -314,6 +314,8 @@ class Response implements Responsable
       'defaults' => $defaults,
 
       'parameters' => $parameters,
+
+      'csrf' => csrf_token(),
     ]);
 
     // If the request was triggered by Navigare itself, we return the response

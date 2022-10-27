@@ -68,6 +68,8 @@ export type PageFragments = Record<string, PageFragment | PageFragment[] | null>
 export interface Page {
   visitId: VisitId
 
+  csrf: string | null
+
   fragments: PageFragments
 
   props: PageProps & {
