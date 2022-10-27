@@ -12,6 +12,15 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
   [
     '@semantic-release/exec',
     {
+      verifyConditionsCmd: run(
+        `content=$(jq -r ".version=\"\${nextRelease.version}\"" composer.json) && echo -E "\${content}" > composer.json`,
+      ),
+    },
+  ],
+
+  [
+    '@semantic-release/exec',
+    {
       verifyConditionsCmd: run(`curl
         -X GET
         -H "Accept: application/vnd.github+json"
