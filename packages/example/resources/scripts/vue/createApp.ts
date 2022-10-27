@@ -7,12 +7,16 @@ import { createApp as createVueApp, h } from 'vue'
 
 export default function createApp(initialPage?: Page) {
   return createNavigareApp({
-    id: 'app',
+    setup({ App, props, plugin: navigarePlugin }) {
+      // Create Vue app with Navigare component as root
+      const app = createVueApp({
+        render: () => {
+          return h(App, props)
+        },
+      })
 
-    setup({ App, props, plugin }) {
-      const app = createVueApp({ render: () => h(App, props) })
-
-      app.use(plugin)
+      // Use Navigare App
+      app.use(navigarePlugin)
 
       return app
     },

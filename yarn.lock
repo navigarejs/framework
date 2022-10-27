@@ -1938,7 +1938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navigare/cli@workspace:packages/cli":
+"@navigare/cli@^1.0.1, @navigare/cli@workspace:packages/cli":
   version: 0.0.0-use.local
   resolution: "@navigare/cli@workspace:packages/cli"
   dependencies:
@@ -1973,7 +1973,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/core@1.0.18, @navigare/core@^1.0.18, @navigare/core@workspace:^, @navigare/core@workspace:packages/core":
+"@navigare/core@1.0.18, @navigare/core@^1.0.18, @navigare/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@navigare/core@workspace:packages/core"
   dependencies:
@@ -2042,7 +2042,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/example@workspace:packages/example"
   dependencies:
-    "@navigare/core": "workspace:^"
+    "@navigare/cli": ^1.0.1
+    "@navigare/core": ^1.0.18
     "@navigare/ssr": ^1.0.16
     "@navigare/vite": ^1.0.16
     "@navigare/vue3": ^1.0.16

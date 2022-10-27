@@ -1,6 +1,6 @@
 import DefaultLayout from './DefaultLayout'
 import provideRouterContext from './provideRouterContext'
-import { EventListener, Router, RouterOptions } from '@navigare/core'
+import { EventListener, Router } from '@navigare/core'
 import {
   defineComponent,
   h,
@@ -15,8 +15,13 @@ export default defineComponent({
   name: 'NavigareApp',
 
   props: {
-    options: {
-      type: Object as PropType<RouterOptions<DefineComponent>>,
+    router: {
+      type: Object as PropType<Router<DefineComponent>>,
+      required: true,
+    },
+
+    layout: {
+      type: [String, null] as PropType<string | null>,
       required: true,
     },
 
@@ -28,12 +33,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const layout = ref<string | null>(props.options.initialPage.layout)
-
-    // Create instance of router
-    const router = new Router<DefineComponent>({
-      ...props.options,
-    })
+    const layout = ref<string | null>(props.layout)
 
     // Handle navigate event to update layout
     const handleNavigate: EventListener<'navigate'> = (event) => {
@@ -41,14 +41,14 @@ export default defineComponent({
       layout.value = event.detail.page.layout
     }
     onMounted(() => {
-      router.on('navigate', handleNavigate)
+      props.router.on('navigate', handleNavigate)
     })
     onUnmounted(() => {
-      router.off('navigate', handleNavigate)
+      props.router.off('navigate', handleNavigate)
     })
 
     // Provide context to children
-    provideRouterContext(router)
+    provideRouterContext(props.router)
 
     return () => {
       return h(props.Layout, {

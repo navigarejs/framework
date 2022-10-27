@@ -6,6 +6,7 @@ import {
   Page,
   RawRoutes,
   Routable,
+  Router,
   RouterOptions,
   VisitData,
   VisitOptions,
@@ -22,10 +23,9 @@ export type App = {
 }
 
 export type Options = {
-  id: string
+  id?: string
   resolveComponent: ComponentResolver<DefineComponent>
   setup: Setup
-  title?: (title: string) => string
   initialPage?: Page
   rawRoutes?: RawRoutes
   Layout?: DefineComponent
@@ -34,6 +34,7 @@ export type Options = {
 
 export type Setup = (options: {
   App: typeof App
+  router: Router<DefineComponent>
   props: PropsOf<typeof App>
   plugin: typeof plugin
 }) => VueApp

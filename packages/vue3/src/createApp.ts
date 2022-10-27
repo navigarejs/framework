@@ -7,14 +7,16 @@ import {
   resolveComponents,
   isSSR,
   safeParse,
+  Router,
+  RouterOptions,
 } from '@navigare/core'
 import { createHead } from '@vueuse/head'
+import { DefineComponent } from 'vue'
 
 export default async function createApp({
   id = 'app',
   setup,
   resolveComponent,
-  // title,
   initialPage,
   rawRoutes,
   Layout,
@@ -37,18 +39,22 @@ export default async function createApp({
     resolveComponent,
     initialPageWithFallback,
   )
+  const options: RouterOptions<DefineComponent> = {
+    initialPage: initialPageWithFallback,
+    initialComponents,
+    resolveComponent,
+    rawRoutes,
+    fragments,
+  }
+  const router = new Router<DefineComponent>(options)
   const app = setup({
     App: AppVue,
     props: {
-      options: {
-        initialPage: initialPageWithFallback,
-        initialComponents,
-        resolveComponent,
-        rawRoutes,
-        fragments,
-      },
+      router,
+      layout: options.initialPage.layout,
       Layout,
     },
+    router,
     plugin,
   })
 
