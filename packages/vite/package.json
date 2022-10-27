@@ -41,7 +41,7 @@
     "clean": "rm -rf types && rm -rf build",
     "dev": "tsc-watch -p tsconfig.build.json",
     "test": "chmod 777 ./tests/__fixtures__/laravel/artisan.js && vitest",
-    "prepack": "yarn ../core prepack > /dev/null && yarn ../ssr prepack > /dev/null && yarn prepack > /dev/null",
+    "prepack": "yarn ../core prepack > /dev/null && yarn ../ssr prepack > /dev/null && yarn build > /dev/null",
     "release": "yarn semantic-release"
   },
   "devDependencies": {
