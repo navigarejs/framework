@@ -115,18 +115,20 @@ export default class Router<TComponent> {
     // Register initial routes
     this.registerRawRoutes(rawRoutes)
 
-    if (!isSSR()) {
-      // Handle initial page
-      if (this.isBackForwardVisit()) {
-        this.handleBackForwardVisit(this.page)
-      } else if (this.isLocationVisit()) {
-        this.handleLocationVisit(this.page)
-      } else {
-        this.handleInitialPageVisit(this.page)
-      }
+    // Handle initial page
+    if (isSSR()) {
+      setTimeout(() => {
+        if (this.isBackForwardVisit()) {
+          this.handleBackForwardVisit(this.page)
+        } else if (this.isLocationVisit()) {
+          this.handleLocationVisit(this.page)
+        } else {
+          this.handleInitialPageVisit(this.page)
+        }
 
-      // Listen to events
-      this.setupEventListeners()
+        // Listen to events
+        this.setupEventListeners()
+      }, 0)
     }
   }
 
@@ -144,6 +146,7 @@ export default class Router<TComponent> {
 
   protected setupEventListeners(): void {
     window.addEventListener('popstate', this.handlePopstateEvent.bind(this))
+
     document.addEventListener(
       'scroll',
       debounce(this.handleScrollEvent.bind(this), 100),
