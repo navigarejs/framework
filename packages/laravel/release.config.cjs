@@ -12,7 +12,7 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
   [
     '@semantic-release/exec',
     {
-      verifyConditionsCmd: run(
+      prepareCmd: run(
         `content=$(jq -r ".version=\"\${nextRelease.version}\"" composer.json) && echo -E "\${content}" > composer.json`,
       ),
     },
@@ -21,6 +21,15 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
   [
     '@semantic-release/exec',
     {
+      verifyConditionsCmd: run(`curl
+        --silent
+        --show-error
+        -X GET
+        -H "Accept: application/vnd.github+json"
+        -H "Authorization: Bearer ${process.env.LARAVEL_GIT_TOKEN}"
+        --fail-with-body
+        https://api.github.com/repos/navigarejs/laravel
+      `),
       prepareCmd: run(`curl
         --silent
         --show-error
