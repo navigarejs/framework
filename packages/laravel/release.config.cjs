@@ -30,6 +30,7 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
         --fail-with-body
         https://api.github.com/repos/navigarejs/laravel
       `),
+
       prepareCmd: run(`curl
         --silent
         --show-error
