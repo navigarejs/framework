@@ -53,6 +53,5 @@
     "allow-plugins": {
       "pestphp/pest-plugin": true
     }
-  },
-  "version": "1.0.0"
+  }
 }
