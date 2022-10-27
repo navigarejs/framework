@@ -1,4 +1,4 @@
-import type App from './App'
+import type Root from './Root'
 import type plugin from './plugin'
 import {
   ActiveVisit,
@@ -16,7 +16,7 @@ import { HeadClient } from '@vueuse/head'
 import { InjectionKey, App as VueApp, DefineComponent } from 'vue'
 
 export type App = {
-  app: VueApp
+  root: VueApp
   page: Page
   id: string
   head: HeadClient
@@ -33,9 +33,9 @@ export type Options = {
 }
 
 export type Setup = (options: {
-  App: typeof App
+  Root: typeof Root
+  props: PropsOf<typeof Root>
   router: Router<DefineComponent>
-  props: PropsOf<typeof App>
   plugin: typeof plugin
   initialPage: Page
 }) => VueApp

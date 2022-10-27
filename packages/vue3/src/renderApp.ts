@@ -5,11 +5,11 @@ import { renderHeadToString } from '@vueuse/head'
 
 export default async function renderApp({
   id,
-  app,
+  root,
   head,
 }: App): Promise<RenderedApp> {
   const metadata: SSRContext = {}
-  const appHTML = await renderToString(app, metadata)
+  const appHTML = await renderToString(root, metadata)
   const { headTags, htmlAttrs, bodyAttrs, bodyTags } = renderHeadToString(head)
 
   return {

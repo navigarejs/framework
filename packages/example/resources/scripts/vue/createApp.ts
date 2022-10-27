@@ -1,16 +1,19 @@
 import '../../css/app.css'
 import Layout from './Layout.vue'
+import { Page } from '@navigare/core'
 import { createNavigareApp } from '@navigare/vue3'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { createApp as createVueApp, h } from 'vue'
 
-export default function createApp() {
+export default function createApp(initialPage: Page) {
   return createNavigareApp({
-    setup({ App, props, plugin: navigarePlugin }) {
+    initialPage,
+
+    setup({ Root, props, plugin: navigarePlugin }) {
       // Create Vue app with Navigare component as root
       const app = createVueApp({
         render: () => {
-          return h(App, props)
+          return h(Root, props)
         },
       })
 

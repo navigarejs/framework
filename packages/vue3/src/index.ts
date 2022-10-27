@@ -11,7 +11,7 @@ export { default as renderNavigareApp, default as renderApp } from './renderApp'
 
 export { Head as NavigareHead, Head } from '@vueuse/head'
 
-export { default as NavigareApp, default as App } from './App'
+export { default as NavigareRoot, default as Root } from './Root'
 
 export { default as NavigareForm, default as Form } from './Form'
 

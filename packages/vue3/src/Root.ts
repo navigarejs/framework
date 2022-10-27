@@ -12,7 +12,7 @@ import {
 } from 'vue'
 
 export default defineComponent({
-  name: 'NavigareApp',
+  name: 'NavigareRoot',
 
   props: {
     router: {

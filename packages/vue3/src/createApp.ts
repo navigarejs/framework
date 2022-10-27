@@ -1,4 +1,4 @@
-import AppVue from './App'
+import Root from './Root'
 import plugin from './plugin'
 import { Options, App } from './types'
 import {
@@ -47,8 +47,8 @@ export default async function createApp({
     fragments,
   }
   const router = new Router<DefineComponent>(options)
-  const app = setup({
-    App: AppVue,
+  const root = setup({
+    Root,
     props: {
       router,
       layout: options.initialPage.layout,
@@ -61,12 +61,12 @@ export default async function createApp({
 
   // Add plugins
   const head = createHead()
-  app.use(head)
+  root.use(head)
 
   return {
     id,
     page: initialPageWithFallback,
     head,
-    app,
+    root,
   }
 }
