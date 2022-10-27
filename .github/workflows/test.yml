@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         package:
+          - cli
           - core
           - ssr
           - vite

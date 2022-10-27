@@ -25,11 +25,7 @@
   "bugs": {
     "url": "https://navigarejs.github.com/framework/issues"
   },
-  "bin": {
-    "navigare": "./bin/navigare.js"
-  },
   "files": [
-    "bin",
     "build",
     "types"
   ],
@@ -46,11 +42,11 @@
     "clean": "rm -rf types && rm -rf build",
     "dev": "yarn build watch",
     "test": "vitest",
-    "prepack": "yarn ../core build > /dev/null && yarn build > /dev/null",
+    "prepack": "yarn ../core prepack > /dev/null && yarn prepack > /dev/null",
     "release": "yarn semantic-release"
   },
   "devDependencies": {
-    "@navigare/core": "1.0.18",
+    "@navigare/core": "^1.0.18",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/exec": "^6.0.3",
     "@trivago/prettier-plugin-sort-imports": "^3.4.0",
@@ -76,14 +72,13 @@
     "vitest": "^0.24.3"
   },
   "peerDependencies": {
-    "@navigare/core": "1.0.15",
+    "@navigare/core": "^1.0.18",
     "vite": "^3.0.0"
   },
   "dependencies": {
     "@types/lodash.isarray": "^4.0.7",
     "body-parser": "^1.20.1",
     "chalk": "^4.1.2",
-    "commander": "^9.4.1",
     "compression": "^1.7.4",
     "debug": "^4.3.4",
     "express": "^4.18.2",

@@ -13,8 +13,9 @@ jobs:
     strategy:
       matrix:
         package:
-          - laravel
+          - cli
           - core
+          - laravel
           - ssr
           - vite
           - vue3

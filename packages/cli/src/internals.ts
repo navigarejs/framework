@@ -5,11 +5,11 @@ import path from 'path'
 
 const require = createRequire(import.meta.url)
 
-export function getVersion(name: string = '@navigare/cli'): string {
+export function getVersion(name: string = '@navigare/cli') {
   try {
     const pkg = safeParse<{ version: string }>(
       fs.readFileSync(
-        path.join(require.resolve(name), '..', '..', 'package.json'),
+        path.join(require.resolve(name), '..', 'package.json'),
         'utf-8',
       ),
     )
@@ -18,8 +18,4 @@ export function getVersion(name: string = '@navigare/cli'): string {
   } catch (error) {
     return 'n/a'
   }
-}
-
-export function getCoreVersion(): string {
-  return getVersion('@navigare/core')
 }
