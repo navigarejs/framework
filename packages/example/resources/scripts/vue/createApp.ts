@@ -5,7 +5,7 @@ import { createNavigareApp } from '@navigare/vue3'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { createApp as createVueApp, h } from 'vue'
 
-export default function createApp(initialPage: Page) {
+export default function createApp(initialPage?: Page) {
   return createNavigareApp({
     initialPage,
 

@@ -6,6 +6,10 @@ import {
   EventListener,
   RouteName,
   Route,
+  VisitOptions,
+  ActiveVisit,
+  VisitData,
+  throwError,
 } from '@navigare/core'
 import {
   computed,
@@ -78,6 +82,63 @@ export default function useRouter() {
 
     processing,
 
+    async get(
+      routable: Routable,
+      data: VisitData = {},
+      options: Exclude<VisitOptions, 'method' | 'data'> = {},
+    ): Promise<ActiveVisit> {
+      return await router.get(routable, data, options)
+    },
+
+    async post(
+      routable: Routable,
+      data: VisitData = {},
+      options: Exclude<VisitOptions, 'method' | 'data'> = {},
+    ): Promise<ActiveVisit> {
+      return await router.post(routable, data, options)
+    },
+
+    async put(
+      routable: Routable,
+      data: VisitData = {},
+      options: Exclude<VisitOptions, 'method' | 'data'> = {},
+    ): Promise<ActiveVisit> {
+      return await router.put(routable, data, options)
+    },
+
+    async patch(
+      routable: Routable,
+      data: VisitData = {},
+      options: Exclude<VisitOptions, 'method' | 'data'> = {},
+    ): Promise<ActiveVisit> {
+      return await router.patch(routable, data, options)
+    },
+
+    async delete(
+      routable: Routable,
+      options: Exclude<VisitOptions, 'method'> = {},
+    ): Promise<ActiveVisit> {
+      return await router.delete(routable, options)
+    },
+
+    async reload(
+      options: Exclude<VisitOptions, 'preserveScroll' | 'preserveState'> = {},
+    ): Promise<ActiveVisit> {
+      return await router.reload(options)
+    },
+
+    async back(fallback?: Routable) {
+      return await router.back(fallback)
+    },
+
+    async replace(_routable: Routable) {
+      throwError('replace is not yet implemented')
+    },
+
+    async push(_routable: Routable) {
+      throwError('push is not yet implemented')
+    },
+
     matches(
       comparableRoute: Routable | PartialRoute<RouteName>,
       route?: Route<RouteName>,
@@ -90,10 +151,6 @@ export default function useRouter() {
             : new Route(page.rawRoute, page.parameters, false)),
         fragment.defaults,
       )
-    },
-
-    async back(fallback?: Routable) {
-      return await router.back(fallback)
     },
 
     instance: router,
