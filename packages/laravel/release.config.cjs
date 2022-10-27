@@ -22,6 +22,8 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
     '@semantic-release/exec',
     {
       verifyConditionsCmd: run(`curl
+        --silent
+        --show-error
         -X GET
         -H "Accept: application/vnd.github+json"
         -H "Authorization: Bearer ${process.env.LARAVEL_GIT_TOKEN}"
@@ -29,6 +31,8 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
         https://api.github.com/repos/navigarejs/laravel
       `),
       prepareCmd: run(`curl
+        --silent
+        --show-error
         -X POST
         -H "Accept: application/vnd.github+json"
         -H "Authorization: Bearer ${process.env.LARAVEL_GIT_TOKEN}"
