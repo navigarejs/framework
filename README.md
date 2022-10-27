@@ -20,7 +20,7 @@ A huge thanks to all [our sponsors](https://github.com/sponsors/jaulz) who help 
 
 <p>
   <a href="https://hundeloh-consulting.ch">
-    <img src="./.github/sponsors/hc.png" width="50" alt="hundeloh consulting GmbH">
+    <img src="https://raw.githubusercontent.com/navigarejs/framework/main/.github/sponsors/hc.png" width="50" alt="hundeloh consulting GmbH">
   </a>
 </p>
 
