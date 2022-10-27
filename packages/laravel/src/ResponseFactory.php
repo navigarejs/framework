@@ -198,7 +198,7 @@ class ResponseFactory
     }
 
     if (Request::navigare()) {
-      return BaseResponse::make('', 409, ['x-navigare-location' => $url]);
+      return BaseResponse::make('', 409, ['X-Navigare-Location' => $url]);
     }
 
     return new RedirectResponse($url);
