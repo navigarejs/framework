@@ -10,6 +10,7 @@ import {
   ActiveVisit,
   VisitData,
   throwError,
+  EventNames,
 } from '@navigare/core'
 import {
   computed,
@@ -151,6 +152,20 @@ export default function useRouter() {
             : new Route(page.rawRoute, page.parameters, false)),
         fragment.defaults,
       )
+    },
+
+    on<TEventName extends EventNames>(
+      name: TEventName,
+      listener: EventListener<TEventName>,
+    ): () => void {
+      return router.on(name, listener)
+    },
+
+    off<TEventName extends EventNames>(
+      name: TEventName,
+      listener: EventListener<TEventName>,
+    ): void {
+      return router.off(name, listener)
     },
 
     instance: router,
