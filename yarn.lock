@@ -2056,7 +2056,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/core@1.0.19, @navigare/core@^1.0.19, @navigare/core@workspace:packages/core":
+"@navigare/core@1.0.20, @navigare/core@^1.0.20, @navigare/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@navigare/core@workspace:packages/core"
   dependencies:
@@ -2126,7 +2126,7 @@ __metadata:
   resolution: "@navigare/example@workspace:packages/example"
   dependencies:
     "@navigare/cli": ^1.0.2
-    "@navigare/core": ^1.0.19
+    "@navigare/core": ^1.0.20
     "@navigare/ssr": ^1.0.17
     "@navigare/vite": ^1.0.17
     "@navigare/vue3": ^1.0.19
@@ -2161,7 +2161,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/ssr@workspace:packages/ssr"
   dependencies:
-    "@navigare/core": ^1.0.19
+    "@navigare/core": ^1.0.20
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
@@ -2197,7 +2197,7 @@ __metadata:
     vite: ^3.2.0
     vitest: ^0.24.3
   peerDependencies:
-    "@navigare/core": ^1.0.19
+    "@navigare/core": ^1.0.20
     vite: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -2211,7 +2211,7 @@ __metadata:
     "@babel/template": ^7.18.10
     "@babel/traverse": ^7.19.3
     "@babel/types": ^7.19.3
-    "@navigare/core": 1.0.19
+    "@navigare/core": 1.0.20
     "@navigare/ssr": 1.0.17
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
@@ -2258,7 +2258,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/vue3@workspace:packages/vue3"
   dependencies:
-    "@navigare/core": ^1.0.19
+    "@navigare/core": ^1.0.20
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
@@ -2296,7 +2296,7 @@ __metadata:
     vitest: ^0.24.3
     vue: ^3.2.41
   peerDependencies:
-    "@navigare/core": ^1.0.19
+    "@navigare/core": ^1.0.20
     vue: ^3.2.41
   languageName: unknown
   linkType: soft
