@@ -37,6 +37,7 @@ export type Setup = (options: {
   router: Router<DefineComponent>
   props: PropsOf<typeof App>
   plugin: typeof plugin
+  initialPage: Page
 }) => VueApp
 
 // Forms

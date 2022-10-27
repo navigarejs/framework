@@ -54,6 +54,7 @@ export default async function createApp({
       layout: options.initialPage.layout,
       Layout,
     },
+    initialPage: initialPageWithFallback,
     router,
     plugin,
   })
