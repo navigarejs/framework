@@ -13,7 +13,7 @@ const configuration = require('../../release.config.cjs')('yarn prepack', [
     '@semantic-release/exec',
     {
       prepareCmd: run(
-        `content=$(jq -r ".version=\"\${nextRelease.version}\"" composer.json) && echo -E "\${content}" > composer.json`,
+        `content=$(jq -r ".version=\"\${nextRelease.version}\"" composer.json) && echo -E $content > composer.json`,
       ),
     },
   ],
