@@ -46,7 +46,7 @@
     "release": "yarn semantic-release"
   },
   "devDependencies": {
-    "@navigare/ssr": "1.0.16",
+    "@navigare/ssr": "1.0.17",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/exec": "^6.0.3",
     "@trivago/prettier-plugin-sort-imports": "^3.4.0",
@@ -71,7 +71,7 @@
     "vitest": "^0.24.3"
   },
   "peerDependencies": {
-    "@navigare/ssr": "^1.0.16"
+    "@navigare/ssr": "^1.0.17"
   },
   "dependencies": {
     "commander": "^9.4.1"
