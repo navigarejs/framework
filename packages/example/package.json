@@ -13,7 +13,7 @@
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@navigare/cli": "^1.0.4",
+    "@navigare/cli": "^1.0.5",
     "@navigare/core": "^1.0.22",
     "@navigare/vite": "^1.0.19",
     "@navigare/vue3": "^1.0.23",
