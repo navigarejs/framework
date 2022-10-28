@@ -135,6 +135,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
                 require.resolve('@navigare/core'),
                 '..',
                 '..',
+                'types',
                 'routes.d.ts',
               ),
               currentRoutes,

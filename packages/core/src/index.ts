@@ -11,3 +11,5 @@ export * from './symbols'
 export * from './types'
 
 export * from './utilities'
+
+export * from './routes'

@@ -21,7 +21,6 @@ import {
   PendingVisit,
   VisitPreserveStateOption,
   QueryStringArrayFormat,
-  RawRoute,
   VisitData,
   Routable,
   VisitId,
@@ -122,16 +121,13 @@ export default class Router<TComponent> {
   protected emitter = createEmitter<Events>()
 
   public constructor(options: RouterOptions<TComponent>) {
-    const { initialPage, rawRoutes = {}, initialComponents } = options
+    const { initialPage, initialComponents } = options
     this.options = options
     this.internalComponents = initialComponents
     this.internalPages.push({
       ...initialPage,
       visitId: this.createVisitId(),
     })
-
-    // Register initial routes
-    this.registerRawRoutes(rawRoutes)
 
     // Handle initial page
     if (!isSSR()) {
@@ -148,14 +144,6 @@ export default class Router<TComponent> {
         this.setupEventListeners()
       }, 0)
     }
-  }
-
-  public registerRawRoute(rawRoute: RawRoute): void {
-    this.rawRoutes[rawRoute.name] = rawRoute
-  }
-
-  public registerRawRoutes(rawRoutes: RawRoutes): void {
-    Object.assign(this.rawRoutes, rawRoutes)
   }
 
   protected async handleInitialPageVisit(page: Page): Promise<void> {

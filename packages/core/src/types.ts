@@ -1,4 +1,5 @@
 import Route from './Route'
+import { GeneratedRoutes } from './routes'
 import { Default, Wildcard } from './symbols'
 import { AxiosResponse, Canceler, CancelToken } from 'axios'
 import { IsEmptyObject } from 'type-fest'
@@ -8,7 +9,6 @@ export type RouterOptions<TComponent> = {
   initialPage: Page
   initialComponents: Record<string, TComponent>
   resolveComponent: ComponentResolver<TComponent>
-  rawRoutes?: RawRoutes
   fragments?: Record<
     string,
     {
@@ -313,8 +313,7 @@ export type VisitId = string
 export type Component = unknown
 
 // Routes
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Routes {}
+export type Routes = GeneratedRoutes & {}
 
 export enum RouteMethod {
   GET = 'get',

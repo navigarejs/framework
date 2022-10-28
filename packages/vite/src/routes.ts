@@ -22,12 +22,17 @@ export const writeTypes = async (
       fs.readFileSync(path, {
         encoding: 'utf-8',
       })
-    const newContent = `import '@navigare/core'
+    /*const newContent = `import '@navigare/core'
 
 declare module '@navigare/core' {
   export interface Routes ${JSON.stringify(routes, null, 2)}
 }
-`
+`*/
+    const newContent = `export declare type GeneratedRoutes = ${JSON.stringify(
+      routes,
+      null,
+      2,
+    )};`
 
     // Do not update file if content is anyway the same
     if (oldContent === newContent) {
