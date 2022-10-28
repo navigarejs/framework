@@ -14,9 +14,12 @@ import {
 
 export default function useRouter() {
   const { router } = injectRouterContext()
-  const page = reactive(router.page)
+  const page = ref(router.page)
+  const previousPage = ref(router.previousPage)
+  const latestPage = ref(router.latestPage)
+  const pages = ref(router.pages)
   const location = computed(() => {
-    return page.location
+    return page.value.location
   })
   const fragment = usePageFragment()
   const parameters = computed(() => fragment.parameters)
@@ -24,7 +27,7 @@ export default function useRouter() {
     return new Route(fragment.rawRoute, fragment.parameters, false)
   })
   const fragments = computed(() => {
-    return page.fragments
+    return page.value.fragments
   })
   const components = ref<Record<string, DefineComponent>>(
     markRaw(router.components),
@@ -39,7 +42,10 @@ export default function useRouter() {
     processing.value = true
   }
   const handleNavigate: EventListener<'navigate'> = (event) => {
-    Object.assign(page, event.detail.page)
+    page.value = event.detail.page
+    previousPage.value = router.previousPage
+    latestPage.value = router.latestPage
+    pages.value = router.pages
     components.value = markRaw(router.components)
   }
   const handleSuccess: EventListener<'success'> = () => {}
@@ -66,6 +72,12 @@ export default function useRouter() {
     route,
 
     page,
+
+    previousPage,
+
+    latestPage,
+
+    pages,
 
     fragment,
 
@@ -115,7 +127,7 @@ export default function useRouter() {
         route ??
           (fragment.rawRoute
             ? new Route(fragment.rawRoute, fragment.parameters, false)
-            : new Route(page.rawRoute, page.parameters, false)),
+            : new Route(page.value.rawRoute, page.value.parameters, false)),
         fragment.defaults,
       )
     }),

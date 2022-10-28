@@ -105,7 +105,7 @@ export default class Router<TComponent> {
     })[0]
   }
 
-  public get latestPage(): Page | undefined {
+  public get latestPage(): Page {
     return cloneDeep(this.internalLatestPage)
   }
 
