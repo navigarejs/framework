@@ -56,7 +56,7 @@ export type RouterControl = {
   parameters: Record<string, RouteParameter>
   route: Route<RouteName>
   page: Page
-  previousPage: Page
+  previousPage: Page | undefined
   latestPage: Page
   pages: Page[]
   fragment: {
