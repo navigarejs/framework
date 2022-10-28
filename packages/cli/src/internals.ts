@@ -16,7 +16,6 @@ export function getVersion(name: string = '@navigare/cli') {
 
     return pkg?.version || 'n/a'
   } catch (error) {
-    console.log(error)
     return 'n/a'
   }
 }
