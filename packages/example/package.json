@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "navigare serve --manifest bootstrap/ssr/manifest.json bootstrap/ssr/ssr.mjs",
-    "dev": "vite",
+    "develop": "vite",
     "build": "vite build && vite build --ssr"
   },
   "dependencies": {

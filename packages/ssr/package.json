@@ -40,7 +40,7 @@
     "prepare": "",
     "build": "yarn run clean && microbundle --compress false --format modern,esm,cjs",
     "clean": "rm -rf types && rm -rf build",
-    "dev": "yarn build watch",
+    "develop": "yarn build watch",
     "test": "vitest",
     "prepack": "yarn ../core prepack > /dev/null && yarn build > /dev/null",
     "release": "yarn semantic-release"

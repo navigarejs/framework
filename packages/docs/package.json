@@ -24,7 +24,7 @@
     "prepare": "",
     "build": "vitepress build src",
     "clean": "rm -rf types && rm -rf build",
-    "dev": "vitepress dev src",
+    "develop": "vitepress dev src",
     "release": ""
   },
   "devDependencies": {

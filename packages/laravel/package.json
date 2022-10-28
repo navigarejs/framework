@@ -19,7 +19,7 @@
   "scripts": {
     "prepare": "composer install",
     "build": "",
-    "dev": "",
+    "develop": "",
     "test": "vendor/bin/pest",
     "prepack": "",
     "release": "yarn semantic-release"

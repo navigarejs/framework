@@ -39,7 +39,7 @@
     "prepare": "yarn ../core build && yarn ../ssr build",
     "build": "yarn run clean && tsc -p tsconfig.build.json",
     "clean": "rm -rf types && rm -rf build",
-    "dev": "tsc-watch -p tsconfig.build.json",
+    "develop": "tsc-watch -p tsconfig.build.json",
     "test": "chmod 777 ./tests/__fixtures__/laravel/artisan.js && vitest",
     "prepack": "yarn ../core prepack > /dev/null && yarn ../ssr prepack > /dev/null && yarn build > /dev/null",
     "release": "yarn semantic-release"
