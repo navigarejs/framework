@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-import cli from './../build/index.js'
+import cli from './../build/index.modern.js'
 
 cli.parse(process.argv)
