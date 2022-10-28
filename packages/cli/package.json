@@ -74,7 +74,7 @@
     "vitest": "^0.24.3"
   },
   "peerDependencies": {
-    "@navigare/ssr": "^1.0.17"
+    "@navigare/ssr": "^1.0.18"
   },
   "dependencies": {
     "commander": "^9.4.1"
