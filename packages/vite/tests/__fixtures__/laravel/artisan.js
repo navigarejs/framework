@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 
 /* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-console */
 
-const path = require('node:path')
-const fs = require('node:fs')
+/* eslint-disable no-console */
+import fs from 'fs'
+import path from 'path'
+
 const command = process.argv.splice(2).join(' ')
 
 if (command === 'php artisan navigare:config') {
-  printJson(
+  console.log(
     fs.readFileSync(
-      path.resolve(__dirname, '..', 'configuration.json'),
+      path.resolve(import.meta.url.slice(7), '..', '..', 'configuration.json'),
       'utf-8',
     ),
   )
@@ -18,14 +19,12 @@ if (command === 'php artisan navigare:config') {
 }
 
 if (command === 'php artisan navigare:routes') {
-  printJson(
-    fs.readFileSync(path.resolve(__dirname, '..', 'routes.json'), 'utf-8'),
+  console.log(
+    fs.readFileSync(
+      path.resolve(import.meta.url.slice(7), '..', '..', 'routes.json'),
+      'utf-8',
+    ),
   )
   process.exit(0)
 }
-
-function printJson(print) {
-  process.stdout.write(print)
-}
-
 process.exit(1)
