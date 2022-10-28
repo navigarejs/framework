@@ -24,9 +24,15 @@ import {
 } from '@babel/types'
 import { RawRoutes, throwError } from '@navigare/core'
 import { Server as SSRServer, serveSSR } from '@navigare/ssr'
+import makeDebugger from 'debug'
 import defaultsDeep from 'lodash.defaultsdeep'
+import { createRequire } from 'module'
 import path from 'path'
 import { loadEnv } from 'vite'
+
+const require = createRequire(import.meta.url)
+
+const debug = makeDebugger('navigare:laravel:index')
 
 export default function createNavigarePlugin(options: Options = {}): Plugin {
   defaultsDeep(options, {
@@ -63,6 +69,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
 
       // Set SSR mode
       ssr = !!configuration.build?.ssr
+      debug('set SSR mode to %s', ssr)
 
       // Update SSR config
       if (ssr) {
@@ -102,6 +109,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
       const updateRoutes = async () => {
         try {
           currentRoutes = await getRoutes(options, env)
+          debug('read routes: %O', currentRoutes)
 
           // Write types
           if (currentRoutes) {
@@ -134,6 +142,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
       const updateConfiguration = async () => {
         try {
           currentConfiguration = await getConfiguration(options, env)
+          debug('read configuration: %O', currentConfiguration)
         } catch (error) {
           if (error instanceof Error) {
             console.error(error.message)

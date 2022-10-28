@@ -7,7 +7,7 @@ import isString from 'lodash.isstring'
 import fs from 'node:fs'
 
 const CONFIG_ARTISAN_COMMAND = 'navigare:config'
-const debug = makeDebugger('navigare:laravel:config')
+const debug = makeDebugger('navigare:laravel:configuration')
 
 /**
  * Get configuration.

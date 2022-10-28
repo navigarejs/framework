@@ -1,7 +1,10 @@
 import { PhpFinderOptions } from './types'
 import c from 'chalk'
+import makeDebugger from 'debug'
 import * as execa from 'execa'
 import { loadEnv } from 'vite'
+
+const debug = makeDebugger('navigare:laravel:utilities')
 
 export function parseUrl(href?: string) {
   if (!href) {
@@ -59,34 +62,46 @@ export function findPhpPath(options: PhpFinderOptions = {}): string {
     )
   }
 
-  return options.env.PHP_EXECUTABLE_PATH || 'php'
+  const path = options.env.PHP_EXECUTABLE_PATH || 'php'
+  debug('use PHP path %s', path)
+
+  return path
 }
 
 /**
  * Calls an artisan command.
  */
-export function callArtisan(executable: string, ...params: string[]): string {
+export function callArtisan(
+  executable: string,
+  ...parameters: string[]
+): string {
+  debug('call artisan %s with %O', executable, parameters)
+
   if (process.env.VITEST && process.env.TEST_ARTISAN_SCRIPT) {
     return execa.sync(
       process.env.TEST_ARTISAN_SCRIPT,
-      [executable, 'artisan', ...params],
+      [executable, 'artisan', ...parameters],
       { encoding: 'utf-8' },
     )?.stdout
   }
 
-  return execa.sync(executable, ['artisan', ...params])?.stdout
+  return execa.sync(executable, ['artisan', ...parameters])?.stdout
 }
 
 /**
  * Calls a shell command.
  */
-export function callShell(executable: string, ...params: string[]): string {
+export function callShell(executable: string, ...parameters: string[]): string {
+  debug('call shell %s with %O', executable, parameters)
+
   if (process.env.VITEST && process.env.TEST_ARTISAN_SCRIPT) {
-    return execa.sync(process.env.TEST_ARTISAN_SCRIPT, [executable, ...params])
-      ?.stdout
+    return execa.sync(process.env.TEST_ARTISAN_SCRIPT, [
+      executable,
+      ...parameters,
+    ])?.stdout
   }
 
-  return execa.sync(executable, [...params])?.stdout
+  return execa.sync(executable, [...parameters])?.stdout
 }
 
 /**
