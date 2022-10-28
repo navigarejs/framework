@@ -2126,7 +2126,7 @@ __metadata:
     "@navigare/cli": ^1.0.5
     "@navigare/core": ^1.0.23
     "@navigare/ssr": ^1.0.20
-    "@navigare/vite": ^1.0.21
+    "@navigare/vite": ^1.0.22
     "@navigare/vue3": ^1.0.23
     "@prettier/plugin-php": ^0.19.1
     "@vitejs/plugin-vue": ^3.2.0
@@ -2199,7 +2199,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/vite@^1.0.21, @navigare/vite@workspace:packages/vite":
+"@navigare/vite@^1.0.22, @navigare/vite@workspace:packages/vite":
   version: 0.0.0-use.local
   resolution: "@navigare/vite@workspace:packages/vite"
   dependencies:
