@@ -34,19 +34,23 @@
     "types"
   ],
   "source": "./src/index.ts",
-  "main": "./build/index.js",
+  "module": "./build/index.module.js",
+  "exports": {
+    "require": "./build/index.cjs",
+    "default": "./build/index.modern.js"
+  },
+  "main": "./build/index.cjs",
   "types": "./types/index.d.ts",
   "scripts": {
     "prepare": "",
-    "build": "yarn run clean && tsc -p tsconfig.build.json",
+    "build": "yarn run clean && microbundle --compress false --format modern,esm,cjs",
     "clean": "rm -rf types && rm -rf build",
-    "develop": "tsc-watch -p tsconfig.build.json",
+    "develop": "yarn build watch",
     "test": "vitest",
     "prepack": "yarn ../ssr prepack > /dev/null && yarn build",
     "release": "yarn semantic-release"
   },
   "devDependencies": {
-    "@navigare/ssr": "1.0.17",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/exec": "^6.0.3",
     "@trivago/prettier-plugin-sort-imports": "^3.4.0",
@@ -65,7 +69,6 @@
     "prettier": "^2.7.1",
     "semantic-release": "^19.0.5",
     "semantic-release-monorepo": "^7.0.5",
-    "tsc-watch": "^5.0.3",
     "typescript": "^4.8.4",
     "vite": "^3.2.0",
     "vitest": "^0.24.3"
