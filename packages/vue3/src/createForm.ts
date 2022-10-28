@@ -69,7 +69,7 @@ export default function createForm<
     )
   })
 
-  const form: FormControl<TValues> = reactive({
+  const control: FormControl<TValues> = reactive({
     name,
 
     values: values as any,
@@ -132,7 +132,7 @@ export default function createForm<
 
             // Reset values if requested
             if (submitOptions.resetAfterSuccess) {
-              form.reset()
+              control.reset()
             }
 
             options.onSuccess?.(event)
@@ -173,11 +173,11 @@ export default function createForm<
     reset: markRaw(() => {
       errors.value = {}
 
-      form.set(initialValues.value)
+      control.set(initialValues.value)
     }),
 
     clear: markRaw(() => {
-      form.set()
+      control.set()
     }),
 
     set: markRaw((nextValues) => {
@@ -502,5 +502,5 @@ export default function createForm<
     { immediate: true, deep: true },
   )*/
 
-  return form
+  return control
 }

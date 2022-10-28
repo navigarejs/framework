@@ -3,10 +3,19 @@ import type plugin from './plugin'
 import {
   ActiveVisit,
   ComponentResolver,
+  EventListener,
+  EventNames,
   Page,
+  PageFragment,
+  PageFragments,
+  PartialRoute,
   RawRoutes,
   Routable,
+  Route,
+  RouteName,
+  RouteParameter,
   Router,
+  RouterLocation,
   RouterOptions,
   VisitData,
   VisitOptions,
@@ -39,6 +48,66 @@ export type Setup = (options: {
   plugin: typeof plugin
   initialPage: Page
 }) => VueApp
+
+// Router
+export type RouterControl = {
+  components: Record<string, DefineComponent>
+  location: RouterLocation
+  parameters: Record<string, RouteParameter>
+  route: Route<RouteName>
+  page: Page
+  fragment: {
+    fragment: PageFragment | null
+    rawRoute: Page['rawRoute']
+    parameters: Page['parameters']
+    defaults: Page['defaults']
+  }
+  fragments: PageFragments
+  processing: boolean
+  get(
+    routable: Routable,
+    data?: VisitData,
+    options?: Exclude<VisitOptions, 'method' | 'data'>,
+  ): Promise<ActiveVisit>
+  post(
+    routable: Routable,
+    data?: VisitData,
+    options?: Exclude<VisitOptions, 'method' | 'data'>,
+  ): Promise<ActiveVisit>
+  put(
+    routable: Routable,
+    data?: VisitData,
+    options?: Exclude<VisitOptions, 'method' | 'data'>,
+  ): Promise<ActiveVisit>
+  patch(
+    routable: Routable,
+    data?: VisitData,
+    options?: Exclude<VisitOptions, 'method' | 'data'>,
+  ): Promise<ActiveVisit>
+  delete(
+    routable: Routable,
+    options?: Exclude<VisitOptions, 'method'>,
+  ): Promise<ActiveVisit>
+  reload(
+    options?: Exclude<VisitOptions, 'preserveScroll' | 'preserveState'>,
+  ): Promise<ActiveVisit>
+  back(fallback?: Routable): Promise<void>
+  replace(routable: Routable): Promise<never>
+  push(routable: Routable): Promise<never>
+  matches(
+    comparableRoute: Routable | PartialRoute<RouteName>,
+    route?: Route<RouteName>,
+  ): boolean
+  on<TEventName extends EventNames>(
+    name: TEventName,
+    listener: EventListener<TEventName>,
+  ): () => void
+  off<TEventName extends EventNames>(
+    name: TEventName,
+    listener: EventListener<TEventName>,
+  ): void
+  instance: Router<DefineComponent>
+}
 
 // Forms
 export type FormRestore<TData> = {

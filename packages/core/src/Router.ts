@@ -91,6 +91,14 @@ export default class Router<TComponent> {
     return cloneDeep(this.internalPage)
   }
 
+  protected get previousInternalPage(): Page | undefined {
+    return this.internalPages[this.pageIndex - 1]
+  }
+
+  public get previousPage(): Page | undefined {
+    return cloneDeep(this.previousInternalPage)
+  }
+
   public get location(): RouterLocation {
     return this.page.location
   }
@@ -801,6 +809,16 @@ export default class Router<TComponent> {
     )
   }
 
+  public async reload(
+    options: Exclude<VisitOptions, 'preserveScroll' | 'preserveState'> = {},
+  ): Promise<ActiveVisit> {
+    return await this.visit(window.location.href, {
+      ...options,
+      preserveScroll: true,
+      preserveState: true,
+    })
+  }
+
   public async get(
     routable: Routable,
     data: VisitData = {},
@@ -810,16 +828,6 @@ export default class Router<TComponent> {
       ...options,
       method: 'GET',
       data,
-    })
-  }
-
-  public async reload(
-    options: Exclude<VisitOptions, 'preserveScroll' | 'preserveState'> = {},
-  ): Promise<ActiveVisit> {
-    return await this.visit(window.location.href, {
-      ...options,
-      preserveScroll: true,
-      preserveState: true,
     })
   }
 

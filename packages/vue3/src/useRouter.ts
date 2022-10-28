@@ -1,17 +1,7 @@
 import { injectRouterContext } from './injectRouterContext'
+import { RouterControl } from './types'
 import usePageFragment from './usePageFragment'
-import {
-  PartialRoute,
-  Routable,
-  EventListener,
-  RouteName,
-  Route,
-  VisitOptions,
-  ActiveVisit,
-  VisitData,
-  throwError,
-  EventNames,
-} from '@navigare/core'
+import { EventListener, Route, throwError } from '@navigare/core'
 import {
   computed,
   DefineComponent,
@@ -66,7 +56,7 @@ export default function useRouter() {
     router.off('success', handleSuccess)
   })
 
-  return reactive({
+  const control: RouterControl = reactive({
     components,
 
     location,
@@ -83,67 +73,43 @@ export default function useRouter() {
 
     processing,
 
-    async get(
-      routable: Routable,
-      data: VisitData = {},
-      options: Exclude<VisitOptions, 'method' | 'data'> = {},
-    ): Promise<ActiveVisit> {
+    get: markRaw(async (routable, data = {}, options = {}) => {
       return await router.get(routable, data, options)
-    },
+    }),
 
-    async post(
-      routable: Routable,
-      data: VisitData = {},
-      options: Exclude<VisitOptions, 'method' | 'data'> = {},
-    ): Promise<ActiveVisit> {
+    post: markRaw(async (routable, data = {}, options = {}) => {
       return await router.post(routable, data, options)
-    },
+    }),
 
-    async put(
-      routable: Routable,
-      data: VisitData = {},
-      options: Exclude<VisitOptions, 'method' | 'data'> = {},
-    ): Promise<ActiveVisit> {
+    put: markRaw(async (routable, data, options) => {
       return await router.put(routable, data, options)
-    },
+    }),
 
-    async patch(
-      routable: Routable,
-      data: VisitData = {},
-      options: Exclude<VisitOptions, 'method' | 'data'> = {},
-    ): Promise<ActiveVisit> {
+    patch: markRaw(async (routable, data, options) => {
       return await router.patch(routable, data, options)
-    },
+    }),
 
-    async delete(
-      routable: Routable,
-      options: Exclude<VisitOptions, 'method'> = {},
-    ): Promise<ActiveVisit> {
+    delete: markRaw(async (routable, options = {}) => {
       return await router.delete(routable, options)
-    },
+    }),
 
-    async reload(
-      options: Exclude<VisitOptions, 'preserveScroll' | 'preserveState'> = {},
-    ): Promise<ActiveVisit> {
+    reload: markRaw(async (options = {}) => {
       return await router.reload(options)
-    },
+    }),
 
-    async back(fallback?: Routable) {
+    back: markRaw(async (fallback) => {
       return await router.back(fallback)
-    },
+    }),
 
-    async replace(_routable: Routable) {
+    replace: markRaw(async (_routable) => {
       throwError('replace is not yet implemented')
-    },
+    }),
 
-    async push(_routable: Routable) {
+    push: markRaw(async (_routable) => {
       throwError('push is not yet implemented')
-    },
+    }),
 
-    matches(
-      comparableRoute: Routable | PartialRoute<RouteName>,
-      route?: Route<RouteName>,
-    ) {
+    matches: markRaw((comparableRoute, route) => {
       return router.matches(
         comparableRoute,
         route ??
@@ -152,22 +118,18 @@ export default function useRouter() {
             : new Route(page.rawRoute, page.parameters, false)),
         fragment.defaults,
       )
-    },
+    }),
 
-    on<TEventName extends EventNames>(
-      name: TEventName,
-      listener: EventListener<TEventName>,
-    ): () => void {
+    on: markRaw((name, listener) => {
       return router.on(name, listener)
-    },
+    }),
 
-    off<TEventName extends EventNames>(
-      name: TEventName,
-      listener: EventListener<TEventName>,
-    ): void {
+    off: markRaw((name, listener) => {
       return router.off(name, listener)
-    },
+    }),
 
-    instance: router,
+    instance: markRaw(router),
   })
+
+  return control
 }
