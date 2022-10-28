@@ -161,7 +161,9 @@ export default async function (
       throwError(`manifest file "${manifest}" does not exist`)
     }
 
-    logger?.info(`${chalk.yellow(`→ ${page?.location.href || '(empty)'}`)}`)
+    logger?.info(`${chalk.yellow(`→ ${page?.location.href || '(empty)'}`)}`, {
+      timestamp: true,
+    })
 
     // Prepare empty response that will be used in case of errors or empty requests
     const modules = new Set<string>()
@@ -176,7 +178,9 @@ export default async function (
     }
 
     if (!page) {
-      logger?.info(`${chalk.green(`← (empty)`)}`)
+      logger?.info(`${chalk.green(`← (empty)`)}`, {
+        timestamp: true,
+      })
       return emptyResponse
     }
 
@@ -237,6 +241,9 @@ export default async function (
       // Log how long it took to render the page
       logger?.info(
         `${chalk.green(`← ${page.location.href} (${Date.now() - time}ms)`)}`,
+        {
+          timestamp: true,
+        },
       )
 
       return {
@@ -248,8 +255,12 @@ export default async function (
         bodyTags: renderedPage.bodyTags || bodyTags,
         appHTML: renderedPage.appHTML || '',
       }
-    } catch (exception: any) {
-      logger?.error(exception)
+    } catch (error: any) {
+      logger?.error(error, {
+        clear: true,
+        error,
+        timestamp: true,
+      })
       return emptyResponse
     }
   }

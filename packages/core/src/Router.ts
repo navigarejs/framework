@@ -124,7 +124,7 @@ export default class Router<TComponent> {
     this.registerRawRoutes(rawRoutes)
 
     // Handle initial page
-    if (isSSR()) {
+    if (!isSSR()) {
       setTimeout(() => {
         if (this.isBackForwardVisit()) {
           this.handleBackForwardVisit(this.page)

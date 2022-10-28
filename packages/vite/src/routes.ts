@@ -94,7 +94,7 @@ export async function getLaravelRoutes(
 
   try {
     // Asks artisan for the routes
-    debug('reading routes from PHP.')
+    debug('reading Laravel routes')
     const json = JSON.parse(
       callArtisan(executable, CONFIG_ARTISAN_COMMAND),
     ) as RawRoutes

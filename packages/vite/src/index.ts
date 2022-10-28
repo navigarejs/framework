@@ -28,7 +28,7 @@ import makeDebugger from 'debug'
 import defaultsDeep from 'lodash.defaultsdeep'
 import { createRequire } from 'module'
 import path from 'path'
-import { loadEnv } from 'vite'
+import { createLogger, loadEnv, Logger } from 'vite'
 
 const require = createRequire(import.meta.url)
 
@@ -43,7 +43,8 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
   let currentRoutes: RawRoutes | null = null
   let currentConfiguration: Configuration | null = null
   let ssr = false
-  let ssrServer: SSRServer | null = null
+  let ssrServer: SSRServer | undefined = undefined
+  let logger: Logger | undefined = undefined
 
   return {
     name: 'navigare',
@@ -60,6 +61,13 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
 
     async config(configuration, { mode, command }) {
       const serving = command === 'serve'
+
+      // Create logger
+      logger = createLogger(configuration.logLevel, {
+        allowClearScreen: configuration.clearScreen,
+        customLogger: configuration.customLogger,
+        prefix: 'navigare',
+      })
 
       // Enable manifest
       configuration.build = {
@@ -161,12 +169,26 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
     async configureServer(server) {
       // In case we are already in SSR mode, we don't need to start the server
       if (ssr) {
+        // Catch uncaught exceptions
+        process.on('uncaughtException', (error) => {
+          logger?.error(
+            `We observed an uncaught exception. Did you try to access a global variable like "window" which is not available in Node environment?
+    ${error.stack}`,
+            {
+              clear: true,
+              timestamp: true,
+              error: error,
+            },
+          )
+        })
+
         return
       }
 
       // Start SSR server
+      debug('serving SSR at %s', currentConfiguration?.ssr.port)
       ssrServer = await serveSSR({
-        logger: server.config.logger,
+        logger,
         port: currentConfiguration?.ssr.port,
       })
 
@@ -240,6 +262,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
         )
         binding?.reference(routeCallExpressionPath.get('callee'))
 
+        // Remember that we changed something, so we can output the new formatted AST later
         changed = true
       }
 

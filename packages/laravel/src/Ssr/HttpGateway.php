@@ -26,12 +26,11 @@ class HttpGateway implements Gateway
     $host = Config::get('navigare.ssr.host', '127.0.0.1');
     $port = Config::get('navigare.ssr.port', 13714);
     $path = Config::get('navigare.ssr.path', '');
+    $timeout = Config::get('navigare.ssr.timeout', 5);
 
     try {
-      $response = Http::post(
-        $protocol . '://' . $host . ':' . $port . '/' . $path,
-        $page
-      )
+      $response = Http::timeout($timeout)
+        ->post($protocol . '://' . $host . ':' . $port . '/' . $path, $page)
         ->throw()
         ->json();
     } catch (RequestException $e) {
