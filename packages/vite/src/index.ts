@@ -3,7 +3,8 @@ import { getRoutes, writeTypes } from './routes'
 import { Options, Adapter, Configuration, Plugin } from './types'
 import generate from '@babel/generator'
 import { parse } from '@babel/parser'
-import traverse, { NodePath } from '@babel/traverse'
+import _traverse from '@babel/traverse'
+import type { NodePath } from '@babel/traverse'
 import {
   isImportSpecifier,
   isIdentifier,
@@ -26,9 +27,16 @@ import { RawRoutes, throwError } from '@navigare/core'
 import { Server as SSRServer, serveSSR } from '@navigare/ssr'
 import makeDebugger from 'debug'
 import defaultsDeep from 'lodash.defaultsdeep'
+import get from 'lodash.get'
 import { createRequire } from 'module'
 import path from 'path'
 import { createLogger, loadEnv, Logger } from 'vite'
+
+// Annoying workaround to circumvent ESM/CJS confusion
+// See: https://github.com/babel/babel/issues/13855#issuecomment-945123514
+const traverse = (
+  'default' in _traverse ? get(_traverse, 'default') : _traverse
+) as typeof _traverse
 
 const require = createRequire(import.meta.url)
 

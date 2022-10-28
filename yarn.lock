@@ -2216,6 +2216,7 @@ __metadata:
     "@types/babel__traverse": ^7.18.2
     "@types/debug": ^4.1.7
     "@types/lodash.defaultsdeep": ^4.6.7
+    "@types/lodash.get": ^4.0.7
     "@types/lodash.isarray": ^4.0.7
     "@types/lodash.isobject": ^3.0.7
     "@types/lodash.isstring": ^4.0.7
@@ -2230,6 +2231,7 @@ __metadata:
     eslint: ^8.26.0
     execa: ^5.1.1
     lodash.defaultsdeep: ^4.6.1
+    lodash.get: ^4.4.2
     lodash.isarray: ^4.0.0
     lodash.isobject: ^3.0.2
     lodash.isstring: ^4.0.1
@@ -3113,7 +3115,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.get@npm:^4.4.7":
+"@types/lodash.get@npm:^4.0.7, @types/lodash.get@npm:^4.4.7":
   version: 4.4.7
   resolution: "@types/lodash.get@npm:4.4.7"
   dependencies:

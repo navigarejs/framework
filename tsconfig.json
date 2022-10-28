@@ -13,7 +13,7 @@
     "preserveConstEnums": true,
     "removeComments": true,
 
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true
