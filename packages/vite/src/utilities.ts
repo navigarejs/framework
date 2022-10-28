@@ -67,7 +67,6 @@ export function findPhpPath(options: PhpFinderOptions = {}): string {
  */
 export function callArtisan(executable: string, ...params: string[]): string {
   if (process.env.VITEST && process.env.TEST_ARTISAN_SCRIPT) {
-    console.log(process.env.TEST_ARTISAN_SCRIPT)
     return execa.sync(
       process.env.TEST_ARTISAN_SCRIPT,
       [executable, 'artisan', ...params],
