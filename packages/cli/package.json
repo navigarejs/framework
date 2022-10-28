@@ -76,7 +76,7 @@
   },
   "peerDependencies": {
     "@navigare/core": "^1.0.18",
-    "@navigare/ssr": "^1.0.18"
+    "@navigare/ssr": "^1.0.19"
   },
   "dependencies": {
     "commander": "^9.4.1"
