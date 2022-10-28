@@ -13,12 +13,12 @@ jobs:
     strategy:
       matrix:
         package:
-          - cli
           - core
-          - laravel
           - ssr
+          - cli
           - vite
           - vue3
+          - laravel
       fail-fast: false
       max-parallel: 1
 
