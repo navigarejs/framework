@@ -88,6 +88,10 @@ export interface Page {
 
   layout: string | null
 
+  timestamp: number
+
+  obsolete: boolean
+
   // Refactor away
   scrollRegions: Array<{ top: number; left: number }>
   rememberedState: PageRememberedState

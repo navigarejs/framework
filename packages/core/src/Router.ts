@@ -91,12 +91,22 @@ export default class Router<TComponent> {
     return cloneDeep(this.internalPage)
   }
 
-  protected get previousInternalPage(): Page | undefined {
+  protected get internalPreviousPage(): Page | undefined {
     return this.internalPages[this.pageIndex - 1]
   }
 
   public get previousPage(): Page | undefined {
-    return cloneDeep(this.previousInternalPage)
+    return cloneDeep(this.internalPreviousPage)
+  }
+
+  protected get internalLatestPage(): Page {
+    return this.internalPages.sort((pageA, pageB) => {
+      return pageB.timestamp - pageA.timestamp
+    })[0]
+  }
+
+  public get latestPage(): Page | undefined {
+    return cloneDeep(this.internalLatestPage)
   }
 
   public get location(): RouterLocation {
