@@ -104,13 +104,16 @@ class Routes
           return [];
         }
 
-        $type = $parameter->getType()->getName();
-        if (is_string($type)) {
+        // Get type of parameter
+        // In case it's not bound to a Model we simply return "true" to signal that any string can be passed
+        $type = $parameter->getType()?->getName();
+        if (!$type || is_string($type)) {
           return [
             $parameter->getName() => true,
           ];
         }
 
+        // Otherwise we will try to identify the identifier
         $model = class_exists(Reflector::class)
           ? Reflector::getParameterClassName($parameter)
           : $parameter->getType()->getName();
