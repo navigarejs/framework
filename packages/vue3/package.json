@@ -1,6 +1,6 @@
 {
   "name": "@navigare/vue3",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
