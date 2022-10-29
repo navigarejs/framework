@@ -1,7 +1,7 @@
 import { getConfiguration } from './configuration'
 import { getRoutes, writeTypes } from './routes'
 import { Options, Adapter, Configuration, Plugin } from './types'
-import generate from '@babel/generator'
+import _generate from '@babel/generator'
 import { parse } from '@babel/parser'
 import _traverse from '@babel/traverse'
 import type { NodePath } from '@babel/traverse'
@@ -37,6 +37,9 @@ import { createLogger, loadEnv, Logger } from 'vite'
 const traverse = (
   'default' in _traverse ? get(_traverse, 'default') : _traverse
 ) as typeof _traverse
+const generate = (
+  'default' in _generate ? get(_generate, 'default') : _generate
+) as typeof _generate
 
 const require = createRequire(import.meta.url)
 
