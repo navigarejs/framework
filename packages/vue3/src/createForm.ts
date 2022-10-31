@@ -220,7 +220,18 @@ export default function createForm<
       manualDisabled.value = true
     }),
 
-    partial: markRaw(() => {}),
+    partial: markRaw(
+      (getName, getRoutable, getInitialPartialValues, options) => {
+        return createForm(
+          getName,
+          getRoutable,
+          () => {
+            return getInitialPartialValues(values as any)
+          },
+          options,
+        )
+      },
+    ),
   })
 
   /*const rememberKey =

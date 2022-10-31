@@ -180,6 +180,13 @@ export interface FormControl<
   enable(): void
 
   disable(): void
+
+  partial<TPartialValues extends VisitData>(
+    getName: string | (() => string),
+    getRoutable: Routable | (() => Routable),
+    getInitialPartialValues: (values: TValues) => TPartialValues,
+    options?: FormOptions,
+  ): FormControl<TPartialValues>
 }
 
 // Helpers
