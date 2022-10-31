@@ -39,10 +39,10 @@ import {
 } from './types'
 import {
   isSSR,
-  resolveComponents,
+  resolvePageComponents,
   throwError,
   mergeDataIntoQueryString,
-  urlWithoutHash,
+  getURLWithoutHash,
   getInitialFragments,
   mergeFragments,
   objectToFormData,
@@ -50,6 +50,7 @@ import {
   createEmitter,
   mapRouteMethod,
   safe,
+  resolveComponent,
 } from './utilities'
 import {
   default as Axios,
@@ -259,7 +260,9 @@ export default class Router<TComponent> {
 
       window.location.href = url.href
 
-      if (urlWithoutHash(window.location).href === urlWithoutHash(url).href) {
+      if (
+        getURLWithoutHash(window.location).href === getURLWithoutHash(url).href
+      ) {
         window.location.reload()
       }
     } catch (error) {
@@ -391,11 +394,10 @@ export default class Router<TComponent> {
     routable: Routable,
     options: VisitOptions = {},
   ): Promise<ActiveVisit> {
-    let { preserveScroll = false } = options
+    let { preserveScroll = false, preserveState = false } = options
     const {
       data = {},
       replace = false,
-      preserveState = false,
       props = [],
       headers = {},
       errorBag = '',
@@ -473,7 +475,7 @@ export default class Router<TComponent> {
       const response = await Axios({
         method,
 
-        url: urlWithoutHash(url).href,
+        url: getURLWithoutHash(url).href,
 
         data: method === RouteMethod.GET ? {} : data,
 
@@ -566,23 +568,19 @@ export default class Router<TComponent> {
       // Check if we need to manually preserve the scroll area
       preserveScroll = this.resolvePreserveOption(preserveScroll, nextPage)
 
-      /*
-      TODO
+      // Check if we need to preserve the state
       preserveState = this.resolvePreserveOption(preserveState, nextPage)
-      if (
-        preserveState &&
-        window.history.state?.rememberedState &&
-        nextPage.component === this.page.component
-      ) {
+      if (preserveState && window.history.state?.rememberedState) {
         nextPage.rememberedState = window.history.state.rememberedState
-      }*/
+      }
 
+      //
       const requestUrl = url
       const responseUrl = new URL(nextPage.location.href, this.location.href)
       if (
         requestUrl.hash &&
         !responseUrl.hash &&
-        urlWithoutHash(requestUrl).href === responseUrl.href
+        getURLWithoutHash(requestUrl).href === responseUrl.href
       ) {
         responseUrl.hash = requestUrl.hash
         nextPage.location = responseUrl
@@ -629,7 +627,7 @@ export default class Router<TComponent> {
           if (
             requestUrl.hash &&
             !locationUrl.hash &&
-            urlWithoutHash(requestUrl).href === locationUrl.href
+            getURLWithoutHash(requestUrl).href === locationUrl.href
           ) {
             locationUrl.hash = requestUrl.hash
           }
@@ -714,18 +712,21 @@ export default class Router<TComponent> {
       fragments: this.mergeFragments(this.page.fragments, page.fragments),
     }
 
-    // Resolve components
-    await this.resolveComponents(nextPage)
+    // Ensure that we have all components
+    await this.resolvePageComponents(nextPage)
 
+    // Reuse or initialize scroll regions and state
     nextPage.scrollRegions = nextPage.scrollRegions || []
     nextPage.rememberedState = nextPage.rememberedState || {}
 
+    // Either replace the current state or push the next state
     if (replace || nextPage.location.href === window.location.href) {
       this.replaceState(nextPage)
     } else {
       this.pushState(nextPage)
     }
 
+    // Reset scroll if requested
     if (!preserveScroll) {
       this.resetScrollPositions()
     }
@@ -743,6 +744,7 @@ export default class Router<TComponent> {
   }
 
   protected pushState(page: Page): void {
+    // Increase the page index and store the new page
     this.pageIndex++
     this.internalPages.length = this.pageIndex + 1
     this.internalPages[this.pageIndex] = page
@@ -751,19 +753,40 @@ export default class Router<TComponent> {
   }
 
   protected replaceState(page: Page): void {
+    // Simply replace the page at the current page index
     this.internalPage = page
 
     window.history.replaceState(page, '', page.location.href)
   }
 
-  protected async resolveComponents(
+  protected async resolveComponent(
+    name: string,
+  ): Promise<Record<string, TComponent>> {
+    const component = await resolveComponent(
+      this.options.resolveComponent,
+      name,
+    )
+
+    // Remember all resolved components that we already had before
+    this.internalComponents = {
+      ...this.internalComponents,
+      component: component,
+    }
+
+    return {
+      name: component,
+    }
+  }
+
+  protected async resolvePageComponents(
     page: Page,
   ): Promise<Record<string, TComponent>> {
-    const components = await resolveComponents(
+    const components = await resolvePageComponents(
       this.options.resolveComponent,
       page,
     )
 
+    // Remember all resolved components that we already had before
     this.internalComponents = {
       ...this.internalComponents,
       ...components,
@@ -781,7 +804,7 @@ export default class Router<TComponent> {
     }
 
     // Ensure that we have all components
-    await this.resolveComponents(nextPage)
+    await this.resolvePageComponents(nextPage)
 
     // Try to find page via visit id
     const nextPageIndex = nextPage

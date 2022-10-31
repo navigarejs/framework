@@ -43,7 +43,7 @@ export async function resolveComponent<TComponent>(
   return module as TComponent
 }
 
-export async function resolveComponents<TComponent>(
+export async function resolvePageComponents<TComponent>(
   resolve: ComponentResolver<TComponent>,
   page: Page,
 ): Promise<Record<string, TComponent>> {
@@ -164,7 +164,7 @@ export function mergeDataIntoQueryString(
   }
 }
 
-export function urlWithoutHash(url: URL | Location): URL {
+export function getURLWithoutHash(url: URL | Location): URL {
   url = new URL(url.href)
   url.hash = ''
 
