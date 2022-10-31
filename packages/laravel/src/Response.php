@@ -61,7 +61,7 @@ class Response implements Responsable
     Collection $shared,
     array $extensions = []
   ) {
-    $this->addFragment($fragmentName, $component, $props);
+    $this->withFragment($fragmentName, $component, $props);
     $this->rootView = $rootView;
     $this->baseURL = $baseURL;
     $this->version = $version;
@@ -84,28 +84,6 @@ class Response implements Responsable
     }
 
     return $fragment;
-  }
-
-  /**
-   * Add new fragment to response.
-   *
-   * @param  string  $fragmentName
-   * @param  string  $component
-   * @param  array|Arrayable  $props
-   * @return self
-   */
-  public function addFragment(
-    string $fragmentName = 'default',
-    string $component,
-    array|Arrayable $props
-  ): self {
-    $this->fragments[$fragmentName] = new Fragment(
-      $fragmentName,
-      $component,
-      collect($props)
-    );
-
-    return $this;
   }
 
   /**
@@ -132,6 +110,28 @@ class Response implements Responsable
   }
 
   /**
+   * Add new fragment to response.
+   *
+   * @param  string  $fragmentName
+   * @param  string  $component
+   * @param  array|Arrayable  $props
+   * @return self
+   */
+  public function withFragment(
+    string $fragmentName = 'default',
+    string $component,
+    array|Arrayable $props
+  ): self {
+    $this->fragments[$fragmentName] = new Fragment(
+      $fragmentName,
+      $component,
+      collect($props)
+    );
+
+    return $this;
+  }
+
+  /**
    * @param  string|array  $key
    * @param  mixed|null  $value
    * @return $this
@@ -150,22 +150,10 @@ class Response implements Responsable
   /**
    * Set root view (i.e. the blade component) for the Navigare response.
    *
-   * @deprecated
    * @param string $rootView
    * @return Response
    */
   public function rootView(string $rootView): self
-  {
-    return $this->setRootView($rootView);
-  }
-
-  /**
-   * Set root view (i.e. the blade component) for the Navigare response.
-   *
-   * @param string $rootView
-   * @return Response
-   */
-  public function setRootView(string $rootView): self
   {
     $this->rootView = $rootView;
 
@@ -173,12 +161,12 @@ class Response implements Responsable
   }
 
   /**
-   * Set base URL of page (i.e. for modals the page that is in the background).
+   * Extend a base page (i.e. for modals the page that is in the background).
    *
-   * @param string $rootView
+   * @param string $baseURL
    * @return Response
    */
-  public function setBaseURL(string $baseURL): self
+  public function extends(string $baseURL): self
   {
     $this->baseURL = $baseURL;
 
@@ -191,7 +179,7 @@ class Response implements Responsable
    * @param string $layout
    * @return Response
    */
-  public function setLayout(string $layout): self
+  public function layout(string $layout): self
   {
     $this->layout = $layout;
 
@@ -355,7 +343,7 @@ class Response implements Responsable
   public function __call($method, $arguments): self
   {
     if (isset($arguments[0]) && is_string($arguments[0])) {
-      $this->addFragment($method, $arguments[0], $arguments[1] ?? []);
+      $this->withFragment($method, $arguments[0], $arguments[1] ?? []);
 
       return $this;
     }

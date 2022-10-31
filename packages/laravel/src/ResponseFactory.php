@@ -41,7 +41,7 @@ class ResponseFactory
    *
    * @param  string $baseURL
    */
-  public function setBaseURL(string $baseURL): void
+  public function extends(string $baseURL): void
   {
     $this->baseURL = $baseURL;
   }
