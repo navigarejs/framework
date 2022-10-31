@@ -1,6 +1,6 @@
 {
   "name": "@navigare/vite",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
