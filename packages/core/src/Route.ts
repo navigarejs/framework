@@ -14,7 +14,7 @@ import isBoolean from 'lodash.isboolean'
 import { stringify } from 'qs'
 
 export default class Route<
-  TName extends RouteName,
+  TName extends RouteName = RouteName,
 > extends PartialRoute<TName> {
   public partial = false
 

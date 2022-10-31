@@ -16,7 +16,7 @@ import isString from 'lodash.isstring'
 import isSymbol from 'lodash.issymbol'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default class PartialRoute<TName extends RouteName> {
+export default class PartialRoute<TName extends RouteName = RouteName> {
   protected rawRoute: RawRoute
 
   public parameters: RawRouteParameters<TName>
@@ -41,6 +41,10 @@ export default class PartialRoute<TName extends RouteName> {
 
   public get name(): TName {
     return this.rawRoute.name
+  }
+
+  public get components(): string[] {
+    return this.rawRoute.components ?? []
   }
 
   /**

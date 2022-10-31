@@ -901,36 +901,6 @@ export default class Router<TComponent> {
     return window.history.state?.rememberedState?.[key]
   }
 
-  public on<TEventName extends EventNames>(
-    name: TEventName,
-    listener: EventListener<TEventName>,
-  ): () => void {
-    return this.emitter.on(name, listener)
-  }
-
-  public off<TEventName extends EventNames>(
-    name: TEventName,
-    listener: EventListener<TEventName>,
-  ): void {
-    return this.emitter.off(name, listener)
-  }
-
-  public emit<TEventName extends EventNames>(
-    name: TEventName,
-    event: RouterEvent<TEventName>,
-    localListener?: EventListener<TEventName>,
-  ): boolean {
-    if (localListener) {
-      localListener(event)
-
-      if (event.cancelable && event.defaultPrevented) {
-        return false
-      }
-    }
-
-    return this.emitter.emit(name, event as any)
-  }
-
   public resolveRoutable(
     routable: Routable,
     data: VisitData = {},
@@ -946,6 +916,7 @@ export default class Router<TComponent> {
     url: URL
     href: string
     data: VisitData
+    components: string[]
   } {
     let finalHref =
       routable instanceof URL
@@ -966,6 +937,7 @@ export default class Router<TComponent> {
       routable instanceof Route
         ? routable.method
         : mapRouteMethod(options.method) ?? RouteMethod.GET
+    const components = routable instanceof Route ? routable.components : []
 
     // Check if the route was resolved
     if (!finalHref) {
@@ -1007,6 +979,7 @@ export default class Router<TComponent> {
       url: new URL(finalHref, this.location.href),
       href: finalHref,
       data: finalData,
+      components,
     }
   }
 
@@ -1017,5 +990,35 @@ export default class Router<TComponent> {
   ): boolean {
     // Check if the route matches the other route
     return route.matches(comparableRoute, defaults)
+  }
+
+  public on<TEventName extends EventNames>(
+    name: TEventName,
+    listener: EventListener<TEventName>,
+  ): () => void {
+    return this.emitter.on(name, listener)
+  }
+
+  public off<TEventName extends EventNames>(
+    name: TEventName,
+    listener: EventListener<TEventName>,
+  ): void {
+    return this.emitter.off(name, listener)
+  }
+
+  public emit<TEventName extends EventNames>(
+    name: TEventName,
+    event: RouterEvent<TEventName>,
+    localListener?: EventListener<TEventName>,
+  ): boolean {
+    if (localListener) {
+      localListener(event)
+
+      if (event.cancelable && event.defaultPrevented) {
+        return false
+      }
+    }
+
+    return this.emitter.emit(name, event as any)
   }
 }
