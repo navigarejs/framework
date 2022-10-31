@@ -759,7 +759,7 @@ export default class Router<TComponent> {
     window.history.replaceState(page, '', page.location.href)
   }
 
-  protected async resolveComponent(
+  public async resolveComponent(
     name: string,
   ): Promise<Record<string, TComponent>> {
     const component = await resolveComponent(
