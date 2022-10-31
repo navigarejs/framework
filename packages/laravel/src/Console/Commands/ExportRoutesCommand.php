@@ -4,7 +4,7 @@ namespace Navigare\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Navigare\Routes;
+use Navigare\RawRoutes;
 
 class ExportRoutesCommand extends Command
 {
@@ -47,9 +47,9 @@ class ExportRoutesCommand extends Command
   public function getRoutesAsJSON(?string $name = null)
   {
     if ($name) {
-      return json_encode([Routes::getRoute($name)]);
+      return json_encode([RawRoutes::get($name)]);
     }
 
-    return json_encode(Routes::getRoutes());
+    return json_encode(RawRoutes::getAll());
   }
 }

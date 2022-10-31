@@ -212,7 +212,7 @@ class Response implements Responsable
     }
 
     // Prepare page
-    $rawRoute = Routes::getRoute($request->route());
+    $rawRoute = RawRoutes::get($request->route());
 
     $location = $this->getLocation($request);
 

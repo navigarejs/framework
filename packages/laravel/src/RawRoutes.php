@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
 
-class Routes
+class RawRoutes
 {
   protected static mixed $cache = null;
 
@@ -25,7 +25,7 @@ class Routes
   /**
    * Prepare route for output.
    */
-  public static function getRoute(Route|string $route)
+  public static function get(Route|string $route)
   {
     // Resolve route if passed as name
     if (is_string($route)) {
@@ -64,7 +64,7 @@ class Routes
   /**
    * Get a list of the application's named routes, keyed by their names.
    */
-  public static function getRoutes()
+  public static function getAll()
   {
     if (!is_null(static::$cache)) {
       return static::$cache;
@@ -84,7 +84,7 @@ class Routes
       });
 
     $routes = $routes->merge($fallbacks)->map(function (Route $route) {
-      return Routes::getRoute($route);
+      return RawRoutes::get($route);
     });
 
     // Store routes in cache

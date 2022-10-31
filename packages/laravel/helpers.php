@@ -1,8 +1,10 @@
 <?php
 
+use Navigare\RawRoutes;
+
 if (!function_exists('navigare')) {
   /**
-   * Navigare helper.
+   * Access Navigare via helper.
    *
    * @param  null|string  $component
    * @param  array|\Illuminate\Contracts\Support\Arrayable  $props
@@ -17,5 +19,18 @@ if (!function_exists('navigare')) {
     }
 
     return $instance;
+  }
+}
+
+if (!function_exists('rawRoute')) {
+  /**
+   * Get raw route via helper.
+   *
+   * @param Route|string $route
+   * @return ?mixed
+   */
+  function rawRoute($route)
+  {
+    return RawRoutes::get($route);
   }
 }
