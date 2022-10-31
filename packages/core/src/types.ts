@@ -360,7 +360,7 @@ export type RouteWheres = Record<string, string | null>
 
 export type RouteDefaults = Record<string, RouteParameter>
 
-export type RawRouteParameters<TRouteName extends RouteName> =
+export type RawRouteParameters<TRouteName extends RouteName = RouteName> =
   Routes[TRouteName] extends {
     bindings: any
   }

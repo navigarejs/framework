@@ -26,7 +26,6 @@ import {
   RouterLocation,
   PageFragments,
   RouterOptions,
-  RouteName,
   RouteDefaults,
   Events,
   EventNames,
@@ -898,8 +897,8 @@ export default class Router<TComponent> {
     this.replaceState({
       ...this.page,
       rememberedState: {
-        ...this.page?.rememberedState,
-        [key]: data,
+        ...this.page.rememberedState,
+        [key]: cloneDeep(data),
       },
     })
   }
@@ -1037,8 +1036,8 @@ export default class Router<TComponent> {
   }
 
   public matches(
-    comparableRoute: Routable | PartialRoute<RouteName>,
-    route: Route<RouteName>,
+    comparableRoute: Routable | PartialRoute,
+    route: Route,
     defaults: RouteDefaults,
   ): boolean {
     // Check if the route matches the other route
