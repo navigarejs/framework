@@ -33,7 +33,9 @@ class RawRoutes
         return null;
       }
 
-      $route = route($route);
+      $route = app('router')
+        ->getRoutes()
+        ->getByName($route);
     }
 
     // Prefer cache
