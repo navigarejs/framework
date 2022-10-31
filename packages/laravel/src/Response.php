@@ -15,6 +15,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Response as ResponseFactory;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -283,6 +284,11 @@ class Response implements Responsable
       parameters: $parameters,
       csrf: csrf_token()
     );
+
+    // Expose page for debugging
+    if (config('app.debug')) {
+      Event::dispatch('navigare.response', [$page]);
+    }
 
     // If the request was triggered by Navigare itself, we return the response
     // in JSON format
