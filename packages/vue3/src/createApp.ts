@@ -19,7 +19,11 @@ export default async function createApp({
   setup,
   resolveComponent,
   initialPage,
-  fragments,
+  fragments = {
+    modal: {
+      stacked: true,
+    },
+  },
 }: Options): Promise<App> {
   const initialPageWithFallback =
     initialPage ||
