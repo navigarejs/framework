@@ -895,10 +895,6 @@ export default class Router<TComponent> {
   }
 
   public remember(data: unknown, key = 'default'): void {
-    if (isSSR()) {
-      return
-    }
-
     this.replaceState({
       ...this.page,
       rememberedState: {

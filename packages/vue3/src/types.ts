@@ -133,6 +133,8 @@ export interface FormSubmitOptions {
 
 export interface FormOptions extends VisitOptions {
   disabled?: () => boolean
+
+  rememberKey?: string
 }
 
 export interface FormControl<

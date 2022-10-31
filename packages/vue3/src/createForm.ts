@@ -5,7 +5,7 @@ import cloneDeep from 'lodash.clonedeep'
 import isArray from 'lodash.isarray'
 import isEqual from 'lodash.isequal'
 import isFunction from 'lodash.isfunction'
-import { computed, markRaw, reactive, ref } from 'vue'
+import { computed, markRaw, reactive, ref, watch } from 'vue'
 
 const globalDisabled = ref(false)
 
@@ -69,6 +69,20 @@ export default function createForm<
     )
   })
 
+  // Remember values
+  watch(
+    () => values,
+    (nextValues) => {
+      if (!options.rememberKey) {
+        return
+      }
+
+      router.instance.remember(nextValues, options.rememberKey)
+    },
+    { deep: true },
+  )
+
+  // Expose control
   const control: FormControl<TValues> = reactive({
     name,
 

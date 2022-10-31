@@ -55,5 +55,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           LARAVEL_GIT_TOKEN: ${{ secrets.LARAVEL_GIT_TOKEN }}
-          # DEBUG: 'semantic-release:*'
+          DEBUG: 'semantic-release:*'
         run: yarn workspace @navigare/${{ matrix.package }} run release
