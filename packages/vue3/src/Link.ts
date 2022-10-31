@@ -1,4 +1,5 @@
 import useRouter from './useRouter'
+import { getRouteProp } from './utilities'
 import {
   shouldInterceptLink,
   RawRouteMethod,
@@ -40,12 +41,7 @@ export default defineComponent({
       default: () => ({}),
     },
 
-    route: {
-      type: [String, Object, Array] as PropType<
-        Routable | [Routable, ...PartialRoute<RouteName>[]]
-      >,
-      required: true,
-    },
+    route: getRouteProp(),
 
     method: {
       type: String as PropType<RawRouteMethod>,

@@ -1,7 +1,6 @@
 import type Root from './Root'
 import type plugin from './plugin'
 import {
-  ActiveVisit,
   ComponentResolver,
   EventListener,
   EventNames,
@@ -19,6 +18,7 @@ import {
   VisitData,
   VisitOptions,
   VisitProgress,
+  Visit,
 } from '@navigare/core'
 import { HeadClient } from '@vueuse/head'
 import { InjectionKey, App as VueApp, DefineComponent } from 'vue'
@@ -69,29 +69,29 @@ export type RouterControl = {
     routable: Routable,
     data?: VisitData,
     options?: Exclude<VisitOptions, 'method' | 'data'>,
-  ): Promise<ActiveVisit>
+  ): Promise<Visit>
   post(
     routable: Routable,
     data?: VisitData,
     options?: Exclude<VisitOptions, 'method' | 'data'>,
-  ): Promise<ActiveVisit>
+  ): Promise<Visit>
   put(
     routable: Routable,
     data?: VisitData,
     options?: Exclude<VisitOptions, 'method' | 'data'>,
-  ): Promise<ActiveVisit>
+  ): Promise<Visit>
   patch(
     routable: Routable,
     data?: VisitData,
     options?: Exclude<VisitOptions, 'method' | 'data'>,
-  ): Promise<ActiveVisit>
+  ): Promise<Visit>
   delete(
     routable: Routable,
     options?: Exclude<VisitOptions, 'method'>,
-  ): Promise<ActiveVisit>
+  ): Promise<Visit>
   reload(
     options?: Exclude<VisitOptions, 'preserveScroll' | 'preserveState'>,
-  ): Promise<ActiveVisit>
+  ): Promise<Visit>
   back(fallback?: Routable): Promise<void>
   replace(routable: Routable): Promise<never>
   push(routable: Routable): Promise<never>
@@ -161,7 +161,7 @@ export interface FormControl<
 
   trigger: HTMLElement | null
 
-  submit(options?: FormSubmitOptions): Promise<ActiveVisit | undefined>
+  submit(options?: FormSubmitOptions): Promise<Visit | undefined>
 
   reset(): void
 
