@@ -17,9 +17,6 @@ export default function createApp(initialPage?: Page) {
         },
       })
 
-      // Use Navigare App
-      app.use(navigarePlugin)
-
       return app
     },
 

@@ -4,6 +4,7 @@ import { PageFragment, Page } from '@navigare/core'
 import { computed, InjectionKey, provide, reactive } from 'vue'
 
 export const PageFragmentContext: InjectionKey<{
+  name: string | null
   fragment: PageFragment | null
   rawRoute: Page['rawRoute']
   parameters: Page['parameters']
@@ -11,6 +12,7 @@ export const PageFragmentContext: InjectionKey<{
 }> = Symbol('PageFragmentContext')
 
 export default function providePageFragmentContext(
+  name: string,
   getFragment: () => PageFragment | null,
 ): ContextOf<typeof PageFragmentContext> {
   const router = useRouter()
@@ -25,6 +27,7 @@ export default function providePageFragmentContext(
     () => fragment.value?.defaults ?? router.page.defaults,
   )
   const context: ContextOf<typeof PageFragmentContext> = reactive({
+    name,
     fragment,
     rawRoute,
     parameters,

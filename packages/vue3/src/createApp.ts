@@ -1,10 +1,11 @@
+import { devToolsPlugin } from '.'
 import Root from './Root'
 import plugin from './plugin'
 import { Options, App } from './types'
 import {
   Page,
   throwError,
-  resolveComponents,
+  resolvePageComponents,
   isSSR,
   safeParse,
   Router,
@@ -18,7 +19,6 @@ export default async function createApp({
   setup,
   resolveComponent,
   initialPage,
-  rawRoutes,
   Layout,
   fragments,
 }: Options): Promise<App> {
@@ -35,7 +35,7 @@ export default async function createApp({
   }
 
   // Create app instance
-  const initialComponents = await resolveComponents(
+  const initialComponents = await resolvePageComponents(
     resolveComponent,
     initialPageWithFallback,
   )
@@ -43,7 +43,6 @@ export default async function createApp({
     initialPage: initialPageWithFallback,
     initialComponents,
     resolveComponent,
-    rawRoutes,
     fragments,
   }
   const router = new Router<DefineComponent>(options)
@@ -59,9 +58,21 @@ export default async function createApp({
     plugin,
   })
 
+  // Provide router
+  root.config.globalProperties.router = router
+
   // Add plugins
   const head = createHead()
   root.use(head)
+  root.use(plugin)
+
+  // Add development pugin
+  if (
+    process.env.NODE_ENV === 'development' ||
+    '__VUE_PROD_DEVTOOLS__' in globalThis
+  ) {
+    root.use(devToolsPlugin)
+  }
 
   return {
     id,

@@ -5,6 +5,11 @@ export {
   default as createForm,
 } from './createForm'
 
+export {
+  default as navigareDevToolsPlugin,
+  default as devToolsPlugin,
+} from './devToolsPlugin'
+
 export { default as mountNavigareApp, default as mountApp } from './mountApp'
 
 export { default as renderNavigareApp, default as renderApp } from './renderApp'

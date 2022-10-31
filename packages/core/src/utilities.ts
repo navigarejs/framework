@@ -14,6 +14,7 @@ import {
 } from './types'
 import castArray from 'lodash.castarray'
 import isArray from 'lodash.isarray'
+import isFunction from 'lodash.isfunction'
 import merge from 'lodash.merge'
 import uniq from 'lodash.uniq'
 import { stringify, parse } from 'qs'
@@ -164,13 +165,6 @@ export function mergeDataIntoQueryString(
   }
 }
 
-export function getURLWithoutHash(url: URL | Location): URL {
-  url = new URL(url.href)
-  url.hash = ''
-
-  return url
-}
-
 export function getInitialFragments<TComponent>(
   options?: RouterOptions<TComponent>['fragments'],
 ): PageFragments {
@@ -234,7 +228,7 @@ export function objectToFormData(
 ): FormData {
   for (const key in source) {
     if (Object.prototype.hasOwnProperty.call(source, key)) {
-      append(form, composeKey(parentKey, key), source[key])
+      appendToFormData(form, composeKey(parentKey, key), source[key])
     }
   }
 
@@ -242,17 +236,17 @@ export function objectToFormData(
 }
 
 const composeKey = (parent: string | null, key: string): string => {
-  return parent ? parent + '[' + key + ']' : key
+  return parent ? `${parent}[${key}]` : key
 }
 
-const append = (
+const appendToFormData = (
   form: FormData,
   key: string,
   value: FormDataConvertible,
 ): void => {
   if (Array.isArray(value)) {
     return Array.from(value.keys()).forEach((index) =>
-      append(form, composeKey(key, index.toString()), value[index]),
+      appendToFormData(form, composeKey(key, index.toString()), value[index]),
     )
   }
 
@@ -427,4 +421,14 @@ export function safe<TOutput>(callback: () => TOutput): TOutput | null {
   } catch (error) {
     return null
   }
+}
+
+export function serialize<TInput>(input: TInput): string {
+  return JSON.stringify(input, (_key, value) => {
+    if (isFunction(value)) {
+      return undefined
+    }
+
+    return value
+  })
 }

@@ -14,18 +14,15 @@ import {
 } from './events'
 import modal from './modal'
 import {
-  ActiveVisit,
   LocationVisit,
   RouteMethod,
   Page,
-  PendingVisit,
   VisitPreserveStateOption,
   QueryStringArrayFormat,
   VisitData,
   Routable,
   VisitId,
   VisitOptions,
-  RawRoutes,
   RouterLocation,
   PageFragments,
   RouterOptions,
@@ -36,13 +33,13 @@ import {
   EventListener,
   RawRouteMethod,
   Event as RouterEvent,
+  Visit,
 } from './types'
 import {
   isSSR,
   resolvePageComponents,
   throwError,
   mergeDataIntoQueryString,
-  getURLWithoutHash,
   getInitialFragments,
   mergeFragments,
   objectToFormData,
@@ -51,6 +48,8 @@ import {
   mapRouteMethod,
   safe,
   resolveComponent,
+  safeParse,
+  serialize,
 } from './utilities'
 import {
   default as Axios,
@@ -63,18 +62,22 @@ import debounce from 'lodash.debounce'
 import isArray from 'lodash.isarray'
 import isObject from 'lodash.isobject'
 import uniq from 'lodash.uniq'
+import { SetRequired } from 'type-fest'
 
 export default class Router<TComponent> {
   protected options: RouterOptions<TComponent>
 
-  protected rawRoutes: RawRoutes = {}
-
-  protected activeVisit?: ActiveVisit
+  protected activeVisit: Visit
 
   protected internalPages: Page[] = []
 
   public get pages(): Page[] {
-    return cloneDeep(this.internalPages)
+    return cloneDeep(this.internalPages).map((page, index) => {
+      return {
+        ...page,
+        obsolete: index > this.pageIndex,
+      }
+    })
   }
 
   protected pageIndex = 0
@@ -100,7 +103,7 @@ export default class Router<TComponent> {
   }
 
   protected get internalLatestPage(): Page {
-    return this.internalPages.sort((pageA, pageB) => {
+    return [...this.internalPages].sort((pageA, pageB) => {
       return pageB.timestamp - pageA.timestamp
     })[0]
   }
@@ -125,9 +128,12 @@ export default class Router<TComponent> {
     const { initialPage, initialComponents } = options
     this.options = options
     this.internalComponents = initialComponents
+    this.activeVisit = this.createVisit({
+      location: initialPage.location,
+    })
     this.internalPages.push({
       ...initialPage,
-      visitId: this.createVisitId(),
+      visit: this.activeVisit,
     })
 
     // Handle initial page
@@ -247,7 +253,7 @@ export default class Router<TComponent> {
   }
 
   protected locationVisit(
-    url: URL,
+    location: RouterLocation,
     preserveScroll: LocationVisit['preserveScroll'],
   ): boolean | void {
     try {
@@ -258,11 +264,9 @@ export default class Router<TComponent> {
         JSON.stringify(locationVisit),
       )
 
-      window.location.href = url.href
+      window.location.href = location.href
 
-      if (
-        getURLWithoutHash(window.location).href === getURLWithoutHash(url).href
-      ) {
+      if (this.createLocation(window.location).url === location.url) {
         window.location.reload()
       }
     } catch (error) {
@@ -321,10 +325,6 @@ export default class Router<TComponent> {
     return true
   }
 
-  protected createVisitId(): VisitId {
-    return Math.random().toString(36)
-  }
-
   protected cancelVisit(visitId: VisitId, interrupt = false): void {
     if (this.activeVisit?.id !== visitId) {
       return
@@ -336,7 +336,7 @@ export default class Router<TComponent> {
       return
     }
 
-    activeVisit.cancelToken.cancel()
+    activeVisit.cancelToken?.cancel()
     activeVisit.completed = false
     activeVisit.cancelled = true
     activeVisit.interrupted = interrupt ? true : false
@@ -345,7 +345,7 @@ export default class Router<TComponent> {
     this.emit('finish', createFinishEvent(activeVisit), activeVisit.onFinish)
   }
 
-  protected finishVisit(visit: ActiveVisit): void {
+  protected finishVisit(visit: Visit): void {
     if (!visit.cancelled && !visit.interrupted) {
       visit.completed = true
       visit.cancelled = false
@@ -393,7 +393,7 @@ export default class Router<TComponent> {
   public async visit(
     routable: Routable,
     options: VisitOptions = {},
-  ): Promise<ActiveVisit> {
+  ): Promise<Visit> {
     let { preserveScroll = false, preserveState = false } = options
     const {
       data = {},
@@ -413,16 +413,14 @@ export default class Router<TComponent> {
       onInvalid,
       onException,
     } = options
-    const { url, method } = this.resolveRoutable(routable, data, {
+    const { location, method } = this.resolveRoutable(routable, data, {
       method: options.method,
       forceFormData,
       queryStringArrayFormat,
     })
 
-    const visitId = this.createVisitId()
-    const visit: PendingVisit = {
-      id: visitId,
-      url,
+    const visit: Visit = this.createVisit({
+      location,
       method,
       data,
       replace,
@@ -433,17 +431,14 @@ export default class Router<TComponent> {
       errorBag,
       forceFormData,
       queryStringArrayFormat,
-      cancelled: false,
-      completed: false,
-      interrupted: false,
-    }
+    })
 
     if (!this.emit('before', createBeforeEvent(visit), onBefore)) {
       return this.activeVisit!
     }
 
     if (this.activeVisit) {
-      this.cancelVisit(visitId, true)
+      this.cancelVisit(visit.id, true)
     }
 
     this.saveScrollPositions()
@@ -462,26 +457,26 @@ export default class Router<TComponent> {
       queryStringArrayFormat,
       cancelToken: Axios.CancelToken.source(),
       cancel: () => {
-        this.cancelVisit(visitId)
+        this.cancelVisit(visit.id)
       },
       interrupt: () => {
-        this.cancelVisit(visitId, true)
+        this.cancelVisit(visit.id, true)
       },
     }
 
-    this.emit('start', createStartEvent(visit), onStart)
+    this.emit('start', createStartEvent(this.activeVisit), onStart)
 
     try {
       const response = await Axios({
         method,
 
-        url: getURLWithoutHash(url).href,
+        url: location.url,
 
         data: method === RouteMethod.GET ? {} : data,
 
         params: method === RouteMethod.GET ? data : {},
 
-        cancelToken: this.activeVisit.cancelToken.token,
+        cancelToken: this.activeVisit.cancelToken?.token,
 
         headers: {
           ...headers,
@@ -503,7 +498,11 @@ export default class Router<TComponent> {
 
         onUploadProgress: (progress) => {
           if (data instanceof FormData) {
-            this.emit('progress', createProgressEvent(progress), onProgress)
+            this.emit(
+              'progress',
+              createProgressEvent(this.activeVisit!, progress),
+              onProgress,
+            )
           }
         },
       })
@@ -512,7 +511,11 @@ export default class Router<TComponent> {
         return Promise.reject({ response })
       }
 
-      const nextPage: Page = response.data
+      // Prepare next page
+      const nextPage: Page = {
+        ...response.data,
+        visit: this.activeVisit,
+      }
 
       // Merge props of fragments
       if (props.length) {
@@ -574,25 +577,23 @@ export default class Router<TComponent> {
         nextPage.rememberedState = window.history.state.rememberedState
       }
 
-      //
-      const requestUrl = url
-      const responseUrl = new URL(nextPage.location.href, this.location.href)
+      // In case the next location is the same as the current location, we will copy the hash
       if (
-        requestUrl.hash &&
-        !responseUrl.hash &&
-        getURLWithoutHash(requestUrl).href === responseUrl.href
+        location.hash &&
+        !nextPage.location.hash &&
+        location.url === nextPage.location.url
       ) {
-        responseUrl.hash = requestUrl.hash
-        nextPage.location = responseUrl
+        nextPage.location.hash = location.hash
       }
 
+      // Set new page
       await this.setPage(nextPage, {
-        visitId,
         replace,
         preserveScroll,
         preserveState,
       })
 
+      // Check if any errors occurred
       const errors = this.page.props.errors || {}
       if (Object.keys(errors).length > 0) {
         const scopedErrors = errorBag
@@ -601,71 +602,63 @@ export default class Router<TComponent> {
             : {}
           : errors
 
-        this.emit('error', createErrorEvent(scopedErrors), onError)
+        this.emit(
+          'error',
+          createErrorEvent(this.activeVisit, scopedErrors),
+          onError,
+        )
       } else {
-        this.emit('success', createSuccessEvent(this.page), onSuccess)
+        this.emit(
+          'success',
+          createSuccessEvent(this.activeVisit, this.page),
+          onSuccess,
+        )
       }
     } catch (error) {
       if (Axios.isAxiosError(error) && error.response) {
         if (this.isNavigareResponse(error.response)) {
-          this.setPage(error.response.data, { visitId })
+          this.setPage(error.response.data)
         } else if (this.isLocationVisitResponse(error.response)) {
-          const locationHref = this.getHeader(
-            error.response.headers,
-            'X-Navigare-Location',
+          const redirectHref = String(
+            this.getHeader(error.response.headers, 'X-Navigare-Location'),
           )
 
-          if (!locationHref) {
+          if (!redirectHref) {
             throw new Error(
               '"X-Navigare-Location" header is missing in response',
             )
           }
 
-          const locationUrl = new URL(String(locationHref), this.location.href)
-          const requestUrl = url
-
+          // In case the redirect location points to the current location, we will restore the hash
+          const redirectLocation = this.createLocation(redirectHref)
           if (
-            requestUrl.hash &&
-            !locationUrl.hash &&
-            getURLWithoutHash(requestUrl).href === locationUrl.href
+            location.hash &&
+            !redirectLocation.hash &&
+            location.url === redirectLocation.url
           ) {
-            locationUrl.hash = requestUrl.hash
+            redirectLocation.hash = location.hash
           }
 
-          this.locationVisit(locationUrl, preserveScroll === true)
+          this.locationVisit(redirectLocation, preserveScroll === true)
         } else if (
-          this.emit('invalid', createInvalidEvent(error.response), onInvalid)
+          this.emit(
+            'invalid',
+            createInvalidEvent(this.activeVisit, error.response),
+            onInvalid,
+          )
         ) {
           modal.show(error.response.data as any)
         }
       }
 
-      this.finishVisit(this.activeVisit)
-
-      throw error
+      this.emit(
+        'exception',
+        createExceptionEvent(this.activeVisit, error as Error),
+        onException,
+      )
     }
 
-    try {
-      if (this.activeVisit) {
-        this.finishVisit(this.activeVisit)
-      }
-    } catch (error) {
-      if (!Axios.isCancel(error)) {
-        const throwException = this.emit(
-          'exception',
-          createExceptionEvent(error as Error),
-          onException,
-        )
-
-        if (this.activeVisit) {
-          this.finishVisit(this.activeVisit)
-        }
-
-        if (throwException) {
-          throw error
-        }
-      }
-    }
+    this.finishVisit(this.activeVisit)
 
     return this.activeVisit
   }
@@ -696,19 +689,16 @@ export default class Router<TComponent> {
   protected async setPage(
     page: Page,
     {
-      visitId = this.createVisitId(),
       replace = false,
       preserveScroll = false,
     }: {
-      visitId?: VisitId
       replace?: boolean
       preserveScroll?: VisitPreserveStateOption
       preserveState?: VisitPreserveStateOption
     } = {},
-  ): Promise<void> {
+  ): Promise<Page> {
     const nextPage: Page = {
       ...page,
-      visitId,
       fragments: this.mergeFragments(this.page.fragments, page.fragments),
     }
 
@@ -741,6 +731,8 @@ export default class Router<TComponent> {
         replace,
       ),
     )
+
+    return nextPage
   }
 
   protected pushState(page: Page): void {
@@ -749,14 +741,14 @@ export default class Router<TComponent> {
     this.internalPages.length = this.pageIndex + 1
     this.internalPages[this.pageIndex] = page
 
-    window.history.pushState(page, '', page.location.href)
+    window.history.pushState(serialize(page), '', page.location.href)
   }
 
   protected replaceState(page: Page): void {
     // Simply replace the page at the current page index
     this.internalPage = page
 
-    window.history.replaceState(page, '', page.location.href)
+    window.history.replaceState(serialize(page), '', page.location.href)
   }
 
   public async resolveComponent(
@@ -796,7 +788,7 @@ export default class Router<TComponent> {
   }
 
   protected async handlePopstateEvent(event: PopStateEvent): Promise<void> {
-    const { state: nextPage } = event
+    const nextPage = safeParse<Page>(event.state)
 
     if (!nextPage) {
       history.back()
@@ -809,7 +801,7 @@ export default class Router<TComponent> {
     // Try to find page via visit id
     const nextPageIndex = nextPage
       ? this.internalPages.findIndex((page) => {
-          return page.visitId === nextPage.visitId
+          return page.visit.id === nextPage.visit.id
         })
       : -1
 
@@ -832,7 +824,7 @@ export default class Router<TComponent> {
 
   public async reload(
     options: Exclude<VisitOptions, 'preserveScroll' | 'preserveState'> = {},
-  ): Promise<ActiveVisit> {
+  ): Promise<Visit> {
     return await this.visit(window.location.href, {
       ...options,
       preserveScroll: true,
@@ -844,7 +836,7 @@ export default class Router<TComponent> {
     routable: Routable,
     data: VisitData = {},
     options: Exclude<VisitOptions, 'method' | 'data'> = {},
-  ): Promise<ActiveVisit> {
+  ): Promise<Visit> {
     return await this.visit(routable, {
       ...options,
       method: 'GET',
@@ -856,7 +848,7 @@ export default class Router<TComponent> {
     routable: Routable,
     data: VisitData = {},
     options: Exclude<VisitOptions, 'method' | 'data'> = {},
-  ): Promise<ActiveVisit> {
+  ): Promise<Visit> {
     return await this.visit(routable, {
       preserveState: true,
       ...options,
@@ -869,7 +861,7 @@ export default class Router<TComponent> {
     routable: Routable,
     data: VisitData = {},
     options: Exclude<VisitOptions, 'method' | 'data'> = {},
-  ): Promise<ActiveVisit> {
+  ): Promise<Visit> {
     return await this.visit(routable, {
       preserveState: true,
       ...options,
@@ -882,7 +874,7 @@ export default class Router<TComponent> {
     routable: Routable,
     data: VisitData = {},
     options: Exclude<VisitOptions, 'method' | 'data'> = {},
-  ): Promise<ActiveVisit> {
+  ): Promise<Visit> {
     return await this.visit(routable, {
       preserveState: true,
       ...options,
@@ -894,7 +886,7 @@ export default class Router<TComponent> {
   public async delete(
     routable: Routable,
     options: Exclude<VisitOptions, 'method'> = {},
-  ): Promise<ActiveVisit> {
+  ): Promise<Visit> {
     return await this.visit(routable, {
       preserveState: true,
       ...options,
@@ -936,8 +928,7 @@ export default class Router<TComponent> {
     },
   ): {
     method: RouteMethod
-    url: URL
-    href: string
+    location: RouterLocation
     data: VisitData
     components: string[]
   } {
@@ -999,10 +990,53 @@ export default class Router<TComponent> {
 
     return {
       method,
-      url: new URL(finalHref, this.location.href),
-      href: finalHref,
+      location: this.createLocation(finalHref),
       data: finalData,
       components,
+    }
+  }
+
+  protected createVisit(visit: SetRequired<Partial<Visit>, 'location'>): Visit {
+    return {
+      id: Math.random().toString(36),
+      method: RouteMethod.GET,
+      data: {},
+      replace: false,
+      preserveScroll: false,
+      preserveState: false,
+      props: [],
+      headers: {},
+      errorBag: null,
+      forceFormData: false,
+      queryStringArrayFormat: QueryStringArrayFormat.Brackets,
+      completed: true,
+      cancelled: false,
+      interrupted: false,
+      ...visit,
+    }
+  }
+
+  protected createLocation(href: string | Location): RouterLocation {
+    const url = new URL(
+      href instanceof Location ? href.href : href,
+      this.location.href,
+    )
+
+    // Create version without hash
+    const urlWithoutHash = new URL(url)
+    urlWithoutHash.hash = ''
+
+    return {
+      url: urlWithoutHash.href,
+      href: url.href,
+      host: url.host,
+      hostname: url.hostname,
+      origin: url.origin,
+      pathname: url.pathname,
+      port: url.port,
+      protocol: url.protocol,
+      search: url.search,
+      hash: url.hash,
     }
   }
 

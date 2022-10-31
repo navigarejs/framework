@@ -12,7 +12,9 @@ import {
 } from 'vue'
 
 export default defineComponent({
-  name: 'NavigareRoot',
+  name: 'Root',
+
+  navigare: true,
 
   props: {
     router: {
@@ -37,7 +39,6 @@ export default defineComponent({
 
     // Handle navigate event to update layout
     const handleNavigate: EventListener<'navigate'> = (event) => {
-      console.log('Navigate %o', event.detail)
       layout.value = event.detail.page.layout
     }
     onMounted(() => {

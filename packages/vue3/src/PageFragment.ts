@@ -4,7 +4,9 @@ import { PageFragment } from '@navigare/core'
 import { defineComponent, h, PropType } from 'vue'
 
 export default defineComponent({
-  name: 'PageFragmentContext',
+  name: 'PageFragment',
+
+  navigare: true,
 
   props: {
     name: {
@@ -22,7 +24,7 @@ export default defineComponent({
     const router = useRouter()
 
     // Provide context to children
-    providePageFragmentContext(() => {
+    providePageFragmentContext(props.name, () => {
       return props.fragment
     })
 

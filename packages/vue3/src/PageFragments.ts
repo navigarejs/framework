@@ -6,6 +6,8 @@ import { computed, VNode, defineComponent, h } from 'vue'
 export default defineComponent({
   name: 'PageFragments',
 
+  navigare: true,
+
   props: {
     name: {
       type: String,

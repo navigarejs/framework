@@ -18,20 +18,32 @@ export const createCancelEvent: EventTrigger<'cancel'> = (visit) => {
   return createEvent('cancel', { cancelable: true, detail: { visit } })
 }
 
-export const createErrorEvent: EventTrigger<'error'> = (errors) => {
-  return createEvent('error', { detail: { errors } })
+export const createErrorEvent: EventTrigger<'error'> = (visit, errors) => {
+  return createEvent('error', { detail: { visit, errors } })
 }
 
-export const createExceptionEvent: EventTrigger<'exception'> = (exception) => {
-  return createEvent('exception', { cancelable: true, detail: { exception } })
+export const createExceptionEvent: EventTrigger<'exception'> = (
+  visit,
+  exception,
+) => {
+  return createEvent('exception', {
+    cancelable: true,
+    detail: { visit, exception },
+  })
 }
 
 export const createFinishEvent: EventTrigger<'finish'> = (visit) => {
   return createEvent('finish', { detail: { visit } })
 }
 
-export const createInvalidEvent: EventTrigger<'invalid'> = (response) => {
-  return createEvent('invalid', { cancelable: true, detail: { response } })
+export const createInvalidEvent: EventTrigger<'invalid'> = (
+  visit,
+  response,
+) => {
+  return createEvent('invalid', {
+    cancelable: true,
+    detail: { visit, response },
+  })
 }
 
 export const createNavigateEvent: EventTrigger<'navigate'> = (
@@ -41,18 +53,21 @@ export const createNavigateEvent: EventTrigger<'navigate'> = (
   replace,
 ) => {
   return createEvent('navigate', {
-    detail: { page, pages, pageIndex, replace },
+    detail: { visit: page.visit, page, pages, pageIndex, replace },
   })
 }
 
-export const createProgressEvent: EventTrigger<'progress'> = (progress) => {
-  return createEvent('progress', { detail: { progress } })
+export const createProgressEvent: EventTrigger<'progress'> = (
+  visit,
+  progress,
+) => {
+  return createEvent('progress', { detail: { visit, progress } })
 }
 
 export const createStartEvent: EventTrigger<'start'> = (visit) => {
   return createEvent('start', { detail: { visit } })
 }
 
-export const createSuccessEvent: EventTrigger<'success'> = (page) => {
-  return createEvent('success', { detail: { page } })
+export const createSuccessEvent: EventTrigger<'success'> = (visit, page) => {
+  return createEvent('success', { detail: { visit, page } })
 }

@@ -2081,6 +2081,7 @@ __metadata:
     "@types/semantic-release": ^17.2.4
     "@typescript-eslint/eslint-plugin": ^5.41.0
     "@typescript-eslint/parser": ^5.41.0
+    "@vue/devtools-api": ^6.4.5
     eslint: ^8.26.0
     jsdom: ^20.0.1
     lodash.castarray: ^4.4.0
@@ -3646,6 +3647,13 @@ __metadata:
     "@vue/compiler-dom": 3.2.41
     "@vue/shared": 3.2.41
   checksum: 119913dee2ecbda3a2201148fb534e76dd47a07cc14686c800808aa40ef8a4e49f8094954f02f7b1fcf58568ccfbfb1e61b3650cebd092ef00773a6649ab8db8
+  languageName: node
+  linkType: hard
+
+"@vue/devtools-api@npm:^6.4.5":
+  version: 6.4.5
+  resolution: "@vue/devtools-api@npm:6.4.5"
+  checksum: 40c5adc8788cb283972ce09ba7ce105fa894f4decec9168829cc8e6211462763402442e6c31be76f9da62b0e74ae724971b924571367b4ac89b94dc6894e2d07
   languageName: node
   linkType: hard
 

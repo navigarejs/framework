@@ -22,6 +22,7 @@ export type ComponentResolver<TComponent> = (
 ) => Promise<TComponent>
 
 export type RouterLocation = {
+  url: string
   href: string
   host: string
   hostname: string
@@ -66,7 +67,7 @@ export type PageFragment = {
 export type PageFragments = Record<string, PageFragment | PageFragment[] | null>
 
 export interface Page {
-  visitId: VisitId
+  visit: Visit
 
   csrf: string | null
 
@@ -101,46 +102,50 @@ export interface Page {
 // Events
 export type EventsMap = {
   before: {
-    parameters: [PendingVisit]
+    parameters: [Visit]
     details: {
-      visit: PendingVisit
+      visit: Visit
     }
     result: boolean | void
   }
 
   start: {
-    parameters: [PendingVisit]
+    parameters: [Visit]
     details: {
-      visit: PendingVisit
+      visit: Visit
     }
     result: void
   }
 
   progress: {
-    parameters: [VisitProgress | undefined]
+    parameters: [Visit, VisitProgress | undefined]
     details: {
+      visit: Visit
       progress: VisitProgress | undefined
     }
     result: void
   }
 
   finish: {
-    parameters: [ActiveVisit]
+    parameters: [Visit]
     details: {
-      visit: ActiveVisit
+      visit: Visit
     }
     result: void
   }
 
   cancel: {
-    parameters: [ActiveVisit]
-    details: {}
+    parameters: [Visit]
+    details: {
+      visit: Visit
+    }
     result: void
   }
 
   navigate: {
     parameters: [Page, Page[], number, boolean]
     details: {
+      visit: Visit
       page: Page
       pages: Page[]
       pageIndex: number
@@ -150,32 +155,36 @@ export type EventsMap = {
   }
 
   success: {
-    parameters: [Page]
+    parameters: [Visit, Page]
     details: {
+      visit: Visit
       page: Page
     }
     result: void
   }
 
   error: {
-    parameters: [PageErrors]
+    parameters: [Visit, PageErrors]
     details: {
+      visit: Visit
       errors: PageErrors
     }
     result: void
   }
 
   invalid: {
-    parameters: [AxiosResponse]
+    parameters: [Visit, AxiosResponse]
     details: {
+      visit: Visit
       response: AxiosResponse
     }
     result: boolean | void
   }
 
   exception: {
-    parameters: [Error]
+    parameters: [Visit, Error]
     details: {
+      visit: Visit
       exception: Error
     }
     result: boolean | void
@@ -189,7 +198,7 @@ export type Events = {
 }
 
 export type Event<TEventName extends EventNames> = CustomEvent<
-  EventDetails<TEventName>
+  Readonly<EventDetails<TEventName>>
 >
 
 export type EventListeners = {
@@ -250,20 +259,6 @@ export type LocationVisit = {
   preserveScroll: boolean
 }
 
-export type Visit = {
-  id: VisitId
-  method: RouteMethod
-  data: VisitData
-  replace: boolean
-  preserveScroll: VisitPreserveStateOption
-  preserveState: VisitPreserveStateOption
-  props: Array<string>
-  headers: Record<string, string>
-  errorBag: string | null
-  forceFormData: boolean
-  queryStringArrayFormat: QueryStringArrayFormat
-}
-
 export type VisitOptions = Partial<{
   method: RawRouteMethod
   data: VisitData
@@ -286,17 +281,25 @@ export type VisitOptions = Partial<{
   onException: EventListener<'exception'>
 }>
 
-export type PendingVisit = Visit & {
-  url: URL
+export type Visit = {
+  id: VisitId
+  method: RouteMethod
+  data: VisitData
+  replace: boolean
+  preserveScroll: VisitPreserveStateOption
+  preserveState: VisitPreserveStateOption
+  props: Array<string>
+  headers: Record<string, string>
+  errorBag: string | null
+  forceFormData: boolean
+  queryStringArrayFormat: QueryStringArrayFormat
+  location: RouterLocation
   completed: boolean
   cancelled: boolean
   interrupted: boolean
-}
-
-export type ActiveVisit = PendingVisit & {
-  cancelToken: VisitCancelToken
-  cancel: () => void
-  interrupt: () => void
+  cancelToken?: VisitCancelToken
+  cancel?: () => void
+  interrupt?: () => void
   onBefore?: EventListener<'before'>
   onStart?: EventListener<'start'>
   onProgress?: EventListener<'progress'>

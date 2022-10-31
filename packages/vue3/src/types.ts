@@ -9,7 +9,6 @@ import {
   PageFragment,
   PageFragments,
   PartialRoute,
-  RawRoutes,
   Routable,
   Route,
   RouteName,
@@ -36,7 +35,6 @@ export type Options = {
   resolveComponent: ComponentResolver<DefineComponent>
   setup: Setup
   initialPage?: Page
-  rawRoutes?: RawRoutes
   Layout?: DefineComponent
   fragments?: RouterOptions<DefineComponent>['fragments']
 }

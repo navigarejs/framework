@@ -8,6 +8,7 @@ export function injectPageFragmentContext(): ContextOf<
 > {
   const { router } = injectRouterContext()
   const context = inject(PageFragmentContext, {
+    name: null,
     fragment: null,
     rawRoute: router.page.rawRoute,
     parameters: router.page.parameters,
