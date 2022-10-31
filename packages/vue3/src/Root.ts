@@ -42,7 +42,7 @@ export default defineComponent({
       props.router.off('navigate', handleNavigate)
     })
 
-    // Provide context to children
+    // Provide router context
     provideRouterContext(props.router)
 
     return () => {
