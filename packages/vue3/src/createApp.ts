@@ -1,5 +1,5 @@
-import { devToolsPlugin } from '.'
 import Root from './Root'
+import devToolsPlugin from './devToolsPlugin'
 import plugin from './plugin'
 import { Options, App } from './types'
 import {
