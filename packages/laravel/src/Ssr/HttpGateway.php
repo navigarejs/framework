@@ -7,16 +7,17 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Navigare\Page;
 
 class HttpGateway implements Gateway
 {
   /**
    * Dispatch the Navigare page to the Server Side Rendering engine.
    *
-   * @param  Collection  $page
+   * @param  Page  $page
    * @return Response|null
    */
-  public function dispatch(Collection $page): ?Response
+  public function dispatch(Page $page): ?Response
   {
     if (!Config::get('navigare.ssr.enabled', false)) {
       return null;
@@ -30,11 +31,13 @@ class HttpGateway implements Gateway
 
     try {
       $response = Http::timeout($timeout)
-        ->post($protocol . '://' . $host . ':' . $port . '/' . $path, $page)
+        ->post(
+          $protocol . '://' . $host . ':' . $port . '/' . $path,
+          $page->toArray()
+        )
         ->throw()
         ->json();
     } catch (RequestException $e) {
-      dd($e->getResponse());
       return null;
     }
 
@@ -43,12 +46,12 @@ class HttpGateway implements Gateway
     }
 
     return new Response(
-      $response['id'],
-      $response['htmlAttrs'],
-      $response['headTags'],
-      $response['bodyAttrs'],
-      $response['bodyTags'],
-      $response['appHTML']
+      id: $response['id'],
+      htmlAttrs: $response['htmlAttrs'],
+      headTags: $response['headTags'],
+      bodyAttrs: $response['bodyAttrs'],
+      bodyTags: $response['bodyTags'],
+      appHTML: $response['appHTML']
     );
   }
 }

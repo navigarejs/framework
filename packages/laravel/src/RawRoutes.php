@@ -24,7 +24,7 @@ class RawRoutes
    */
   public static function get(Route|string $route)
   {
-    return RawRoute::get($route);
+    return RawRoute::fromRoute($route);
   }
 
   /**

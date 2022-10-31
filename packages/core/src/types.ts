@@ -42,18 +42,18 @@ export type PageErrors = Record<string, string>
 
 export type PageErrorBag = Record<string, PageErrors>
 
-export interface PageProps {
+export interface PageProperties {
   [key: string]: unknown
 }
 
 export type PageRememberedState = Record<string, unknown>
 
-export type PageFragmentProps = Record<string, any>
+export type PageFragmentProperties = Record<string, any>
 
 export type PageFragment = {
   component: string
 
-  props: PageFragmentProps
+  properties: PageFragmentProperties
 
   rawRoute: RawRoute
 
@@ -73,7 +73,7 @@ export interface Page {
 
   fragments: PageFragments
 
-  props: PageProps & {
+  properties: PageProperties & {
     errors: PageErrors & PageErrorBag
   }
 
@@ -265,7 +265,7 @@ export type VisitOptions = Partial<{
   replace: boolean
   preserveScroll: VisitPreserveStateOption
   preserveState: VisitPreserveStateOption
-  props: Array<string>
+  properties: Array<string>
   headers: Record<string, string>
   errorBag: string | null
   forceFormData: boolean
@@ -288,7 +288,7 @@ export type Visit = {
   replace: boolean
   preserveScroll: VisitPreserveStateOption
   preserveState: VisitPreserveStateOption
-  props: Array<string>
+  properties: Array<string>
   headers: Record<string, string>
   errorBag: string | null
   forceFormData: boolean

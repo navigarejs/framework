@@ -13,8 +13,6 @@ use ReflectionMethod;
 
 class RawRoute implements Arrayable
 {
-  private Route $route;
-
   public string $name;
 
   public string $uri;
@@ -29,9 +27,8 @@ class RawRoute implements Arrayable
 
   public array $components;
 
-  public function __construct(Route $route)
+  public function __construct(public Route $route)
   {
-    $this->route = $route;
     $this->name = $route->getName();
     $this->uri = $route->uri;
     $this->methods = $route->methods;
@@ -47,7 +44,7 @@ class RawRoute implements Arrayable
    * @param  Route|string  $route
    * @return RawRoute
    */
-  public static function get(Route|string $route): RawRoute
+  public static function fromRoute(Route|string $route): RawRoute
   {
     // Resolve route if name was passed
     if (is_string($route)) {

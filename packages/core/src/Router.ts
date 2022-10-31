@@ -363,7 +363,7 @@ export default class Router<TComponent> {
     }
 
     if (value === 'errors') {
-      return Object.keys(page.props.errors || {}).length > 0
+      return Object.keys(page.properties.errors || {}).length > 0
     }
 
     return !!value
@@ -397,7 +397,7 @@ export default class Router<TComponent> {
     const {
       data = {},
       replace = false,
-      props = [],
+      properties = [],
       headers = {},
       errorBag = '',
       forceFormData = false,
@@ -425,7 +425,7 @@ export default class Router<TComponent> {
       replace,
       preserveScroll,
       preserveState,
-      props,
+      properties,
       headers,
       errorBag,
       forceFormData,
@@ -482,9 +482,9 @@ export default class Router<TComponent> {
           Accept: 'text/html, application/xhtml+xml',
           'X-Requested-With': 'XMLHttpRequest',
           'X-Navigare': true,
-          ...(props.length
+          ...(properties.length
             ? {
-                'X-Navigare-Props': props,
+                'X-Navigare-Properties': properties,
               }
             : {}),
           ...(errorBag && errorBag.length
@@ -516,11 +516,11 @@ export default class Router<TComponent> {
         visit: this.activeVisit,
       }
 
-      // Merge props of fragments
-      if (props.length) {
-        const selectedProps = props.map((prop) => {
-          if (prop.includes('/')) {
-            const [fragmentName, name] = prop.split('/')
+      // Merge properties of fragments
+      if (properties.length) {
+        const selectedProperties = properties.map((property) => {
+          if (property.includes('/')) {
+            const [fragmentName, name] = property.split('/')
 
             return {
               fragmentName,
@@ -530,11 +530,11 @@ export default class Router<TComponent> {
 
           return {
             fragmentName: 'default',
-            name: prop,
+            name: property,
           }
         })
         const selectedFragments = uniq(
-          selectedProps.map((selectedProp) => {
+          selectedProperties.map((selectedProp) => {
             return selectedProp.fragmentName
           }),
         )
@@ -552,19 +552,22 @@ export default class Router<TComponent> {
           }
 
           if (isArray(currentFragment)) {
-            selectedFragment.props = {
-              ...currentFragment[currentFragment.length - 1].props,
-              ...selectedFragment.props,
+            selectedFragment.properties = {
+              ...currentFragment[currentFragment.length - 1].properties,
+              ...selectedFragment.properties,
             }
           } else if (currentFragment) {
-            selectedFragment.props = {
-              ...currentFragment.props,
-              ...selectedFragment.props,
+            selectedFragment.properties = {
+              ...currentFragment.properties,
+              ...selectedFragment.properties,
             }
           }
         }
 
-        nextPage.props = { ...this.page.props, ...nextPage.props }
+        nextPage.properties = {
+          ...this.page.properties,
+          ...nextPage.properties,
+        }
       }
 
       // Check if we need to manually preserve the scroll area
@@ -593,7 +596,7 @@ export default class Router<TComponent> {
       })
 
       // Check if any errors occurred
-      const errors = this.page.props.errors || {}
+      const errors = this.page.properties.errors || {}
       if (Object.keys(errors).length > 0) {
         const scopedErrors = errorBag
           ? errors[errorBag]
@@ -999,7 +1002,7 @@ export default class Router<TComponent> {
       replace: false,
       preserveScroll: false,
       preserveState: false,
-      props: [],
+      properties: [],
       headers: {},
       errorBag: null,
       forceFormData: false,

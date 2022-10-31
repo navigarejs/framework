@@ -59,7 +59,7 @@ export default defineComponent({
       default: null,
     },
 
-    props: {
+    properties: {
       type: Array as PropType<string[]>,
       default: () => [],
     },
@@ -88,7 +88,7 @@ export default defineComponent({
 
       if (!routable) {
         throwError(
-          'a valid `route` must be set on Link, did you forget to set the prop?',
+          'a valid `route` must be set on Link, did you forget to set the property?',
         )
       }
 
@@ -143,7 +143,7 @@ export default defineComponent({
               replace: props.replace,
               preserveScroll: props.preserveScroll,
               preserveState: props.preserveState ?? method !== 'get',
-              props: props.props,
+              properties: props.properties,
               headers: props.headers,
               onBefore: ensureFunction(attrs.onBefore),
               onStart: ensureFunction(attrs.onStart),

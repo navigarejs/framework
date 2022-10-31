@@ -19,7 +19,7 @@ class Directive
       'bodyAttrs' => '{!! $__navigareSsr?->bodyAttrs ?? "" !!}',
       'bodyTags' => '{!! $__navigareSsr?->bodyTags ?? "" !!}',
       'appHTML'
-        => '<div id="{{ $__navigareSsr?->id ?? "app" }}" data-page="{{ json_encode($page) }}">{!! $__navigareSsr?->appHTML ?? "" !!}</div>',
+        => '<div id="{{ $__navigareSsr?->id ?? "app" }}" data-page="{{ json_encode($page->toArray()) }}">{!! $__navigareSsr?->appHTML ?? "" !!}</div>',
       default => '',
     };
 

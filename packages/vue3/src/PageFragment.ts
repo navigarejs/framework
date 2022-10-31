@@ -46,7 +46,7 @@ export default defineComponent({
       const renderedComponent = h(
         component,
         {
-          ...props.fragment.props,
+          ...props.fragment.properties,
         },
         {},
       )

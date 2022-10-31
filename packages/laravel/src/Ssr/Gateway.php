@@ -3,14 +3,15 @@
 namespace Navigare\Ssr;
 
 use Illuminate\Support\Collection;
+use Navigare\Page;
 
 interface Gateway
 {
   /**
    * Dispatch the Navigare page to the Server Side Rendering engine.
    *
-   * @param  Collection  $page
+   * @param  Page  $page
    * @return Response|null
    */
-  public function dispatch(Collection $page): ?Response;
+  public function dispatch(Page $page): ?Response;
 }
