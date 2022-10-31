@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
   release:
@@ -44,14 +43,6 @@ jobs:
       - name: Install dependencies
         if: steps.changes.outputs.package == 'true'
         run: yarn install --immutable
-
-      - name: Prepack
-        if: steps.changes.outputs.package == 'true'
-        run: yarn workspace @navigare/${{ matrix.package }} prepack
-
-      - name: Test
-        if: steps.changes.outputs.package == 'true'
-        run: yarn workspace @navigare/${{ matrix.package }} test
 
       - name: Release
         if: steps.changes.outputs.package == 'true'
