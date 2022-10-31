@@ -21,14 +21,49 @@
       <div class="space-x-2 flex flex-row">
         <button
           type="reset"
-          :disabled="form.submitting"
+          :disabled="form.processing"
         >
           Reset
         </button>
 
         <button
           type="submit"
-          :disabled="form.submitting"
+          :disabled="form.processing"
+        >
+          Submit
+        </button>
+      </div>
+    </navigare-form>
+
+    <navigare-form
+      :form="smartForm"
+      class="space-y-4"
+    >
+      <div>
+        <label for="name"> Enter your name </label>
+        <input
+          id="name"
+          v-model="smartForm.values.name"
+        />
+        <div
+          v-if="smartForm.errors.name"
+          class="text-xs text-red-500"
+        >
+          {{ smartForm.errors.name }}
+        </div>
+      </div>
+
+      <div class="space-x-2 flex flex-row">
+        <button
+          type="reset"
+          :disabled="smartForm.processing"
+        >
+          Reset
+        </button>
+
+        <button
+          type="submit"
+          :disabled="smartForm.processing"
         >
           Submit
         </button>
@@ -54,4 +89,17 @@ const form = createForm('questionnaire', route('vue.form.submit'), () => {
     name: 'julian',
   }
 })
+
+const smartForm = createForm(
+  'smart_questionnaire',
+  route('vue.form.submit'),
+  () => {
+    return {
+      name: 'julian',
+    }
+  },
+  {
+    remember: true,
+  },
+)
 </script>

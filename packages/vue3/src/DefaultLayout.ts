@@ -1,12 +1,13 @@
 import PageFragments from './PageFragments'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, PropType } from 'vue'
 
 export default defineComponent({
   name: 'DefaultLayout',
 
   props: {
     layout: {
-      type: String,
+      type: [String, null] as PropType<string | null>,
+      required: true,
     },
   },
 

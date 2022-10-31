@@ -46,7 +46,7 @@ export interface PageProperties {
   [key: string]: unknown
 }
 
-export type PageRememberedState = Record<string, unknown>
+export type PageRememberedState = Record<string, unknown> | undefined
 
 export type PageFragmentProperties = Record<string, any>
 
@@ -93,10 +93,9 @@ export interface Page {
 
   obsolete: boolean
 
-  // Refactor away
   scrollRegions: Array<{ top: number; left: number }>
+
   rememberedState: PageRememberedState
-  resolvedErrors: PageErrors
 }
 
 // Events

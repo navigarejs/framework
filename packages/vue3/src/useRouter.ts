@@ -21,6 +21,9 @@ export default function useRouter() {
   const location = computed(() => {
     return page.value.location
   })
+  const layout = computed(() => {
+    return page.value.layout
+  })
   const fragment = usePageFragment()
   const parameters = computed(() => fragment.parameters)
   const route = computed(() => {
@@ -84,6 +87,8 @@ export default function useRouter() {
     fragments,
 
     processing,
+
+    layout,
 
     get: markRaw(async (routable, data = {}, options = {}) => {
       return await router.get(routable, data, options)

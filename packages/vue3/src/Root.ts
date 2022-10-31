@@ -26,15 +26,9 @@ export default defineComponent({
       type: [String, null] as PropType<string | null>,
       required: true,
     },
-
-    Layout: {
-      type: Object as PropType<DefineComponent>,
-      required: false,
-      default: () => DefaultLayout,
-    },
   },
 
-  setup(props) {
+  setup(props, { slots }) {
     const layout = ref<string | null>(props.layout)
 
     // Handle navigate event to update layout
@@ -52,7 +46,13 @@ export default defineComponent({
     provideRouterContext(props.router)
 
     return () => {
-      return h(props.Layout, {
+      if (slots.default) {
+        return slots.default?.({
+          layout: layout.value,
+        })
+      }
+
+      return h(DefaultLayout, {
         layout: layout.value,
       })
     }

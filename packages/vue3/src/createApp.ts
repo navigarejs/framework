@@ -19,7 +19,6 @@ export default async function createApp({
   setup,
   resolveComponent,
   initialPage,
-  Layout,
   fragments,
 }: Options): Promise<App> {
   const initialPageWithFallback =
@@ -51,7 +50,6 @@ export default async function createApp({
     props: {
       router,
       layout: options.initialPage.layout,
-      Layout,
     },
     initialPage: initialPageWithFallback,
     router,

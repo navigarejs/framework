@@ -35,7 +35,6 @@ export type Options = {
   resolveComponent: ComponentResolver<DefineComponent>
   setup: Setup
   initialPage?: Page
-  Layout?: DefineComponent
   fragments?: RouterOptions<DefineComponent>['fragments']
 }
 
@@ -57,6 +56,7 @@ export type RouterControl = {
   previousPage: Page | undefined
   latestPage: Page
   pages: Page[]
+  layout: string | null
   fragment: {
     fragment: PageFragment | null
     rawRoute: Page['rawRoute']
@@ -134,7 +134,7 @@ export interface FormSubmitOptions {
 export interface FormOptions extends VisitOptions {
   disabled?: () => boolean
 
-  rememberKey?: string
+  remember?: boolean
 }
 
 export interface FormControl<

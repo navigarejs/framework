@@ -34,8 +34,8 @@ export default function createForm<
     return getRoutable
   })
   const initialValues = computed<TValues>(() => {
-    const restoredValues = router.instance.restore(options.rememberKey)
-    if (options.rememberKey && restoredValues) {
+    const restoredValues = router.instance.restore(name.value)
+    if (options.remember && restoredValues) {
       return restoredValues as TValues
     }
 
@@ -78,11 +78,11 @@ export default function createForm<
   watch(
     () => values,
     (nextValues) => {
-      if (!options.rememberKey) {
+      if (!options.remember) {
         return
       }
 
-      router.instance.remember(nextValues, options.rememberKey)
+      router.instance.remember(nextValues, name.value)
     },
     { deep: true },
   )

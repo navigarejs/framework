@@ -7,7 +7,7 @@
     <div class="mt-12 px-4 py-4 flex flex-row space-x-4">
       <transition name="slide-fade">
         <div
-          v-if="layout === 'nested'"
+          v-if="router.layout === 'nested'"
           class="w-full max-w-[300px]"
         >
           <page-fragments name="navigation" />
@@ -65,10 +65,6 @@
 <script lang="ts" setup>
 import { useRouter, PageFragments } from '@navigare/vue3'
 import { ssrContextKey } from 'vue'
-
-defineProps({
-  layout: String,
-})
 
 const router = useRouter()
 </script>

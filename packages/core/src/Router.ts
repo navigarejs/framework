@@ -260,7 +260,7 @@ export default class Router<TComponent> {
 
       window.sessionStorage.setItem(
         'navigareLocationVisit',
-        JSON.stringify(locationVisit),
+        serialize(locationVisit),
       )
 
       window.location.href = location.href
@@ -906,12 +906,14 @@ export default class Router<TComponent> {
     })
   }
 
-  public restore(key = 'default'): unknown | undefined {
+  public restore(key = 'default'): unknown {
     if (isSSR()) {
       return
     }
 
-    return window.history.state?.rememberedState?.[key]
+    const page = safeParse<Page>(window.history.state)
+
+    return page?.rememberedState?.[key]
   }
 
   public resolveRoutable(

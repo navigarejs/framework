@@ -8,7 +8,7 @@ export function injectRouterContext(): ContextOf<typeof RouterContext> {
 
   if (!context) {
     throwError(
-      'Router context is not available. Did you use "createApp" before?',
+      'Router context is not available. Did you use `createApp` before?',
     )
   }
 
