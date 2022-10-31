@@ -33,10 +33,10 @@ export default function createForm<
 
     return getRoutable
   })
-  const initialValues = computed(() => {
+  const initialValues = computed<TValues>(() => {
     const restoredValues = router.instance.restore(options.rememberKey)
     if (options.rememberKey && restoredValues) {
-      return restoredValues
+      return restoredValues as TValues
     }
 
     if (isFunction(getInitialValues)) {
