@@ -37,7 +37,7 @@ export default defineComponent({
         {
           ref: element,
           method: target.value.method,
-          action: target.value.href,
+          action: target.value.location.href,
           onReset: (event: Event) => {
             event.preventDefault()
 
