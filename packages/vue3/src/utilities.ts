@@ -1,8 +1,9 @@
+import { PartialRoute, Routable } from '@navigare/core'
 import castArray from 'lodash.castarray'
 import isArray from 'lodash.isarray'
 import isFunction from 'lodash.isfunction'
 import isObject from 'lodash.isobject'
-import { Slot, VNode } from 'vue'
+import { PropType, Slot, VNode } from 'vue'
 
 function getVNodesText(children: VNode[]): string {
   return children
@@ -27,4 +28,13 @@ export function getVNodeText(
   }
 
   return getVNodesText(isFunction(vnode) ? vnode() : castArray(vnode))
+}
+
+export function getRouteProp() {
+  return {
+    type: [String, Object, Array] as PropType<
+      Routable | [Routable, ...PartialRoute[]]
+    >,
+    required: true,
+  }
 }

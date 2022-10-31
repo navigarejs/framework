@@ -3,10 +3,7 @@ import { getRouteProp } from './utilities'
 import {
   shouldInterceptLink,
   RawRouteMethod,
-  Routable,
   throwError,
-  PartialRoute,
-  RouteName,
   RouteMethod,
 } from '@navigare/core'
 import castArray from 'lodash.castarray'
