@@ -1,20 +1,15 @@
 name: release
 
 on:
-  workflow_run:
-    workflows:
-      - tests
+  push:
     branches:
       - main
-    types:
-      - completed
+  pull_request:
 
 jobs:
   release:
     # Change to ubuntu-latest once it points to ^22.x
     runs-on: ubuntu-22.04
-
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     strategy:
       matrix:
@@ -39,6 +34,7 @@ jobs:
         uses: dorny/paths-filter@v2.11.1
         id: changes
         with:
+          base: ${{ github.ref }}
           filters: |
             package:
               - 'yarn.lock'
@@ -48,6 +44,14 @@ jobs:
       - name: Install dependencies
         if: steps.changes.outputs.package == 'true'
         run: yarn install --immutable
+
+      - name: Prepack
+        if: steps.changes.outputs.package == 'true'
+        run: yarn workspace @navigare/${{ matrix.package }} prepack
+
+      - name: Test
+        if: steps.changes.outputs.package == 'true'
+        run: yarn workspace @navigare/${{ matrix.package }} test
 
       - name: Release
         if: steps.changes.outputs.package == 'true'
