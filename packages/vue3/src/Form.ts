@@ -5,7 +5,7 @@ import { computed, PropType, ref } from 'vue'
 import { defineComponent, h } from 'vue'
 
 export default defineComponent({
-  name: 'NavigareForm',
+  name: 'Form',
 
   props: {
     form: {
