@@ -27,8 +27,6 @@ export default function createApp(initialPage?: Page) {
       )
     },
 
-    Layout,
-
     fragments: {
       modal: {
         stacked: true,
