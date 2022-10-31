@@ -146,7 +146,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
           }
         } catch (error) {
           if (error instanceof Error) {
-            console.error(error.message)
+            logger.error(error.message)
           }
         }
 
@@ -165,7 +165,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
           debug('read configuration: %O', currentConfiguration)
         } catch (error) {
           if (error instanceof Error) {
-            console.error(error.message)
+            logger.error(error.message)
           }
         }
 
