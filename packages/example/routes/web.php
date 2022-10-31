@@ -52,7 +52,7 @@ Route::as('vue.')
     Route::get('modal', function (string $name = 'Julian') {
       return Navigare::modal('Modal', [
         'name' => $name,
-      ])->setBaseURL(
+      ])->extends(
         route('vue.home', [
           'name' => $name,
         ])
@@ -62,7 +62,7 @@ Route::as('vue.')
     Route::get('second-modal', function (string $name = 'Julian') {
       return Navigare::modal('SecondModal', [
         'name' => $name,
-      ])->setBaseURL(
+      ])->extends(
         route('vue.home', [
           'name' => $name,
         ])
@@ -74,7 +74,7 @@ Route::as('vue.')
       ->group(function () {
         Route::get('', function () {
           return Navigare::render('nested/Index', [])
-            ->setLayout('nested')
+            ->layout('nested')
             ->navigation('partials/Navigation');
         })->name('index');
 
@@ -82,7 +82,7 @@ Route::as('vue.')
           return Navigare::render('nested/Details', [
             'id' => $id,
           ])
-            ->setLayout('nested')
+            ->layout('nested')
             ->navigation('partials/Navigation');
         })->name('details');
       });
