@@ -80,7 +80,7 @@
   },
   "peerDependencies": {
     "@navigare/core": "^1.0.29",
-    "@navigare/ssr": "^1.0.20",
+    "@navigare/ssr": "^1.0.21",
     "react": "^18.2.0",
     "vite": "^3.0.0",
     "vue": "^3.2.41"
