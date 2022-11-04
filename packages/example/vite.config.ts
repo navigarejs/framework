@@ -23,8 +23,7 @@ export default defineConfig({
 
   plugins: [
     laravel({
-      input: ['resources/css/app.css', 'resources/scripts/vue/client.ts'],
-      ssr: 'resources/scripts/vue/ssr.ts',
+      input: ['resources/css/app.css', 'resources/scripts/client.ts'],
       refresh: true,
     }),
 

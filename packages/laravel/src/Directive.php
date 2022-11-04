@@ -14,12 +14,12 @@ class Directive
   {
     $part = trim(trim($expression), "\'\"") ?: 'appHTML';
     $template = match ($part) {
-      'htmlAttrs' => '{!! $__navigareSsr?->htmlAttrs ?? "" !!}',
+      'htmlAttributes' => '{!! $__navigareSsr?->htmlAttributes ?? "" !!}',
       'headTags' => '{!! $__navigareSsr?->headTags ?? "" !!}',
-      'bodyAttrs' => '{!! $__navigareSsr?->bodyAttrs ?? "" !!}',
+      'bodyAttributes' => '{!! $__navigareSsr?->bodyAttributes ?? "" !!}',
       'bodyTags' => '{!! $__navigareSsr?->bodyTags ?? "" !!}',
       'appHTML'
-        => '<div id="{{ $__navigareSsr?->id ?? "app" }}" data-page="{{ json_encode($page->toArray()) }}">{!! $__navigareSsr?->appHTML ?? "" !!}</div>',
+        => '<div id="{{ $__navigareSsr?->id ?? "app" }}" data-page="{{ json_encode($page->toArray(false)) }}">{!! $__navigareSsr?->appHTML ?? "" !!}</div>',
       default => '',
     };
 

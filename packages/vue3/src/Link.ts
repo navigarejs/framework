@@ -126,7 +126,7 @@ export default defineComponent({
             // we don't lose time when the actual response comes in
             Promise.all(
               components.map((component) => {
-                return router.instance.resolveComponent(component)
+                return router.instance.getComponentModule(component)
               }),
             )
           },

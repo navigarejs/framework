@@ -70,19 +70,7 @@ class Middleware
    */
   public function getVersion(Request $request)
   {
-    if (config('app.asset_url')) {
-      return md5(config('app.asset_url'));
-    }
-
-    if (file_exists($manifest = public_path('mix-manifest.json'))) {
-      return md5_file($manifest);
-    }
-
-    if (file_exists($manifest = public_path('build/manifest.json'))) {
-      return md5_file($manifest);
-    }
-
-    return null;
+    return Navigare::getConfiguration()->getVersion();
   }
 
   /**
@@ -120,28 +108,26 @@ class Middleware
    */
   public function handle(Request $request, Closure $next)
   {
+    // Set root view
+    Navigare::setRootView($this->getRootView($request));
+
     // Set version
-    Navigare::version(function () use ($request) {
+    Navigare::setVersion(function () use ($request) {
       return $this->getVersion($request);
     });
 
-    // Set shared props
-    Navigare::share([
-      'errors' => function () use ($request) {
-        return collect($this->resolveValidationErrors($request));
-      },
-    ]);
-
-    // Share is deprecated and `Navigare::extend()` should be used instead
-    Navigare::share($this->share($request));
-
-    // Set extension
+    // Set extensions
     Navigare::extend(function (Request $request, NavigareResponse $response) {
+      $response->with([
+        'errors' => function () use ($request) {
+          return collect($this->resolveValidationErrors($request));
+        },
+      ]);
+
+      $response->with($this->share($request));
+
       $this->extend($request, $response);
     });
-
-    // Set root view
-    Navigare::setRootView($this->getRootView($request));
 
     // Retrieve response by calling the middleware stack
     $response = $next($request);

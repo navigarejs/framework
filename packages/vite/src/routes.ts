@@ -6,7 +6,6 @@ import isObject from 'lodash.isobject'
 import isString from 'lodash.isstring'
 import fs from 'node:fs'
 
-const CONFIG_ARTISAN_COMMAND = 'navigare:routes'
 const debug = makeDebugger('navigare:laravel:routes')
 
 /**
@@ -64,6 +63,7 @@ declare module '@navigare/core' {
 export const getRoutes = async (
   options: Options,
   env: NodeJS.ProcessEnv,
+  ssr: boolean,
 ): Promise<RawRoutes> => {
   // Prefer already defined routes
   if (isObject(options.routes)) {
@@ -78,7 +78,7 @@ export const getRoutes = async (
   // Otherwise try to retrieve them from adapter
   switch (options.routes) {
     case Adapter.Laravel: {
-      return await getLaravelRoutes(options, env)
+      return await getLaravelRoutes(options, env, ssr)
       break
     }
 
@@ -94,6 +94,7 @@ export const getRoutes = async (
 export async function getLaravelRoutes(
   options: Options,
   env: NodeJS.ProcessEnv,
+  ssr: boolean,
 ): Promise<RawRoutes> {
   const executable = findPhpPath({ env, path: options.php })
 
@@ -101,7 +102,7 @@ export async function getLaravelRoutes(
     // Asks artisan for the routes
     debug('reading Laravel routes')
     const json = JSON.parse(
-      callArtisan(executable, CONFIG_ARTISAN_COMMAND),
+      callArtisan(executable, 'navigare:routes', ssr ? '--ssr' : undefined),
     ) as RawRoutes
 
     if (!json) {

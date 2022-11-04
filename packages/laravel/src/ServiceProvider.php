@@ -28,11 +28,11 @@ class ServiceProvider extends BaseServiceProvider
     $this->registerRouterMacro();
     $this->registerTestingMacros();
 
-    $this->app->bind('navigare.testing.view-finder', function ($app) {
+    $this->app->bind('navigare.components.finder', function ($app) {
       return new FileViewFinder(
         $app['files'],
-        $app['config']->get('navigare.testing.page_paths'),
-        $app['config']->get('navigare.testing.page_extensions')
+        $app['config']->get('navigare.components.paths'),
+        $app['config']->get('navigare.components.extensions')
       );
     });
   }
@@ -59,11 +59,15 @@ class ServiceProvider extends BaseServiceProvider
       return;
     }
 
+    $this->commands([Console\Commands\CacheCommand::class]);
+
+    $this->commands([Console\Commands\ClearCommand::class]);
+
     $this->commands([Console\Commands\CreateMiddlewareCommand::class]);
 
-    $this->commands([Console\Commands\ExportConfigurationCommand::class]);
+    $this->commands([Console\Commands\PrintConfigurationCommand::class]);
 
-    $this->commands([Console\Commands\ExportRoutesCommand::class]);
+    $this->commands([Console\Commands\PrintRoutesCommand::class]);
 
     $this->commands([
       Console\Commands\UpdateTypeScriptConfigurationCommand::class,

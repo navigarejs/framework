@@ -26,7 +26,8 @@
     "prepare": "husky install && yarn workspaces foreach run build",
     "develop": "yarn workspaces foreach --interlaced --parallel --verbose run develop",
     "release": "yarn workspaces foreach --verbose run release",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "yarn workspaces foreach --interlaced --verbose run test"
   },
   "packageManager": "yarn@3.2.4",
   "dependencies": {

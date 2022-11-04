@@ -33,10 +33,10 @@ import {
   RawRouteMethod,
   Event as RouterEvent,
   Visit,
+  PageComponent,
 } from './types'
 import {
   isSSR,
-  resolvePageComponents,
   throwError,
   mergeDataIntoQueryString,
   getInitialFragments,
@@ -46,7 +46,6 @@ import {
   createEmitter,
   mapRouteMethod,
   safe,
-  resolveComponent,
   safeParse,
   serialize,
 } from './utilities'
@@ -63,8 +62,8 @@ import isObject from 'lodash.isobject'
 import uniq from 'lodash.uniq'
 import { SetRequired } from 'type-fest'
 
-export default class Router<TComponent> {
-  protected options: RouterOptions<TComponent>
+export default class Router<TComponentModule> {
+  protected options: RouterOptions<TComponentModule>
 
   protected activeVisit: Visit
 
@@ -115,18 +114,13 @@ export default class Router<TComponent> {
     return this.page.location
   }
 
-  protected internalComponents: Record<string, TComponent> = {}
-
-  public get components(): Record<string, TComponent> {
-    return this.internalComponents
-  }
-
   protected emitter = createEmitter<Events>()
 
-  public constructor(options: RouterOptions<TComponent>) {
-    const { initialPage, initialComponents } = options
+  protected componentModules: Record<string, TComponentModule> = {}
+
+  public constructor(options: RouterOptions<TComponentModule>) {
+    const { initialPage } = options
     this.options = options
-    this.internalComponents = initialComponents
     this.activeVisit = this.createVisit({
       location: initialPage.location,
     })
@@ -265,7 +259,7 @@ export default class Router<TComponent> {
 
       window.location.href = location.href
 
-      if (this.createLocation(window.location).url === location.url) {
+      if (this.createLocation(window.location.href).url === location.url) {
         window.location.reload()
       }
     } catch (error) {
@@ -704,9 +698,6 @@ export default class Router<TComponent> {
       fragments: this.mergeFragments(this.page.fragments, page.fragments),
     }
 
-    // Ensure that we have all components
-    await this.resolvePageComponents(nextPage)
-
     // Reuse or initialize scroll regions and state
     nextPage.scrollRegions = nextPage.scrollRegions || []
     nextPage.rememberedState = nextPage.rememberedState || {}
@@ -753,40 +744,62 @@ export default class Router<TComponent> {
     window.history.replaceState(serialize(page), '', page.location.href)
   }
 
-  public async resolveComponent(
-    name: string,
-  ): Promise<Record<string, TComponent>> {
-    const component = await resolveComponent(
-      this.options.resolveComponent,
-      name,
-    )
-
-    // Remember all resolved components that we already had before
-    this.internalComponents = {
-      ...this.internalComponents,
-      component: component,
-    }
-
-    return {
-      name: component,
-    }
+  protected getComponentId(component: PageComponent): string {
+    return component.url
   }
 
-  protected async resolvePageComponents(
-    page: Page,
-  ): Promise<Record<string, TComponent>> {
-    const components = await resolvePageComponents(
-      this.options.resolveComponent,
-      page,
-    )
+  public getComponentModule(
+    component: PageComponent,
+  ): TComponentModule | Promise<TComponentModule> {
+    const id = this.getComponentId(component)
 
-    // Remember all resolved components that we already had before
-    this.internalComponents = {
-      ...this.internalComponents,
-      ...components,
+    // IF the component was loaded before we can simply return it's instance
+    if (id in this.componentModules) {
+      return this.componentModules[this.getComponentId(component)]
     }
 
-    return components
+    // Otherwise we will resolve it asynchronously
+    return new Promise<TComponentModule>(async (resolve) => {
+      const module = (await this.resolveComponent(component)) as any
+
+      this.componentModules[id] = 'default' in module ? module.default : module
+
+      resolve(this.componentModules[id])
+    })
+  }
+
+  public async resolveComponent(component: PageComponent) {
+    const resolveComponentModule =
+      this.options.resolveComponentModule ||
+      (async ({ url }) => {
+        return import(/* @vite-ignore */ url)
+      })
+
+    return await resolveComponentModule(component)
+  }
+
+  public async resolvePage(page: Page): Promise<void> {
+    const components = Object.values(page.fragments).reduce(
+      (cumulatedComponents, fragments) => {
+        if (!fragments) {
+          return cumulatedComponents
+        }
+
+        return [
+          ...cumulatedComponents,
+          ...(isArray(fragments)
+            ? fragments.map((fragment) => fragment.component)
+            : [fragments.component]),
+        ]
+      },
+      [] as PageComponent[],
+    )
+
+    await Promise.all(
+      components.map(async (component) => {
+        return await this.getComponentModule(component)
+      }),
+    )
   }
 
   protected async handlePopstateEvent(event: PopStateEvent): Promise<void> {
@@ -796,9 +809,6 @@ export default class Router<TComponent> {
       history.back()
       return
     }
-
-    // Ensure that we have all components
-    await this.resolvePageComponents(nextPage)
 
     // Try to find page via visit id
     const nextPageIndex = nextPage
@@ -930,7 +940,7 @@ export default class Router<TComponent> {
     method: RouteMethod
     location: RouterLocation
     data: VisitData
-    components: string[]
+    components: PageComponent[]
   } {
     let finalHref =
       routable instanceof URL
@@ -1016,11 +1026,8 @@ export default class Router<TComponent> {
     }
   }
 
-  protected createLocation(href: string | Location): RouterLocation {
-    const url = new URL(
-      href instanceof Location ? href.href : href,
-      this.location.href,
-    )
+  protected createLocation(href: string): RouterLocation {
+    const url = new URL(href, this.location.href)
 
     // Create version without hash
     const urlWithoutHash = new URL(url)

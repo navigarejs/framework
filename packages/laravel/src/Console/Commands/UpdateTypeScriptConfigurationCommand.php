@@ -22,8 +22,13 @@ class UpdateTypeScriptConfigurationCommand extends Command
    *
    * @var string
    */
-  public $description = 'Update the tsconfig.json file according to the current Navigare configuration.';
+  public $description = 'Update the tsconfig.json file according to the current Navigare configuration';
 
+  /**
+   * Execute the console command.
+   *
+   * @return int
+   */
   public function handle()
   {
     if (!$this->confirmToProceed()) {

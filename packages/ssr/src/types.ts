@@ -4,22 +4,8 @@ import { ViteDevServer, LogOptions, LogErrorOptions, Manifest } from 'vite'
 
 export interface Server {
   app: Express
-  vite: ViteDevServer | undefined
   restart: () => Promise<void>
   printUrls: () => void
-}
-
-export interface Options {
-  input: string
-  manifest: string
-  host: string
-  port: number
-  logger: Logger
-  id: string
-  htmlAttrs: string
-  headTags: string
-  bodyAttrs: string
-  bodyTags: string
 }
 
 export interface Logger {

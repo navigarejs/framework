@@ -11,7 +11,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "preserveConstEnums": true,
-    "removeComments": true,
+    "removeComments": false,
 
     "esModuleInterop": false,
     "moduleResolution": "node",

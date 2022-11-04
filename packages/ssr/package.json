@@ -38,7 +38,7 @@
   "types": "./types/index.d.ts",
   "scripts": {
     "prepare": "",
-    "build": "yarn run clean && microbundle --compress false --format modern,esm,cjs",
+    "build": "yarn run clean && microbundle --no-compress --format modern,esm,cjs",
     "clean": "rm -rf types && rm -rf build",
     "develop": "yarn build watch",
     "test": "vitest",

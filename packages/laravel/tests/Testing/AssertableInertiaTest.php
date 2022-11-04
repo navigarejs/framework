@@ -56,7 +56,7 @@ class AssertableNavigareTest extends TestCase
   {
     $response = $this->makeMockRequest(Navigare::render('Stubs/ExamplePage'));
 
-    config()->set('navigare.testing.ensure_pages_exist', true);
+    config()->set('navigare.testing.ensure_components_exist', true);
     $response->assertNavigare(function ($navigare) {
       $navigare->component('Stubs/ExamplePage');
     });
@@ -67,7 +67,7 @@ class AssertableNavigareTest extends TestCase
   {
     $response = $this->makeMockRequest(Navigare::render('foo'));
 
-    config()->set('navigare.testing.ensure_pages_exist', true);
+    config()->set('navigare.testing.ensure_components_exist', true);
     $this->expectException(AssertionFailedError::class);
     $this->expectExceptionMessage(
       'Navigare page component file [foo] does not exist.'
@@ -83,7 +83,7 @@ class AssertableNavigareTest extends TestCase
   {
     $response = $this->makeMockRequest(Navigare::render('foo'));
 
-    config()->set('navigare.testing.ensure_pages_exist', false);
+    config()->set('navigare.testing.ensure_components_exist', false);
     $this->expectException(AssertionFailedError::class);
     $this->expectExceptionMessage(
       'Navigare page component file [foo] does not exist.'
@@ -99,7 +99,7 @@ class AssertableNavigareTest extends TestCase
   {
     $response = $this->makeMockRequest(Navigare::render('foo'));
 
-    config()->set('navigare.testing.ensure_pages_exist', true);
+    config()->set('navigare.testing.ensure_components_exist', true);
 
     $response->assertNavigare(function ($navigare) {
       $navigare->component('foo', false);
@@ -113,8 +113,8 @@ class AssertableNavigareTest extends TestCase
       Navigare::render('fixtures/ExamplePage')
     );
 
-    config()->set('navigare.testing.ensure_pages_exist', true);
-    config()->set('navigare.testing.page_paths', [realpath(__DIR__)]);
+    config()->set('navigare.testing.ensure_components_exist', true);
+    config()->set('navigare.components.paths', [realpath(__DIR__)]);
     $this->expectException(AssertionFailedError::class);
     $this->expectExceptionMessage(
       'Navigare page component file [fixtures/ExamplePage] does not exist.'
@@ -132,8 +132,8 @@ class AssertableNavigareTest extends TestCase
       Navigare::render('fixtures/ExamplePage')
     );
 
-    config()->set('navigare.testing.ensure_pages_exist', true);
-    config()->set('navigare.testing.page_extensions', ['bin', 'exe', 'svg']);
+    config()->set('navigare.testing.ensure_components_exist', true);
+    config()->set('navigare.components.extensions', ['bin', 'exe', 'svg']);
     $this->expectException(AssertionFailedError::class);
     $this->expectExceptionMessage(
       'Navigare page component file [fixtures/ExamplePage] does not exist.'

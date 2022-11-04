@@ -11,72 +11,45 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceResponse;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Response as ResponseFactory;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
-use ReflectionParameter;
+use Navigare\Support\Configuration;
+use Navigare\Support\PageComponent;
+use Navigare\Support\Location;
+use Navigare\Support\Page;
+use Navigare\Support\PageFragment;
+use Navigare\Support\RawRoute;
+use Navigare\Support\SelectedProperty;
 
 class Response implements Responsable
 {
   use Macroable;
 
-  protected string $rootView;
-
-  protected string $version;
-
-  protected ?string $baseURL = null;
-
-  protected ?string $layout = null;
-
-  protected array $viewData = [];
-
-  protected array $fragments = [];
-
-  protected Collection $shared;
-
-  protected array $extensions = [];
-
-  /**
-   * @param  string  $fragmentName
-   * @param  string  $component
-   * @param  Collection  $properties
-   * @param  string  $rootView
-   * @param  ?string  $baseURL
-   * @param  string  $version
-   * @param  Collection  $shared
-   * @param  array  $extensions
-   */
   public function __construct(
-    string $fragmentName,
-    string $component,
-    Collection $properties,
-    string $rootView = 'app',
-    ?string $baseURL = null,
-    string $version = '',
-    Collection $shared,
-    array $extensions = []
+    protected string $rootView = 'app',
+    protected Configuration $configuration,
+    protected string $version = '',
+    protected array $extensions = [],
+    protected ?Collection $properties = null,
+    protected ?string $parentURL = null,
+    protected ?string $layout = null,
+    protected ?array $viewData = [],
+    protected ?array $fragments = []
   ) {
-    $this->withFragment($fragmentName, $component, $properties);
-    $this->rootView = $rootView;
-    $this->baseURL = $baseURL;
-    $this->version = $version;
-    $this->shared = $shared;
-    $this->extensions = $extensions;
+    $this->properties = $properties ?? collect([]);
   }
 
   /**
    * Return fragment from response.
    *
    * @param  string  $name
-   * @return Fragment
+   * @return PageFragment
    */
-  public function getFragment(string $name = 'default'): Fragment
+  public function getFragment(string $name = 'default'): PageFragment
   {
     $fragment = $this->fragments[$name];
 
@@ -93,18 +66,18 @@ class Response implements Responsable
    * @param  string  $fragmentName
    * @return $this
    */
-  public function with(
-    $key,
-    $value = null,
-    string $fragmentName = 'default'
-  ): self {
-    $fragment = $this->getFragment($fragmentName);
-    $properties = $fragment->properties;
+  public function with($key, $value = null, ?string $fragmentName = null): self
+  {
+    $properties = $this->properties;
+    if ($fragmentName) {
+      $fragment = $this->getFragment($fragmentName);
+      $properties = $fragment->properties;
+    }
 
     if (is_array($key)) {
-      $fragment->properties->merge($key);
+      $properties->merge($key);
     } else {
-      $fragment->properties->put($key, $value);
+      $properties->put($key, $value);
     }
 
     return $this;
@@ -120,12 +93,12 @@ class Response implements Responsable
    */
   public function withFragment(
     string $fragmentName = 'default',
-    string $component,
+    string $componentName,
     array|Arrayable $properties
   ): self {
     $this->fragments[$fragmentName] = new PageFragment(
       name: $fragmentName,
-      component: $component,
+      component: PageComponent::fromName($componentName, $this->configuration),
       properties: collect($properties)
     );
 
@@ -162,14 +135,14 @@ class Response implements Responsable
   }
 
   /**
-   * Extend a base page (i.e. for modals the page that is in the background).
+   * Inherit from a base page (i.e. for modals the page that is in the background).
    *
-   * @param string $baseURL
+   * @param string $parentURL
    * @return Response
    */
-  public function extends(string $baseURL): self
+  public function inherits(string $parentURL): self
   {
-    $this->baseURL = $baseURL;
+    $this->parentURL = $parentURL;
 
     return $this;
   }
@@ -201,7 +174,7 @@ class Response implements Responsable
     }
 
     // Prepare page
-    $rawRoute = RawRoute::fromRoute($request->route());
+    $rawRoute = RawRoute::fromRoute($request->route(), $this->configuration);
 
     $location = Location::fromRequest($request);
 
@@ -262,7 +235,7 @@ class Response implements Responsable
 
         $fragment->properties = $this->resolvePropertyInstances(
           $request,
-          $fragment->properties
+          $properties
         );
         $fragment->rawRoute = $rawRoute;
         $fragment->location = $location;
@@ -276,7 +249,7 @@ class Response implements Responsable
     $page = new Page(
       rawRoute: $rawRoute,
       fragments: $fragments,
-      properties: $this->resolvePropertyInstances($request, $this->shared),
+      properties: $this->resolvePropertyInstances($request, $this->properties),
       layout: $this->layout,
       version: $this->version,
       location: $location,
@@ -297,7 +270,7 @@ class Response implements Responsable
     }
 
     // Get base page for first rendering and merge fragments
-    if ($this->baseURL) {
+    if ($this->parentURL) {
       $basePage = $this->getBasePage($request);
 
       $page->mergeFragments($basePage->fragments);
@@ -333,21 +306,22 @@ class Response implements Responsable
   }
 
   /**
-   * Return base page.
+   * Return parent page.
    *
    * @param  \Illuminate\Http\Request  $originalRequest
-   * @return Collection
+   * @return Page
    */
-  public function getBasePage(Request $originalRequest): Collection
+  public function getBasePage(Request $originalRequest): Page
   {
     $request = Request::create(
-      $this->baseURL,
+      $this->parentURL,
       Request::METHOD_GET,
       $originalRequest->query->all(),
       $originalRequest->cookies->all(),
       $originalRequest->files->all(),
       $originalRequest->server->all() + [
         'HTTP_X_NAVIGARE' => true,
+        'HTTP_X_NAVIGARE_VERSION' => $this->version,
       ],
       $originalRequest->getContent()
     );

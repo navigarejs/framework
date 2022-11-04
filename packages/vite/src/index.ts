@@ -26,11 +26,16 @@ import {
 import { RawRoutes, throwError } from '@navigare/core'
 import { Server as SSRServer, serveSSR } from '@navigare/ssr'
 import makeDebugger from 'debug'
+import getPort from 'get-port'
+import { globby } from 'globby'
 import defaultsDeep from 'lodash.defaultsdeep'
 import get from 'lodash.get'
+import isArray from 'lodash.isarray'
+import isObject from 'lodash.isobject'
+import isString from 'lodash.isstring'
 import { createRequire } from 'module'
 import path from 'path'
-import { createLogger, loadEnv, Logger } from 'vite'
+import { createLogger, createServer, loadEnv, Logger } from 'vite'
 
 // Annoying workaround to circumvent ESM/CJS confusion
 // See: https://github.com/babel/babel/issues/13855#issuecomment-945123514
@@ -51,7 +56,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
     configuration: Adapter.Laravel,
     interval: 15000,
   })
-  let currentRoutes: RawRoutes | null = null
+  let currentRoutes: RawRoutes = {}
   let currentConfiguration: Configuration | null = null
   let ssr = false
   let ssrServer: SSRServer | undefined = undefined
@@ -80,15 +85,109 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
         prefix: 'navigare',
       })
 
-      // Enable manifest
-      configuration.build = {
-        ...configuration.build,
-        manifest: true,
-      }
+      // Loads .env
+      const env = loadEnv(mode, process.cwd(), '')
 
       // Set SSR mode
       ssr = !!configuration.build?.ssr
       debug('set SSR mode to %s', ssr)
+
+      // Read routes regularly in case no routes were provided
+      const updateRoutes = async () => {
+        try {
+          currentRoutes = await getRoutes(options, env, ssr)
+          debug('read routes: %O', currentRoutes)
+
+          // Write types
+          if (currentRoutes) {
+            // await writeTypes(currentConfiguration?.types.path, currentRoutes)
+            await writeTypes(
+              path.join(
+                require.resolve('@navigare/core'),
+                '..',
+                '..',
+                'types',
+                'routes.d.ts',
+              ),
+              currentRoutes,
+            )
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            logger?.error(error.message)
+          }
+        }
+
+        // Update routes in a while again
+        const interval = Number(options.interval)
+        if (serving && interval > 0) {
+          setTimeout(updateRoutes, interval)
+        }
+      }
+      await updateRoutes()
+
+      // Read configuration regularly in case no routes were provided
+      const updateConfiguration = async () => {
+        try {
+          currentConfiguration = await getConfiguration(options, env)
+          debug('read configuration: %O', currentConfiguration)
+        } catch (error) {
+          if (error instanceof Error) {
+            logger?.error(error.message)
+          }
+        }
+
+        // Update configuration in a while again
+        const interval = Number(options.interval)
+        if (serving && interval > 0) {
+          setTimeout(updateConfiguration, interval)
+        }
+      }
+      await updateConfiguration()
+
+      // Find components
+      const components = await globby(
+        `${currentConfiguration?.components.path}/**/*`,
+      )
+
+      // Enable manifest and extend input with all the pages that were used
+      const input = ssr
+        ? currentConfiguration?.ssr.input
+        : configuration.build?.rollupOptions?.input
+      configuration.build = {
+        ...configuration.build,
+        ssr: ssr,
+        rollupOptions: {
+          ...configuration.build?.rollupOptions,
+          input: Object.values({
+            // Cast existing input into object
+            ...(isArray(input)
+              ? input.reduce((cumulatedInput, name) => {
+                  return {
+                    ...cumulatedInput,
+                    [name]: name,
+                  }
+                }, {})
+              : isObject(input)
+              ? input
+              : isString(input)
+              ? {
+                  [input]: input,
+                }
+              : {}),
+
+            // Add all potential components
+            ...components.reduce((cumulatedInput, name) => {
+              return {
+                ...cumulatedInput,
+                [name]: name,
+              }
+            }, {}),
+          }),
+        },
+        manifest: true,
+        // ssrManifest: true,
+      }
 
       // Update SSR config
       if (ssr) {
@@ -120,88 +219,34 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
             : []),
         ]
       }
-
-      // Loads .env
-      const env = loadEnv(mode, process.cwd(), '')
-
-      // Read routes regularly in case no routes were provided
-      const updateRoutes = async () => {
-        try {
-          currentRoutes = await getRoutes(options, env)
-          debug('read routes: %O', currentRoutes)
-
-          // Write types
-          if (currentRoutes) {
-            // await writeTypes(currentConfiguration?.types.path, currentRoutes)
-            await writeTypes(
-              path.join(
-                require.resolve('@navigare/core'),
-                '..',
-                '..',
-                'types',
-                'routes.d.ts',
-              ),
-              currentRoutes,
-            )
-          }
-        } catch (error) {
-          if (error instanceof Error) {
-            logger.error(error.message)
-          }
-        }
-
-        // Update routes in a while again
-        const interval = Number(options.interval)
-        if (serving && interval > 0) {
-          setTimeout(updateRoutes, interval)
-        }
-      }
-      await updateRoutes()
-
-      // Read configuration regularly in case no routes were provided
-      const updateConfiguration = async () => {
-        try {
-          currentConfiguration = await getConfiguration(options, env)
-          debug('read configuration: %O', currentConfiguration)
-        } catch (error) {
-          if (error instanceof Error) {
-            logger.error(error.message)
-          }
-        }
-
-        // Update configuration in a while again
-        const interval = Number(options.interval)
-        if (serving && interval > 0) {
-          setTimeout(updateConfiguration, interval)
-        }
-      }
-      await updateConfiguration()
     },
 
     async configureServer(server) {
       // In case we are already in SSR mode, we don't need to start the server
       if (ssr) {
-        // Catch uncaught exceptions
-        process.on('uncaughtException', (error) => {
-          logger?.error(
-            `We observed an uncaught exception. Did you try to access a global variable like "window" which is not available in Node environment?
-    ${error.stack}`,
-            {
-              clear: true,
-              timestamp: true,
-              error: error,
-            },
-          )
-        })
-
         return
       }
+
+      // Create SSR server
+      const vite = await createServer({
+        build: {
+          ssr: true,
+        },
+        server: {
+          middlewareMode: true,
+          hmr: {
+            port: await getPort(),
+          },
+        },
+        appType: 'custom',
+      })
 
       // Start SSR server
       debug('serving SSR at %s', currentConfiguration?.ssr.port)
       ssrServer = await serveSSR({
         logger,
         port: currentConfiguration?.ssr.port,
+        vite,
       })
 
       server.httpServer?.once('listening', () => {
@@ -212,12 +257,14 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
     },
 
     async transform(code: string, id: string) {
+      const updatedCode = code
+
       if (!code.includes('route')) {
-        return
+        return updatedCode
       }
 
       if (id.includes('node_modules')) {
-        return
+        return updatedCode
       }
 
       // Parse code
@@ -226,7 +273,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
         plugins: ['jsx', 'typescript'],
       })
 
-      let changed = false
+      let manipulated = false
       const replaceArgumentWithRoute = (routeCall: CallExpression) => {
         if (!isStringLiteral(routeCall.arguments[0])) {
           /*console.log(routeCall)
@@ -246,7 +293,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
         routeCall.arguments[0] = identifier(
           JSON.stringify(currentRoutes![routeCall.arguments[0].value]),
         )
-        changed = true
+        manipulated = true
       }
       const replaceWithRouteCall = (
         program: NodePath<Program>,
@@ -275,7 +322,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
         binding?.reference(routeCallExpressionPath.get('callee'))
 
         // Remember that we changed something, so we can output the new formatted AST later
-        changed = true
+        manipulated = true
       }
 
       traverse(ast, {
@@ -385,14 +432,11 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
         },
       })
 
-      if (!changed) {
-        return
+      if (!manipulated) {
+        return updatedCode
       }
 
-      // Return updated code
-      const updatedCode = generate(ast, {}, code).code
-
-      return updatedCode
+      return generate(ast, {}, updatedCode).code
     },
   }
 }

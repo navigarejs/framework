@@ -53,10 +53,10 @@ class AssertableNavigare extends AssertableJson
     if (
       $shouldExist ||
       (is_null($shouldExist) &&
-        config('navigare.testing.ensure_pages_exist', true))
+        config('navigare.testing.ensure_components_exist', true))
     ) {
       try {
-        app('navigare.testing.view-finder')->find($value);
+        app('navigare.components.finder')->find($value);
       } catch (InvalidArgumentException $exception) {
         PHPUnit::fail(
           sprintf('Navigare page component file [%s] does not exist.', $value)

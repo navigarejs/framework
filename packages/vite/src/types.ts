@@ -10,16 +10,22 @@ export enum Adapter {
 export type Configuration = {
   ssr: {
     enabled: boolean
+    protocol: string
     port: number
     host: string
+    timeout: number
+    input: string
+    manifest: string
+  }
+  client: {
+    manifest: string
+  }
+  components: {
+    path: string
+    default_extension: string
   }
   testing: {
     ensure_pages_exist: boolean
-    page_paths: string[]
-    page_extensions: string[]
-  }
-  types: {
-    path: string
   }
 }
 

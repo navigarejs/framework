@@ -9,11 +9,12 @@
   "license": "MIT",
   "require": {
     "php": "^8.0.2",
+    "cweagans/composer-patches": "^1.7",
     "guzzlehttp/guzzle": "^7.2",
-    "navigare/laravel": "dev-main",
     "laravel/framework": "^9.19",
     "laravel/sanctum": "^3.0",
-    "laravel/tinker": "^2.7"
+    "laravel/tinker": "^2.7",
+    "navigare/laravel": "dev-main"
   },
   "require-dev": {
     "fakerphp/faker": "^1.9.1",
@@ -54,13 +55,15 @@
   "extra": {
     "laravel": {
       "dont-discover": []
-    }
+    },
+    "patches-file": "./composer.patches.json"
   },
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "sort-packages": true,
     "allow-plugins": {
+      "cweagans/composer-patches": true,
       "pestphp/pest-plugin": true
     }
   },

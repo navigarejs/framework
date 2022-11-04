@@ -7,8 +7,7 @@ import { IsEmptyObject } from 'type-fest'
 // Router
 export type RouterOptions<TComponent> = {
   initialPage: Page
-  initialComponents: Record<string, TComponent>
-  resolveComponent: ComponentResolver<TComponent>
+  resolveComponentModule?: ComponentModuleResolver<TComponent>
   fragments?: Record<
     string,
     {
@@ -17,8 +16,8 @@ export type RouterOptions<TComponent> = {
   >
 }
 
-export type ComponentResolver<TComponent> = (
-  name: string,
+export type ComponentModuleResolver<TComponent> = (
+  component: PageComponent,
 ) => Promise<TComponent>
 
 export type RouterLocation = {
@@ -50,17 +49,17 @@ export type PageRememberedState = Record<string, unknown> | undefined
 
 export type PageFragmentProperties = Record<string, any>
 
+export type PageComponent = {
+  path: string
+  url: string
+}
+
 export type PageFragment = {
-  component: string
-
+  component: PageComponent
   properties: PageFragmentProperties
-
   rawRoute: RawRoute
-
   location: RouterLocation
-
   defaults: PageDefaults
-
   parameters: Record<string, RouteParameter>
 }
 
@@ -68,33 +67,20 @@ export type PageFragments = Record<string, PageFragment | PageFragment[] | null>
 
 export interface Page {
   visit: Visit
-
   csrf: string | null
-
   fragments: PageFragments
-
   properties: PageProperties & {
     errors: PageErrors & PageErrorBag
   }
-
   rawRoute: RawRoute
-
   location: RouterLocation
-
   defaults: PageDefaults
-
   parameters: Record<string, RouteParameter>
-
   version: string | null
-
   layout: string | null
-
   timestamp: number
-
   obsolete: boolean
-
   scrollRegions: Array<{ top: number; left: number }>
-
   rememberedState: PageRememberedState
 }
 
@@ -388,7 +374,7 @@ export type RawRoute<TName extends RouteName = RouteName> = {
   bindings?: RouteBindings
   parameters?: RouteParameters<TName>
   wheres?: RouteWheres
-  components?: string[]
+  components?: PageComponent[]
 }
 
 export type RawRoutes = Record<string, RawRoute>
@@ -403,8 +389,8 @@ export interface RenderedApp {
   id: string
   modules: Set<string>
   headTags: string
-  htmlAttrs: string
-  bodyAttrs: string
+  htmlAttributes: string
+  bodyAttributes: string
   bodyTags: string
   appHTML: string
 }

@@ -1,6 +1,4 @@
 import {
-  ComponentResolver,
-  Page,
   PageFragment,
   PageFragments,
   RawRouteMethod,
@@ -29,49 +27,6 @@ export function isDefined<TValue>(value: TValue | undefined): value is TValue {
 
 export function throwError(message: string, ..._args: any[]): never {
   throw new Error(`Navigare: ${message}.`)
-}
-
-export async function resolveComponent<TComponent>(
-  resolve: ComponentResolver<TComponent>,
-  name: string,
-): Promise<TComponent> {
-  const module = (await resolve(name)) as any
-
-  if ('default' in module) {
-    return module.default as TComponent
-  }
-
-  return module as TComponent
-}
-
-export async function resolvePageComponents<TComponent>(
-  resolve: ComponentResolver<TComponent>,
-  page: Page,
-): Promise<Record<string, TComponent>> {
-  const componentNames = Object.values(page.fragments).reduce(
-    (cumulatedComponentNames, fragments) => {
-      if (!fragments) {
-        return cumulatedComponentNames
-      }
-
-      return [
-        ...cumulatedComponentNames,
-        ...(isArray(fragments)
-          ? fragments.map((fragment) => fragment.component)
-          : [fragments.component]),
-      ]
-    },
-    [] as string[],
-  )
-  const entries = await Promise.all(
-    componentNames.map(async (componentName) => {
-      const component = await resolveComponent(resolve, componentName)
-
-      return [componentName, component]
-    }),
-  )
-
-  return Object.fromEntries(entries)
 }
 
 export function shouldInterceptLink(
@@ -409,17 +364,23 @@ export function mapRouteMethod(
   return RouteMethod.GET
 }
 
-export function safeParse<TOutput = unknown>(input: string): TOutput | null {
-  return safe<TOutput>(() => {
+export function safeParse<TOutput = unknown, TErrorOutput = undefined>(
+  input: string,
+  errorCallback?: (error: unknown) => TErrorOutput,
+): TOutput | TErrorOutput {
+  return safe<TOutput, TErrorOutput>(() => {
     return JSON.parse(input)
-  })
+  }, errorCallback)
 }
 
-export function safe<TOutput>(callback: () => TOutput): TOutput | null {
+export function safe<TOutput, TErrorOutput = undefined>(
+  callback: () => TOutput,
+  errorCallback?: (error: unknown) => TErrorOutput,
+): TOutput | TErrorOutput {
   try {
     return callback()
   } catch (error) {
-    return null
+    return errorCallback?.(error) as TErrorOutput
   }
 }
 

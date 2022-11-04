@@ -5,7 +5,6 @@ import { Options, App } from './types'
 import {
   Page,
   throwError,
-  resolvePageComponents,
   isSSR,
   safeParse,
   Router,
@@ -17,7 +16,7 @@ import { DefineComponent } from 'vue'
 export default async function createApp({
   id = 'app',
   setup,
-  resolveComponent,
+  resolveComponentModule,
   initialPage,
   fragments = {
     modal: {
@@ -37,18 +36,18 @@ export default async function createApp({
     throwError('Navigare: no initial page is specified')
   }
 
-  // Create app instance
-  const initialComponents = await resolvePageComponents(
-    resolveComponent,
-    initialPageWithFallback,
-  )
+  // Create Router instance
   const options: RouterOptions<DefineComponent> = {
     initialPage: initialPageWithFallback,
-    initialComponents,
-    resolveComponent,
+    resolveComponentModule,
     fragments,
   }
   const router = new Router<DefineComponent>(options)
+
+  // Preload initial page
+  await router.resolvePage(initialPageWithFallback)
+
+  // Create root instance
   const root = setup({
     Root,
     props: {

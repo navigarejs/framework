@@ -23,8 +23,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     View::addLocation(__DIR__ . '/Stubs');
 
     Navigare::setRootView('welcome');
-    config()->set('navigare.testing.ensure_pages_exist', false);
-    config()->set('navigare.testing.page_paths', [realpath(__DIR__)]);
+    config()->set('navigare.testing.ensure_components_exist', false);
+    config()->set('navigare.components.paths', [realpath(__DIR__)]);
   }
 
   /**

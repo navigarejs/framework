@@ -1,7 +1,14 @@
 import providePageFragmentContext from './providePageFragmentContext'
 import useRouter from './useRouter'
 import { PageFragment } from '@navigare/core'
-import { defineComponent, h, PropType } from 'vue'
+import {
+  computed,
+  defineAsyncComponent,
+  defineComponent,
+  h,
+  markRaw,
+  PropType,
+} from 'vue'
 
 export default defineComponent({
   name: 'PageFragment',
@@ -22,42 +29,56 @@ export default defineComponent({
 
   setup(props, { slots }) {
     const router = useRouter()
+    const fragment = computed(() => {
+      return props.fragment
+    })
+    const component = computed(() => {
+      return fragment.value.component
+    })
+    const properties = computed(() => {
+      return fragment.value.properties
+    })
+    const componentModule = computed(() => {
+      const module = router.instance.getComponentModule(component.value)
+
+      if (module instanceof Promise) {
+        return markRaw(
+          defineAsyncComponent(async () => {
+            return module
+          }),
+        )
+      }
+
+      return markRaw(module)
+    })
 
     // Provide context to children
     providePageFragmentContext(props.name, () => {
-      return props.fragment
+      return fragment.value
     })
 
     return () => {
       const defaultSlot = slots.default
 
-      // Get component
-      const component = router.components[props.fragment.component]
-
-      // This case sometimes happens when the component is updated but not yet loaded
-      if (!component) {
-        return null
-      }
-
       // Enable inheritance of attributes
-      component.inheritAttrs = true // !!component.inheritAttrs
+      componentModule.value.inheritAttrs = true // !!component.inheritAttrs
 
       // Render component
-      const renderedComponent = h(
-        component,
+      const renderedComponentModule = h(
+        componentModule.value,
         {
-          ...props.fragment.properties,
+          ...properties.value,
         },
         {},
       )
 
       if (defaultSlot) {
         return defaultSlot({
-          component: renderedComponent,
+          component: renderedComponentModule,
         })
       }
 
-      return renderedComponent
+      return renderedComponentModule
     }
   },
 })

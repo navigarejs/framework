@@ -9,14 +9,14 @@ const run = (input) => {
  * @type {import('semantic-release').Options}
  */
 const configuration = require('../../release.config.cjs')('yarn prepack', [
-  [
+  /*[
     '@semantic-release/exec',
     {
       prepareCmd: run(
-        `content=$(jq --arg version "\${nextRelease.version}" ".version=\\$version" composer.json) && printf "%s" $content > composer.json`,
+        `content=$(jq --arg version "\${nextRelease.version}" ".version=\\$version" composer.json) && printf "%b" $content > composer.json`,
       ),
     },
-  ],
+  ],*/
 
   [
     '@semantic-release/exec',

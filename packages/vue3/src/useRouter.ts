@@ -2,15 +2,7 @@ import { injectRouterContext } from './injectRouterContext'
 import { RouterControl } from './types'
 import usePageFragment from './usePageFragment'
 import { EventListener, Route, throwError } from '@navigare/core'
-import {
-  computed,
-  DefineComponent,
-  markRaw,
-  onMounted,
-  onUnmounted,
-  reactive,
-  ref,
-} from 'vue'
+import { computed, markRaw, onMounted, onUnmounted, reactive, ref } from 'vue'
 
 export default function useRouter() {
   const { router } = injectRouterContext()
@@ -32,9 +24,6 @@ export default function useRouter() {
   const fragments = computed(() => {
     return page.value.fragments
   })
-  const components = ref<Record<string, DefineComponent>>(
-    markRaw(router.components),
-  )
   const processing = ref(false)
 
   // Listen to current page
@@ -49,7 +38,6 @@ export default function useRouter() {
     previousPage.value = router.previousPage
     latestPage.value = router.latestPage
     pages.value = router.pages
-    components.value = markRaw(router.components)
   }
   const handleSuccess: EventListener<'success'> = () => {}
   onMounted(() => {
@@ -66,8 +54,6 @@ export default function useRouter() {
   })
 
   const control: RouterControl = reactive({
-    components,
-
     location,
 
     parameters,

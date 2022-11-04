@@ -10,14 +10,19 @@ export default async function renderApp({
 }: App): Promise<RenderedApp> {
   const metadata: SSRContext = {}
   const appHTML = await renderToString(root, metadata)
-  const { headTags, htmlAttrs, bodyAttrs, bodyTags } = renderHeadToString(head)
+  const {
+    headTags,
+    htmlAttrs: htmlAttributes,
+    bodyAttrs: bodyAttributes,
+    bodyTags,
+  } = renderHeadToString(head)
 
   return {
     id,
     modules: metadata.modules instanceof Set ? metadata.modules : new Set(),
     headTags,
-    htmlAttrs,
-    bodyAttrs,
+    htmlAttributes,
+    bodyAttributes,
     bodyTags,
     appHTML,
   }

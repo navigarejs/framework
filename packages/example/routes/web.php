@@ -16,98 +16,89 @@ use Navigare\Navigare;
 |
 */
 
-Route::get('/', function () {
-  return redirect(route('vue.root'));
+Route::get('', function () {
+  return redirect(route('home'));
 })->name('root');
 
-// Vue
-Route::as('vue.')
-  ->prefix('vue')
+Route::get('home/{name?}', function (string $name = 'Julian') {
+  return Navigare::render('Home', [
+    'greeting' => fn() => collect([
+      'Hi',
+      'Good day',
+      'Hallo',
+      'Salut',
+      'Gruezi',
+      'Servus',
+      'Hola',
+    ])
+      ->random(1)
+      ->first(),
+    'name' => $name,
+  ]);
+})->name('home');
+
+Route::get('redirect', function () {
+  return redirect(route('long'));
+})->name('redirect');
+
+Route::get('modal', function (string $name = 'Julian') {
+  return Navigare::modal('Modal', [
+    'name' => $name,
+  ])->inherits(
+    route('home', [
+      'name' => $name,
+    ])
+  );
+})->name('modal');
+
+Route::get('second-modal', function (string $name = 'Julian') {
+  return Navigare::modal('SecondModal', [
+    'name' => $name,
+  ])->inherits(
+    route('home', [
+      'name' => $name,
+    ])
+  );
+})->name('second-modal');
+
+Route::as('nested.')
+  ->prefix('nested')
   ->group(function () {
     Route::get('', function () {
-      return redirect(route('vue.home'));
-    })->name('root');
+      return Navigare::render('nested/Index', [])
+        ->layout('nested')
+        ->navigation('partials/Navigation');
+    })->name('index');
 
-    Route::get('home/{name?}', function (string $name = 'Julian') {
-      return Navigare::render('Home', [
-        'greeting' => fn() => collect([
-          'Hi',
-          'Good day',
-          'Hallo',
-          'Salut',
-          'Gruezi',
-          'Servus',
-          'Hola',
-        ])
-          ->random(1)
-          ->first(),
-        'name' => $name,
-      ]);
-    })->name('home');
-
-    Route::get('redirect', function () {
-      return redirect(route('vue.long'));
-    })->name('redirect');
-
-    Route::get('modal', function (string $name = 'Julian') {
-      return Navigare::modal('Modal', [
-        'name' => $name,
-      ])->extends(
-        route('vue.home', [
-          'name' => $name,
-        ])
-      );
-    })->name('modal');
-
-    Route::get('second-modal', function (string $name = 'Julian') {
-      return Navigare::modal('SecondModal', [
-        'name' => $name,
-      ])->extends(
-        route('vue.home', [
-          'name' => $name,
-        ])
-      );
-    })->name('second-modal');
-
-    Route::as('nested.')
-      ->prefix('nested')
-      ->group(function () {
-        Route::get('', function () {
-          return Navigare::render('nested/Index', [])
-            ->layout('nested')
-            ->navigation('partials/Navigation');
-        })->name('index');
-
-        Route::get('details/{id}', function (string $id) {
-          return Navigare::render('nested/Details', [
-            'id' => $id,
-          ])
-            ->layout('nested')
-            ->navigation('partials/Navigation');
-        })->name('details');
-      });
-
-    Route::get('long', function () {
-      return Navigare::render('Long', []);
-    })->name('long');
-
-    Route::get('form', function () {
-      return Navigare::render('Form', []);
-    })->name('form');
-
-    Route::post('form', function (Request $request) {
-      $validator = Validator::make($request->all(), [
-        'name' => 'required|between:8,20',
-      ]);
-
-      if ($validator->fails()) {
-        return back()->withErrors($validator);
-      }
-
-      return redirect(
-        route('vue.home', [
-          'name' => $request->input('name'),
-        ])
-      );
-    })->name('form.submit');
+    Route::get('details/{id}', function (string $id) {
+      return Navigare::render('nested/Details', [
+        'id' => $id,
+      ])
+        ->layout('nested')
+        ->navigation('partials/Navigation');
+    })->name('details');
   });
+
+Route::get('long', function () {
+  return Navigare::render('Long', []);
+})->name('long');
+
+Route::get('form', function () {
+  return Navigare::render('Form', []);
+})->name('form');
+
+Route::post('form', function (Request $request) {
+  $validator = Validator::make($request->all(), [
+    'name' => 'required|between:8,20',
+  ]);
+
+  if ($validator->fails()) {
+    return back()->withErrors($validator);
+  }
+
+  return redirect(
+    route('home', [
+      'name' => $request->input('name'),
+    ])
+  );
+})->name('form.submit');

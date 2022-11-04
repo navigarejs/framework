@@ -6,7 +6,6 @@ import isObject from 'lodash.isobject'
 import isString from 'lodash.isstring'
 import fs from 'node:fs'
 
-const CONFIG_ARTISAN_COMMAND = 'navigare:config'
 const debug = makeDebugger('navigare:laravel:configuration')
 
 /**
@@ -52,7 +51,7 @@ export async function getLaravelConfiguration(
     // Asks PHP for the configuration
     debug('reading configuration from PHP.')
     const json = JSON.parse(
-      callArtisan(executable, CONFIG_ARTISAN_COMMAND),
+      callArtisan(executable, 'navigare:config'),
     ) as Configuration
 
     if (!json) {

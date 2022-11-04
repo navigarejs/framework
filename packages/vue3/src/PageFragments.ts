@@ -1,6 +1,7 @@
 import PageFragment from './PageFragment'
 import useRouter from './useRouter'
-import isArray from 'lodash.isarray'
+import { isDefined, isNotNull } from '@navigare/core'
+import castArray from 'lodash.castarray'
 import { computed, VNode, defineComponent, h } from 'vue'
 
 export default defineComponent({
@@ -18,17 +19,9 @@ export default defineComponent({
   setup(props, { slots }) {
     const router = useRouter()
     const fragments = computed(() => {
-      const pageFragments = router.page.fragments[props.name]
-
-      if (!pageFragments) {
-        return []
-      }
-
-      if (!isArray(pageFragments)) {
-        return [pageFragments]
-      }
-
-      return pageFragments
+      return castArray(router.page.fragments[props.name])
+        .filter(isDefined)
+        .filter(isNotNull)
     })
 
     return () => {
@@ -38,6 +31,7 @@ export default defineComponent({
         return h(
           PageFragment,
           {
+            // key: `${fragment.component.uri}-${fragment.location.url}`,
             name: props.name,
             fragment,
           },

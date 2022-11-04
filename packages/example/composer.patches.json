@@ -1,0 +1,7 @@
+{
+  "patches": {
+    "spatie/ignition": {
+      "fix: use comments to allow proper loading of script": "https://patch-diff.githubusercontent.com/raw/spatie/ignition/pull/184.patch"
+    }
+  }
+}

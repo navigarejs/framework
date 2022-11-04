@@ -7,6 +7,7 @@ import {
   RawRouteParameters,
   RouteDefaults,
   Routable,
+  PageComponent,
 } from './types'
 import { getKeys, isNotNull, mapRouteMethod, throwError } from './utilities'
 import get from 'lodash.get'
@@ -43,7 +44,7 @@ export default class PartialRoute<TName extends RouteName = RouteName> {
     return this.rawRoute.name
   }
 
-  public get components(): string[] {
+  public get components(): PageComponent[] {
     return this.rawRoute.components ?? []
   }
 

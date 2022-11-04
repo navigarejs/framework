@@ -3,17 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "navigare serve --manifest bootstrap/ssr/manifest.json bootstrap/ssr/ssr.mjs",
+    "start": "navigare serve",
     "develop": "vite",
     "build": "vite build && vite build --ssr"
   },
   "dependencies": {
-    "@navigare/ssr": "^1.0.20",
+    "@navigare/cli": "^1.0.1",
     "axios": "^1.1.3",
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@navigare/cli": "^1.0.5",
     "@navigare/core": "^1.0.28",
     "@navigare/vite": "^1.0.26",
     "@navigare/vue3": "^1.0.32",

@@ -1,4 +1,5 @@
 import { PhpFinderOptions } from './types'
+import { isDefined } from '@navigare/core'
 import c from 'chalk'
 import makeDebugger from 'debug'
 import * as execa from 'execa'
@@ -73,19 +74,19 @@ export function findPhpPath(options: PhpFinderOptions = {}): string {
  */
 export function callArtisan(
   executable: string,
-  ...parameters: string[]
+  ...parameters: (string | undefined)[]
 ): string {
   debug('call artisan %s with %O', executable, parameters)
 
+  const args = ['artisan', ...parameters.filter(isDefined)]
+
   if (process.env.VITEST && process.env.TEST_ARTISAN_SCRIPT) {
-    return execa.sync(
-      process.env.TEST_ARTISAN_SCRIPT,
-      [executable, 'artisan', ...parameters],
-      { encoding: 'utf-8' },
-    )?.stdout
+    return execa.sync(process.env.TEST_ARTISAN_SCRIPT, [executable, ...args], {
+      encoding: 'utf-8',
+    })?.stdout
   }
 
-  return execa.sync(executable, ['artisan', ...parameters])?.stdout
+  return execa.sync(executable, args)?.stdout
 }
 
 /**

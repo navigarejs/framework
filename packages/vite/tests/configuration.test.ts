@@ -9,7 +9,7 @@ it('reads configuration from the given option object', async () => {
       configuration: {
         ssr: {
           enabled: false,
-          url: 'http://127.0.0.1:13714/',
+          url: 'http://127.0.0.1:13715/',
         },
 
         testing: {

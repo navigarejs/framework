@@ -1,7 +1,7 @@
 import type Root from './Root'
 import type plugin from './plugin'
 import {
-  ComponentResolver,
+  ComponentModuleResolver,
   EventListener,
   EventNames,
   Page,
@@ -32,7 +32,7 @@ export type App = {
 
 export type Options = {
   id?: string
-  resolveComponent: ComponentResolver<DefineComponent>
+  resolveComponentModule?: ComponentModuleResolver<DefineComponent>
   setup: Setup
   initialPage?: Page
   fragments?: RouterOptions<DefineComponent>['fragments']
@@ -48,7 +48,6 @@ export type Setup = (options: {
 
 // Router
 export type RouterControl = {
-  components: Record<string, DefineComponent>
   location: RouterLocation
   parameters: Record<string, RouteParameter>
   route: Route<RouteName>
