@@ -47,7 +47,7 @@ class RawRoutes
     // we will need to spin through all routes and load them all.
     $cachePath = base_path('bootstrap/cache/navigare.php');
     if (file_exists($cachePath)) {
-      static::$cache = require $cachePath;
+      static::$cache = unserialize(file_get_contents($cachePath));
 
       return static::$cache;
     }

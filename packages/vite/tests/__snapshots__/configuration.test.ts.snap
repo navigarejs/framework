@@ -36,17 +36,24 @@ exports[`reads configuration from file 1`] = `
 
 exports[`reads configuration from the given option object 1`] = `
 {
+  "client": {
+    "manifest": "/tmp/public/build/manifest.json",
+  },
+  "components": {
+    "default_extension": "vue",
+    "path": "resources/scripts/pages",
+  },
   "ssr": {
     "enabled": false,
-    "url": "http://127.0.0.1:13715/",
+    "host": "127.0.0.1",
+    "input": "resources/scripts/ssr.ts",
+    "manifest": "/tmp/bootstrap/ssr/manifest.json",
+    "port": 13715,
+    "protocol": "http",
+    "timeout": 1,
   },
   "testing": {
     "ensure_pages_exist": true,
-    "page_extensions": [],
-    "page_paths": [],
-  },
-  "types": {
-    "path": "./resources/js/navigare.d.ts",
   },
 }
 `;

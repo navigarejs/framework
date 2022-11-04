@@ -3,10 +3,18 @@
 namespace Navigare;
 
 use Navigare\Exceptions\ConfigurationNotFoundException;
+use Navigare\Vite\ClientManifest;
 use Navigare\Vite\Manifest;
+use Navigare\Vite\SSRManifest;
 
 class Configuration
 {
+  private ?SSRManifest $ssrManifest = null;
+
+  private ?ClientManifest $clientManifest = null;
+
+  private bool|null $useManifest = null;
+
   /**
    * Creates a Configuration instance.
    *
@@ -75,7 +83,9 @@ class Configuration
       return null;
     }
 
-    return $this->manifest ??= Manifest::read($this->getSSRManifestPath());
+    return $this->ssrManifest ??= SSRManifest::read(
+      $this->getSSRManifestPath()
+    );
   }
 
   /**
@@ -103,7 +113,7 @@ class Configuration
       return null;
     }
 
-    return $this->client_manifest ??= Manifest::read(
+    return $this->clientManifest ??= ClientManifest::read(
       $this->getClientManifestPath()
     );
   }
@@ -141,6 +151,14 @@ class Configuration
    */
   public function shouldUseManifest(): bool
   {
+    // Force the usage of the manifest
+    if ($this->useManifest) {
+      return true;
+    }
+    if ($this->useManifest === false) {
+      return false;
+    }
+
     // If disabled in tests via the configuration, do not use the manifest.
     if (app()->environment('testing')) {
       return false;
@@ -153,5 +171,18 @@ class Configuration
 
     // Otherwise, the manifest should not be used.
     return false;
+  }
+
+  /**
+   * Checks if the manifest should be used to get an entry.
+   *
+   * @param bool|null $useManifest
+   * @return self
+   */
+  public function useManifest(bool $useManifest = true): self
+  {
+    $this->useManifest = $useManifest;
+
+    return $this;
   }
 }

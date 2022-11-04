@@ -4,22 +4,27 @@ namespace Navigare\SSR;
 
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Navigare\Configuration;
+use Navigare\Exceptions\EnvironmentMismatchException;
 use Navigare\Exceptions\ManifestOrViteMissingException;
 use Navigare\Exceptions\ServerNotReachableException;
 use Navigare\Exceptions\RequestFailedException;
 use Navigare\View\Page;
+use Ramsey\Uuid\Uuid;
 
 class HttpGateway implements Gateway
 {
   /**
    * Dispatch the Navigare page to the Server Side Rendering engine.
    *
+   * @param  Request  $request
    * @param  Page  $page
    * @return Response|null
    */
-  public function dispatch(Page $page): Response|null
+  public function dispatch(Request $request, Page $page): Response|null
   {
     if (!config('navigare.ssr.enabled', false)) {
       return null;
@@ -29,13 +34,29 @@ class HttpGateway implements Gateway
     $endpoint = $this->getEndpoint();
 
     try {
+      $id =
+        $request->headers->get('X-Request-ID') ??
+        Str::substr(Uuid::uuid4(), 0, 8);
+      $input = $configuration->shouldUseManifest()
+        ? join(DIRECTORY_SEPARATOR, [
+          $configuration->getSSRManifest()->getBase(),
+          $configuration
+            ->getSSRManifest()
+            ->resolve($configuration->getSSRInputPath()),
+        ])
+        : $configuration->getSSRInputPath();
+
       $response = Http::timeout(config('navigare.ssr.timeout', 1))
         ->post($endpoint, [
+          'id' => $id,
           'page' => $page->toArray(true),
-          'input' => $configuration->getSSRInputPath(),
+          'input' => $input,
           'manifest' => $configuration->shouldUseManifest()
-            ? $configuration->getSSRManifestPath()
+            ? $configuration->getClientManifestPath()
             : null,
+          'base' => $configuration->shouldUseManifest()
+            ? $configuration->getClientManifest()->getBase()
+            : '/',
         ])
         ->throw()
         ->json();
@@ -45,7 +66,8 @@ class HttpGateway implements Gateway
 
       switch ($details->code) {
         case 'MANIFEST_OR_VITE_MISSING':
-          throw new ManifestOrViteMissingException();
+        case 'MANIFEST_AND_VITE_DEFINED':
+          throw new EnvironmentMismatchException();
 
         default:
           throw new RequestFailedException(

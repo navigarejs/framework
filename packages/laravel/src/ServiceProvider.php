@@ -8,8 +8,8 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Illuminate\Testing\TestResponse;
 use Illuminate\View\FileViewFinder;
-use Navigare\Ssr\Gateway;
-use Navigare\Ssr\HttpGateway;
+use Navigare\SSR\Gateway;
+use Navigare\SSR\HttpGateway;
 use Navigare\Testing\TestResponseMacros;
 use LogicException;
 use ReflectionException;
@@ -77,6 +77,8 @@ class ServiceProvider extends BaseServiceProvider
   protected function registerRequestMacro(): void
   {
     Request::macro('navigare', function () {
+      /** @var \Illuminate\Http\Request $this */
+
       return (bool) $this->header('X-Navigare');
     });
   }
@@ -84,6 +86,8 @@ class ServiceProvider extends BaseServiceProvider
   protected function registerRouterMacro(): void
   {
     Router::macro('navigare', function ($uri, $component, $props = []) {
+      /** @var \Illuminate\Routing\Router $this */
+
       return $this->match(['GET', 'HEAD'], $uri, '\\' . Controller::class)
         ->defaults('component', $component)
         ->defaults('props', $props);

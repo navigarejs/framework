@@ -71,7 +71,7 @@ const router = useRouter()
 <style>
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: all 500ms linear;
+  transition: all 800ms linear;
 }
 
 .slide-fade-enter-from,
@@ -82,7 +82,7 @@ const router = useRouter()
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 250ms linear;
+  transition: all 800ms linear;
 }
 
 .fade-enter-from,
@@ -92,7 +92,7 @@ const router = useRouter()
 
 .slide-bottom-enter-active,
 .slide-bottom-leave-active {
-  transition: all 500ms linear;
+  transition: all 800ms linear;
 }
 
 .slide-bottom-enter-from,

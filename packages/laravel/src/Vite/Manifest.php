@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Navigare\Exceptions\ManifestNotFoundException;
 
-class Manifest
+abstract class Manifest
 {
   protected string $content;
 
@@ -37,8 +37,16 @@ class Manifest
    */
   public static function read(string $path): Manifest
   {
-    return new Manifest($path);
+    return new static($path);
   }
+
+  /**
+   * Resolve real path to asset.
+   *
+   * @param string $path
+   * @return string|null
+   */
+  abstract public function resolve(string $path): string|null;
 
   /**
    * Gets the absolute path of this manifest.
@@ -65,32 +73,9 @@ class Manifest
    *
    * @return string
    */
-  public function getPrefix(): string
+  public function getBase(): string
   {
     return pathinfo($this->path, PATHINFO_DIRNAME);
-  }
-
-  /**
-   * Resolve real path to asset.
-   *
-   * @param string $path
-   * @return string|null
-   */
-  public function resolve(string $path): string|null
-  {
-    if (!$this->assets->has($path)) {
-      return null;
-    }
-
-    $asset = $this->assets->get($path);
-
-    if (!$asset) {
-      return null;
-    }
-
-    $path = $asset['file'];
-
-    return $path;
   }
 
   /**

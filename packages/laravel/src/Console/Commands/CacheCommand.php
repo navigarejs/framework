@@ -57,27 +57,19 @@ class CacheCommand extends Command
     $configuration = Configuration::read();
     $rawRoutes = RawRoutes::getAll($configuration);
 
-    $configurationPath = base_path('bootstrap/cache/navigare.php');
+    $cachePath = base_path('bootstrap/cache/navigare.php');
 
-    var_dump($rawRoutes);
-    $this->files->put(
-      $configurationPath,
-      '<?php return [ "routes" => ' .
-        var_export($rawRoutes, true) .
-        ' ];' .
-        PHP_EOL
-    );
-    print $configurationPath;
+    $this->files->put($cachePath, serialize($rawRoutes));
 
     try {
-      require $configurationPath;
-    } catch (Throwable $e) {
-      $this->files->delete($configurationPath);
+      unserialize(file_get_contents($cachePath));
+    } catch (Throwable $exception) {
+      $this->files->delete($cachePath);
 
       throw new LogicException(
         'Your navigare files are not serializable.',
         0,
-        $e
+        $exception
       );
     }
 

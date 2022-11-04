@@ -65,11 +65,13 @@ it('throw an error for invalid route names', async () => {
 const findRouteInCode = (route: any, code: string): number => {
   const codeWithoutWhitespaces = code.replace(/\s/g, '')
 
-  return (
+  /*return (
     codeWithoutWhitespaces
       .replace(/\s/g, '')
       .split(JSON.stringify(route).replace(/\s/g, '')).length - 1
-  )
+  )*/
+
+  return codeWithoutWhitespaces.split(route.uri).length - 1
 }
 
 describe('Vue', () => {

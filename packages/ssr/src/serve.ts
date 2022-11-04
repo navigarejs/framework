@@ -1,14 +1,14 @@
 import { getCoreVersion, getVersion } from './internals'
 import render from './render'
 import { Logger, RenderApp, Server } from './types'
-import { Page, safe, safeParse, throwError } from '@navigare/core'
+import { Page, safeParse } from '@navigare/core'
 import bodyParser from 'body-parser'
 import chalk from 'chalk'
 import compression from 'compression'
 import express from 'express'
 import fs from 'fs'
 import getPort from 'get-port'
-import path from 'path'
+import isString from 'lodash.isstring'
 import { Manifest, ViteDevServer } from 'vite'
 
 export interface Options {
@@ -16,6 +16,34 @@ export interface Options {
   port: number
   logger: Logger
   vite: ViteDevServer
+}
+const errors: Record<
+  string,
+  {
+    status: number
+    message: string
+  }
+> = {
+  MANIFEST_OR_VITE_MISSING: {
+    status: 400,
+    message: `either a manifest must be passed or a Vite instance must be running`,
+  },
+  MANIFEST_AND_VITE_DEFINED: {
+    status: 400,
+    message: `either a manifest must be passed or a Vite instance must be running but not both at the same time`,
+  },
+  NO_INPUT: {
+    status: 400,
+    message: `no input was specified`,
+  },
+  INPUT_DOES_NOT_EXIST: {
+    status: 400,
+    message: `input file does not exist`,
+  },
+  MANIFEST_DOES_NOT_EXIST: {
+    status: 400,
+    message: `manifest file does not exist`,
+  },
 }
 
 export default async function (
@@ -32,9 +60,15 @@ export default async function (
   app.use(compression())
 
   // Keep track of certain statistics
-  const latestRequestedPages: {
+  const latestRequests: {
     time: number
-    page: Page
+    body: {
+      page: Page
+      base: string
+      input: string
+      manifest: string
+      id: string
+    }
   }[] = []
 
   // Use vite's connect instance as middleware
@@ -45,9 +79,33 @@ export default async function (
   // Define routes
   app.get('/', async (_request, response) => {
     response.send(`
+      <style>
+        label {
+          display: block;
+        }
+      </style>
+
       <form id="form" method="post" action="/render">
         <div>
-          <textarea name="page" id="page" cols="120" rows="12"></textarea>
+          <div>
+            <label for="input">Input</label>
+            <input name="input" id="input" />
+          </div>
+
+          <div>
+            <label for="base">Base</label>
+            <input name="base" id="base" />
+          </div>
+
+          <div>
+            <label for="Manifest">Manifest</label>
+            <input name="manifest" id="manifest" />
+          </div>
+
+          <div>
+            <label for="page">Page</label>
+            <textarea name="page" id="page" cols="120" rows="12"></textarea>
+          </div>
         </div>
 
         <button type="button" onclick="format()">Format</button>
@@ -57,32 +115,39 @@ export default async function (
         <button type="button" onclick="saveAndSubmit()">Submit</button>
       
         <ul>
-          ${latestRequestedPages
-            .map(({ time, page }) => {
-              /*const components = Object.entries(page.fragments).map(([name, fragment]) => {
-              return `${name}: ${isArray(fragment)}`
-            }).join(', ');*/
-
-              return `<li style="cursor: pointer;" onclick="page.value = atob('${Buffer.from(
-                JSON.stringify(page, null, 2),
-              ).toString('base64')}')">${new Date(time).toISOString()}: ${
-                page.location.href
-              }</li>`
+          ${latestRequests
+            .map(({ time, body }) => {
+              return `<li style="cursor: pointer;" onclick="load(atob('${Buffer.from(
+                JSON.stringify(body, null, 2),
+              ).toString('base64')}'))">[${body.id || 'n/a'}] ${new Date(
+                time,
+              ).toISOString()}: ${body.page.location.href}</li>`
             })
             .join('\n')}
         </ul>
 
         <script>
+          const input = document.getElementById('input')
+          const manifest = document.getElementById('manifest')
+          const base = document.getElementById('base')
           const page = document.getElementById('page')
 
-          const format = () => {
+          const safeParse = (value) => {
             try {
-              const parsed = JSON.parse(page.value)
-              
-              page.value = JSON.stringify(parsed, null, 2)
+              return JSON.parse(value)
             } catch (error) {
-              // Do nothing
+              return null;
             }
+          }
+
+          const format = () => {
+            const parsedPage = safeParse(page.value)
+
+            if (!parsedPage) {
+              return
+            }
+            
+            page.value = JSON.stringify(parsedPage, null, 2)
           }
 
           const saveAndSubmit = () => {
@@ -90,12 +155,32 @@ export default async function (
             document.getElementById('form').submit()
           }
 
-          const load = () => {
-            page.value = window.localStorage.getItem('page')
+          const load = (body) => {
+            parsedBody = safeParse(body || window.localStorage.getItem('body'))
+
+            if (!parsedBody) {
+              return
+            }
+
+            input.value = parsedBody.input
+            manifest.value = parsedBody.manifest
+            base.value = parsedBody.base
+            page.value = JSON.stringify(parsedBody.page, null, 2)
           }
 
           const save = () => {
-            window.localStorage.setItem('page', page.value)
+            const parsedPage = safeParse(page.value)
+
+            if (!parsedPage) {
+              return
+            }
+
+            window.localStorage.setItem('body', JSON.stringify({
+              page: parsedPage,
+              input: input.value,
+              manifest: manifest.value,
+              base: base.value,
+            }))
           }
 
           load()
@@ -104,44 +189,39 @@ export default async function (
     `)
   })
   app.post('/render', async (request, response) => {
-    const errors = {
-      MANIFEST_OR_VITE_MISSING: {
-        status: 400,
-        message: `either a manifest must be passed or a Vite instance must be running`,
-      },
-      NO_INPUT: {
-        message: `no input was specified`,
-      },
-      INPUT_DOES_NOT_EXIST: {
-        message: `input file does not exist`,
-      },
-      MANIFEST_DOES_NOT_EXIST: {
-        message: `manifest file does not exist`,
-      },
-    }
+    const page = isString(request.body.page)
+      ? safeParse(request.body.page)
+      : request.body.page
+    const id = request.body.id || 'n/a'
+    const manifest = String(request.body.manifest || '')
+    const input = String(request.body.input || '')
+    const base = String(request.body.base || '')
+    const time = Date.now()
+    const href = page?.location?.href || ''
 
     try {
-      const { page, manifest, input } = request.body
-      const time = Date.now()
-
       // Log when the request entered
-      logger?.info(`${chalk.yellow(`→ ${page?.location.href || '(empty)'}`)}`, {
-        timestamp: true,
-      })
+      logger?.info(
+        `${chalk.yellow(`→ [${id}] Requesting ${chalk.bold(href)}`)}`,
+        {
+          timestamp: true,
+        },
+      )
 
       // Remember last X requests
-      latestRequestedPages.unshift({
+      latestRequests.unshift({
         time,
-        page,
+        body: request.body,
       })
-      latestRequestedPages.splice(5)
-      console.log(input)
-      console.log(vite?.config.build.rollupOptions.input)
-      console.log(manifest)
+      latestRequests.splice(5)
 
       // Check prerequisites
       if (!manifest && !vite) {
         throw new Error('MANIFEST_OR_VITE_MISSING')
+      }
+
+      if (manifest && vite) {
+        throw new Error('MANIFEST_AND_VITE_DEFINED')
       }
 
       if (!input) {
@@ -190,14 +270,13 @@ export default async function (
             fixStacktrace: true,
           })
         : // @ts-ignore
-          await import(
-            path.join(path.dirname(manifest), loadedManifest[input]['file'])
-          )
+          await import(input)
       ).default
 
       // Render and reply with result
       response.json(
         await render(renderApp, page, {
+          base,
           manifest: loadedManifest,
           logger,
           vite,
@@ -206,7 +285,11 @@ export default async function (
 
       // Log how long it took to render the page
       logger?.info(
-        `${chalk.green(`← ${page.location.href} (${Date.now() - time}ms)`)}`,
+        `${chalk.green(
+          `← [${id}] Rendered response for ${chalk.bold(href)} in ${chalk.bold(
+            Date.now() - time,
+          )}ms`,
+        )}`,
         {
           timestamp: true,
         },
@@ -221,26 +304,22 @@ export default async function (
         const details = errors[error.message as keyof typeof errors]
 
         if (details) {
-          // Use core helper to throw error again
-          safe(
-            () => {
-              throwError(details.message)
-            },
-            (error) => {
-              if (error instanceof Error) {
-                logger?.error(error.message, {
-                  timestamp: true,
-                  error,
-                })
-              }
-            },
-          )
-        } else {
-          logger?.error(error.message, {
+          code = error.message
+          message = details.message
+          status = details.status
+        }
+
+        logger?.error(
+          `${chalk.red(
+            `← [${id}] Error while rendering ${chalk.bold(href)}: ${message} (${
+              Date.now() - time
+            }ms)`,
+          )}`,
+          {
             timestamp: true,
             error,
-          })
-        }
+          },
+        )
       }
 
       response.status(status).json({

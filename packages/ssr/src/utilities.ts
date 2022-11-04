@@ -5,6 +5,7 @@ import { Manifest, ManifestChunk, ModuleNode, ViteDevServer } from 'vite'
 export const renderHead = (
   modules: Set<string>,
   manifest: Manifest,
+  base: string,
 ): string[] => {
   const tags: string[] = []
   const visitedIds = new Set<string>()
@@ -17,7 +18,9 @@ export const renderHead = (
       continue
     }
 
-    tags.push(...renderHeadChunk(manifest, id, chunk, visitedIds, visitedFiles))
+    tags.push(
+      ...renderHeadChunk(manifest, base, id, chunk, visitedIds, visitedFiles),
+    )
   }
 
   return tags
@@ -25,6 +28,7 @@ export const renderHead = (
 
 export const renderHeadChunk = (
   manifest: Manifest,
+  base: string,
   id: string,
   chunk: ManifestChunk,
   visitedIds: Set<string>,
@@ -54,7 +58,7 @@ export const renderHeadChunk = (
 
     visitedFiles.add(file)
 
-    const preloadLink = generatePreloadLink(file)
+    const preloadLink = generatePreloadLink(file, base)
     if (!preloadLink) {
       continue
     }
@@ -70,6 +74,7 @@ export const renderHeadChunk = (
 
       return renderHeadChunk(
         manifest,
+        base,
         dynamicImportId,
         dynamicImportChunk,
         visitedIds,
@@ -83,12 +88,16 @@ export const renderHeadChunk = (
   return tags
 }
 
-export const generatePreloadLink = (file: string): string | undefined => {
-  const finalFile = file.startsWith('/') ? file : `/${file}`
+export const generatePreloadLink = (
+  _file: string,
+  _base: string,
+): string | undefined => {
+  /*const finalFile = `${base}${file}`
 
   if (finalFile.endsWith('js') || finalFile.endsWith('.vue')) {
     return `<link rel="modulepreload" crossorigin href="${finalFile}">`
   }
+
   if (finalFile.endsWith('.css')) {
     return `<link rel="stylesheet" href="${finalFile}">`
   } else if (finalFile.endsWith('.woff')) {
@@ -101,7 +110,7 @@ export const generatePreloadLink = (file: string): string | undefined => {
     return ` <link rel="preload" href="${finalFile}" as="image" type="image/jpeg">`
   } else if (finalFile.endsWith('.png')) {
     return ` <link rel="preload" href="${finalFile}" as="image" type="image/png">`
-  }
+  }*/
 
   return undefined
 }

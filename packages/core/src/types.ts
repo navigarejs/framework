@@ -7,6 +7,7 @@ import { IsEmptyObject } from 'type-fest'
 // Router
 export type RouterOptions<TComponent> = {
   initialPage: Page
+  base: string
   resolveComponentModule?: ComponentModuleResolver<TComponent>
   fragments?: Record<
     string,
@@ -17,6 +18,7 @@ export type RouterOptions<TComponent> = {
 }
 
 export type ComponentModuleResolver<TComponent> = (
+  url: string,
   component: PageComponent,
 ) => Promise<TComponent>
 
@@ -50,8 +52,8 @@ export type PageRememberedState = Record<string, unknown> | undefined
 export type PageFragmentProperties = Record<string, any>
 
 export type PageComponent = {
+  id: string
   path: string
-  url: string
 }
 
 export type PageFragment = {

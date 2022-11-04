@@ -5,6 +5,8 @@ namespace Navigare\View;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Navigare\Configuration;
+use Navigare\Navigare;
 use Navigare\Router\RawRoute;
 
 class PageFragment implements Arrayable
@@ -26,17 +28,22 @@ class PageFragment implements Arrayable
    * Get the instance as an array.
    *
    * @param bool $ssr
+   * @param ?Configuration $configuration
    * @return array
    */
-  public function toArray(bool $ssr = false)
-  {
+  public function toArray(
+    bool $ssr = false,
+    ?Configuration $configuration = null
+  ) {
+    $configuration = $configuration ?? Navigare::getConfiguration();
+
     return [
       'name' => $this->name,
-      'component' => $this->component->toArray($ssr),
+      'component' => $this->component->toArray($ssr, $configuration),
       'properties' => $this->properties->toArray(),
       'defaults' => $this->defaults->toArray(),
       'parameters' => $this->parameters->toArray(),
-      'rawRoute' => $this->rawRoute->toArray($ssr),
+      'rawRoute' => $this->rawRoute->toArray($ssr, $configuration),
       'location' => $this->location->toArray(),
       'timestamp' => Carbon::now()->timestamp,
     ];

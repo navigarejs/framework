@@ -6,6 +6,7 @@ import { Manifest, ViteDevServer } from 'vite'
 
 export interface Options {
   manifest?: Manifest
+  base?: string
   logger?: Logger
   vite?: ViteDevServer
 }
@@ -15,7 +16,7 @@ export default async function render(
   page: Page | null,
   options: Options = {},
 ): Promise<RenderedApp> {
-  const { manifest = {}, logger, vite } = options
+  const { manifest = {}, logger, vite, base = '/' } = options
   const id = 'app'
   const defaultHtmlAttributes = ''
   const defaultHeadTags = ''
@@ -66,7 +67,7 @@ export default async function render(
     const renderedApp = await renderApp(page, manifest, vite)
 
     // Render head
-    const renderedHead = renderHead(renderedApp.modules, manifest)
+    const renderedHead = renderHead(renderedApp.modules, manifest, base)
 
     return {
       id,

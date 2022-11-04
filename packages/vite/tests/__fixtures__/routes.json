@@ -6,6 +6,11 @@
     "methods": ["GET", "HEAD"],
     "domain": "navigare.test",
     "bindings": { "name": null },
-    "components": ["pages/Welcome.vue"]
+    "components": [
+      {
+        "id": "nested/Details.vue",
+        "path": "resources/scripts/pages/nested/Details.vue"
+      }
+    ]
   }
 }

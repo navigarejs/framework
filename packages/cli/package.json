@@ -79,6 +79,7 @@
     "@navigare/ssr": "^1.0.20"
   },
   "dependencies": {
+    "chalk": "4",
     "commander": "^9.4.1"
   }
 }

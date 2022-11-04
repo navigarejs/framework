@@ -17,13 +17,12 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Response as ResponseFactory;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Traits\Macroable;
-use Navigare\Support\Configuration;
-use Navigare\Support\PageComponent;
-use Navigare\Support\Location;
-use Navigare\Support\Page;
-use Navigare\Support\PageFragment;
-use Navigare\Support\RawRoute;
+use Navigare\Router\RawRoute;
 use Navigare\Support\SelectedProperty;
+use Navigare\View\Location;
+use Navigare\View\Page;
+use Navigare\View\PageComponent;
+use Navigare\View\PageFragment;
 
 class Response implements Responsable
 {

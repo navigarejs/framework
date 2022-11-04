@@ -9,6 +9,7 @@ import {
   safeParse,
   Router,
   RouterOptions,
+  getKeys,
 } from '@navigare/core'
 import { createHead } from '@vueuse/head'
 import { DefineComponent } from 'vue'
@@ -24,13 +25,18 @@ export default async function createApp({
     },
   },
 }: Options): Promise<App> {
-  const initialPageWithFallback =
-    initialPage ||
-    (isSSR()
-      ? null
-      : (safeParse(
-          document.getElementById(id)?.dataset.page as string,
-        ) as Page | null))
+  // Determine initial page
+  let initialPageWithFallback: Page | null = initialPage ?? null
+  let base = '/'
+
+  if (!isSSR()) {
+    const element = document.getElementById(id)
+
+    if (element) {
+      initialPageWithFallback = safeParse(element.dataset.page, () => null)
+      base = element.dataset.base ?? base
+    }
+  }
 
   if (!initialPageWithFallback) {
     throwError('Navigare: no initial page is specified')
@@ -41,6 +47,7 @@ export default async function createApp({
     initialPage: initialPageWithFallback,
     resolveComponentModule,
     fragments,
+    base,
   }
   const router = new Router<DefineComponent>(options)
 
@@ -73,6 +80,17 @@ export default async function createApp({
     '__VUE_PROD_DEVTOOLS__' in globalThis
   ) {
     root.use(devToolsPlugin)
+  }
+
+  // Remove page from dataset
+  if (!isSSR()) {
+    const element = document.getElementById(id)
+
+    if (element) {
+      for (const key of getKeys(element.dataset)) {
+        delete element.dataset[key]
+      }
+    }
   }
 
   return {

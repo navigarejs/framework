@@ -1,12 +1,14 @@
 import { Page, RenderedApp } from '@navigare/core'
 import { Express } from 'express-serve-static-core'
-import { ViteDevServer, LogOptions, LogErrorOptions, Manifest } from 'vite'
+import { ViteDevServer, LogErrorOptions, Manifest } from 'vite'
 
 export interface Server {
   app: Express
   restart: () => Promise<void>
   printUrls: () => void
 }
+
+export type LogOptions = import('vite').LogOptions
 
 export interface Logger {
   info(msg: string, options?: LogOptions): void

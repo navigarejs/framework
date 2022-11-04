@@ -5,6 +5,7 @@ namespace Navigare\View;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Navigare\Configuration;
 use Navigare\Router\RawRoute;
 
 class Page implements Arrayable
@@ -42,14 +43,19 @@ class Page implements Arrayable
    * Get the instance as an array.
    *
    * @param bool $ssr
+   * @param ?Configuration $configuration
    * @return array
    */
-  public function toArray(bool $ssr = false)
-  {
-    file_put_contents('php://stdout', print_r($ssr, true));
+  public function toArray(
+    bool $ssr = false,
+    ?Configuration $configuration = null
+  ) {
     return [
-      'fragments' => $this->fragments->map(function ($fragment) use ($ssr) {
-        return $fragment->toArray($ssr);
+      'fragments' => $this->fragments->map(function ($fragment) use (
+        $ssr,
+        $configuration
+      ) {
+        return $fragment->toArray($ssr, $configuration);
       }),
       'properties' => $this->properties->toArray(),
       'defaults' => $this->defaults->toArray(),

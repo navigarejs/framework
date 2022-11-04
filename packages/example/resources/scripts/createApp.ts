@@ -8,7 +8,7 @@ export default function createApp(initialPage?: Page) {
   return createNavigareApp({
     initialPage,
 
-    setup({ Root, props, plugin: navigarePlugin }) {
+    setup({ Root, props }) {
       // Create Vue app with Navigare component as root
       const app = createVueApp({
         render: () => {

@@ -1,8 +1,33 @@
 import { getVersion } from './internals.js'
+import { isDefined } from '@navigare/core'
 import { serve } from '@navigare/ssr'
+import { LogOptions } from '@navigare/ssr'
+import chalk from 'chalk'
 import * as commander from 'commander'
 
 const program = new commander.Command().version(getVersion())
+
+const log = (message: string, options: LogOptions = {}) => {
+  const now = new Date()
+  const time = options.timestamp
+    ? `${chalk.grey(
+        now.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }),
+      )} ${chalk.white(
+        now.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: false,
+        }),
+      )}`
+    : ''
+
+  console.log([time, message].filter(isDefined).join(' '))
+}
 
 program
   .command('serve')
@@ -14,21 +39,22 @@ program
     const { printUrls } = await serve({
       port: Number(port),
       logger: {
-        info: (message) => {
-          console.info(message)
+        info: (message, options) => {
+          log(message, options)
         },
-        warn: (message) => {
-          console.warn(message)
+        warn: (message, options) => {
+          log(message, options)
         },
-        warnOnce: (message) => {
-          console.warn(message)
+        warnOnce: (message, options) => {
+          log(message, options)
         },
-        error: (message, { error } = {}) => {
-          if (error) {
-            console.error(error.stack)
+        error: (message, options) => {
+          if (options?.error) {
+            log(options?.error.stack || options?.error.message, options)
+            return
           }
 
-          console.error(message)
+          log(message, options)
         },
       },
     })

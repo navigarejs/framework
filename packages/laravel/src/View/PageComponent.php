@@ -12,7 +12,7 @@ use Navigare\Support\Filesystem;
 
 class PageComponent implements Arrayable
 {
-  public function __construct(public string $name, public string $path)
+  public function __construct(public string $id, public string $path)
   {
   }
 
@@ -36,7 +36,8 @@ class PageComponent implements Arrayable
     $basename = $pathinfo['basename'];
     $file = $basename . '.' . $extension;
 
-    $path = join(DIRECTORY_SEPARATOR, array_filter([$root, $directory, $file]));
+    $id = join(DIRECTORY_SEPARATOR, array_filter([$directory, $file]));
+    $path = join(DIRECTORY_SEPARATOR, array_filter([$root, $id]));
     $absolutePath = join(
       DIRECTORY_SEPARATOR,
       array_filter([base_path(), $path])
@@ -53,7 +54,7 @@ class PageComponent implements Arrayable
       throw new PageComponentNotFoundException($name, $absolutePath);
     }
 
-    return new PageComponent(name: $name, path: $path);
+    return new PageComponent(id: $id, path: $path);
   }
 
   /**
@@ -77,7 +78,7 @@ class PageComponent implements Arrayable
         );
       }
 
-      $path = join(DIRECTORY_SEPARATOR, [$manifest->getPrefix(), $path]);
+      $path = join(DIRECTORY_SEPARATOR, [$manifest->getBase(), $path]);
     }
 
     return $path;
@@ -102,27 +103,6 @@ class PageComponent implements Arrayable
           $manifest
         );
       }
-
-      // Generate absolute HTTP link
-      if (Str::startsWith($manifest->getPrefix(), 'http')) {
-        return $manifest->getPrefix() . '/' . $path;
-      }
-
-      // Generate relative public link
-      $absolutePath = join(DIRECTORY_SEPARATOR, [
-        $manifest->getPrefix(),
-        $path,
-      ]);
-      if (!Str::startsWith($absolutePath, public_path())) {
-        throw new PageComponentNotPublicException(
-          $this,
-          $absolutePath,
-          $manifest
-        );
-      }
-
-      Filesystem::makePathRelative();
-      return 'fsdfsdf';
     }
 
     return $path;
@@ -142,8 +122,8 @@ class PageComponent implements Arrayable
     $configuration = $configuration ?? Navigare::getConfiguration();
 
     return [
-      'path' => $this->path,
-      'url' => $ssr
+      'id' => $this->id,
+      'path' => $ssr
         ? $this->resolveSSRPath($configuration)
         : $this->resolveClientPath($configuration),
     ];

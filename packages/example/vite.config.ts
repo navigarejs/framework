@@ -10,6 +10,8 @@ export default defineConfig({
   },
 
   build: {
+    // This is not necessary in a real world project
+    minify: false,
     watch: {
       include: ['node_modules/@navigare/**'],
     },
@@ -23,7 +25,7 @@ export default defineConfig({
 
   plugins: [
     laravel({
-      input: ['resources/css/app.css', 'resources/scripts/client.ts'],
+      input: ['resources/scripts/client.ts'],
       refresh: true,
     }),
 

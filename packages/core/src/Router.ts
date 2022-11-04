@@ -745,7 +745,7 @@ export default class Router<TComponentModule> {
   }
 
   protected getComponentId(component: PageComponent): string {
-    return component.url
+    return component.id
   }
 
   public getComponentModule(
@@ -753,29 +753,34 @@ export default class Router<TComponentModule> {
   ): TComponentModule | Promise<TComponentModule> {
     const id = this.getComponentId(component)
 
-    // IF the component was loaded before we can simply return it's instance
+    // If the component was loaded before we can simply return it's instance
     if (id in this.componentModules) {
       return this.componentModules[this.getComponentId(component)]
     }
 
     // Otherwise we will resolve it asynchronously
     return new Promise<TComponentModule>(async (resolve) => {
-      const module = (await this.resolveComponent(component)) as any
+      const module = (await this.resolveComponentModule(component)) as any
 
+      // Remember that we used the module before
       this.componentModules[id] = 'default' in module ? module.default : module
 
       resolve(this.componentModules[id])
     })
   }
 
-  public async resolveComponent(component: PageComponent) {
+  public async resolveComponentModule(component: PageComponent) {
     const resolveComponentModule =
       this.options.resolveComponentModule ||
-      (async ({ url }) => {
+      (async (url) => {
         return import(/* @vite-ignore */ url)
       })
 
-    return await resolveComponentModule(component)
+    const url = component.path.startsWith('/')
+      ? component.path
+      : [this.options.base, component.path].join('')
+
+    return await resolveComponentModule(url, component)
   }
 
   public async resolvePage(page: Page): Promise<void> {

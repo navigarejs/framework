@@ -9,17 +9,25 @@ it('reads configuration from the given option object', async () => {
       configuration: {
         ssr: {
           enabled: false,
-          url: 'http://127.0.0.1:13715/',
+          protocol: 'http',
+          host: '127.0.0.1',
+          port: 13715,
+          timeout: 1,
+          input: 'resources/scripts/ssr.ts',
+          manifest: '/tmp/bootstrap/ssr/manifest.json',
+        },
+
+        client: {
+          manifest: '/tmp/public/build/manifest.json',
+        },
+
+        components: {
+          path: 'resources/scripts/pages',
+          default_extension: 'vue',
         },
 
         testing: {
           ensure_pages_exist: true,
-          page_paths: [],
-          page_extensions: [],
-        },
-
-        types: {
-          path: './resources/js/navigare.d.ts',
         },
       },
     },

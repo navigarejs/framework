@@ -365,10 +365,14 @@ export function mapRouteMethod(
 }
 
 export function safeParse<TOutput = unknown, TErrorOutput = undefined>(
-  input: string,
+  input: string | undefined | null,
   errorCallback?: (error: unknown) => TErrorOutput,
 ): TOutput | TErrorOutput {
   return safe<TOutput, TErrorOutput>(() => {
+    if (!input) {
+      throw Error('invalid input')
+    }
+
     return JSON.parse(input)
   }, errorCallback)
 }

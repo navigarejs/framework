@@ -49,7 +49,7 @@ export default defineComponent({
         )
       }
 
-      return markRaw(module)
+      return module
     })
 
     // Provide context to children
@@ -61,7 +61,7 @@ export default defineComponent({
       const defaultSlot = slots.default
 
       // Enable inheritance of attributes
-      componentModule.value.inheritAttrs = true // !!component.inheritAttrs
+      // componentModule.value.inheritAttrs = true // !!component.inheritAttrs
 
       // Render component
       const renderedComponentModule = h(
