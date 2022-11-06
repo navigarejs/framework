@@ -16,6 +16,8 @@ class NavigareFactory
 
   protected string $rootView = 'app';
 
+  protected ?string $layout = null;
+
   protected ?Configuration $configuration = null;
 
   protected ?string $parentURL = null;
@@ -28,21 +30,40 @@ class NavigareFactory
   /**
    * Set root view (i.e. the blade component) for the Navigare response.
    *
-   * @param  string $rootView
+   * @param  string $name
+   * @return self
    */
-  public function setRootView(string $rootView): void
+  public function setRootView(string $name): self
   {
-    $this->rootView = $rootView;
+    $this->rootView = $name;
+
+    return $this;
+  }
+
+  /**
+   * Set layout for the Navigare response.
+   *
+   * @param  string $name
+   * @return self
+   */
+  public function setLayout(string $name): self
+  {
+    $this->layout = $name;
+
+    return $this;
   }
 
   /**
    * Set configuration for the Navigare response.
    *
    * @param  Configuration $configuration
+   * @return self
    */
-  public function setConfiguration(Configuration $configuration): void
+  public function setConfiguration(Configuration $configuration): self
   {
     $this->configuration = $configuration;
+
+    return $this;
   }
 
   /**
@@ -58,21 +79,27 @@ class NavigareFactory
   /**
    * Set parent URL of page (i.e. for modals the page that is in the background).
    *
-   * @param  string $parentURL
+   * @param  string $url
+   * @return self
    */
-  public function extends(string $parentURL): void
+  public function extends(string $url): self
   {
-    $this->parentURL = $parentURL;
+    $this->parentURL = $url;
+
+    return $this;
   }
 
   /**
    * Set version.
    *
    * @param  Closure|string|null  $version
+   * @return self
    */
-  public function setVersion(Closure|string|null $version): void
+  public function setVersion(Closure|string|null $version): self
   {
     $this->version = $version;
+
+    return $this;
   }
 
   /**
@@ -115,13 +142,13 @@ class NavigareFactory
   /**
    * Render component with properties to fragment.
    *
-   * @param  string  $componentName
-   * @param  array|Arrayable  $properties
+   * @param  ?string  $componentName
+   * @param  ?array|Arrayable  $properties
    * @param  ?string  $fragmentName
    * @return Response
    */
   public function render(
-    string $componentName,
+    string $componentName = null,
     array|Arrayable $properties = [],
     string $fragmentName = 'default'
   ): Response {
@@ -130,9 +157,13 @@ class NavigareFactory
       configuration: $this->getConfiguration(),
       parentURL: $this->parentURL,
       version: $this->getVersion(),
-      extensions: $this->extensions
+      extensions: $this->extensions,
+      layout: $this->layout
     );
-    $response->withFragment($fragmentName, $componentName, $properties);
+
+    if ($componentName) {
+      $response->withFragment($fragmentName, $componentName, $properties);
+    }
 
     return $response;
   }

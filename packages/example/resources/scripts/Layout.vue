@@ -1,69 +1,82 @@
 <template>
   <div class="bg-gray-50 min-h-screen">
-    <div class="fixed top-0 left-0 right-0 h-12 bg-gray-800 text-gray-300 px-4">
-      <page-fragments name="header" />
-    </div>
+    <template v-if="layout === 'unauthenticated'">
+      <unauthenticated />
+    </template>
 
-    <div class="mt-12 px-4 py-4 flex flex-row space-x-4">
-      <transition name="slide-fade">
-        <div
-          v-if="router.layout === 'nested'"
-          class="w-full max-w-[300px]"
-        >
-          <page-fragments name="navigation" />
-        </div>
-      </transition>
-
-      <div class="w-full">
-        <page-fragments
-          name="default"
-          #fragment="{ component }"
-        >
-          <transition
-            name="fade"
-            mode="out-in"
-          >
-            <component :is="component" />
-          </transition>
-        </page-fragments>
-      </div>
-    </div>
-
-    <div>
-      {{ router.location }}
-    </div>
-
-    <page-fragments
-      name="modal"
-      #default="{ fragments }"
-    >
+    <template v-else>
       <div
-        class="absolute inset-0 flex items-center justify-center overflow-hidden transition-all"
-        :class="{
-          'pointer-events-none': fragments.length === 0,
-          'bg-black/50': fragments.length > 0,
-        }"
+        class="fixed top-0 left-0 right-0 h-12 bg-gray-800 text-gray-300 px-4"
       >
-        <transition-group name="slide-bottom">
-          <template
-            v-for="(fragment, index) in fragments"
-            :key="index"
-          >
-            <component
-              :is="fragment"
-              :class="{
-                'scale-75': index < fragments.length - 1,
-              }"
-            />
-          </template>
-        </transition-group>
+        <page-fragments name="header" />
       </div>
-    </page-fragments>
+
+      <div class="mt-12 px-4 py-4 flex flex-row space-x-4">
+        <transition name="slide-fade">
+          <div
+            v-if="router.layout === 'nested'"
+            class="w-full max-w-[300px]"
+          >
+            <page-fragments name="navigation" />
+          </div>
+        </transition>
+
+        <div class="w-full">
+          <page-fragments
+            name="default"
+            #fragment="{ component }"
+          >
+            <transition
+              name="fade"
+              mode="out-in"
+            >
+              <component :is="component" />
+            </transition>
+          </page-fragments>
+        </div>
+      </div>
+
+      <div>
+        {{ router.location }}
+      </div>
+
+      <page-fragments
+        name="modal"
+        #default="{ fragments }"
+      >
+        <div
+          class="absolute inset-0 flex items-center justify-center overflow-hidden transition-all"
+          :class="{
+            'pointer-events-none': fragments.length === 0,
+            'bg-black/50': fragments.length > 0,
+          }"
+        >
+          <transition-group name="slide-bottom">
+            <template
+              v-for="(fragment, index) in fragments"
+              :key="index"
+            >
+              <component
+                :is="fragment"
+                :class="{
+                  'scale-75': index < fragments.length - 1,
+                }"
+              />
+            </template>
+          </transition-group>
+        </div>
+      </page-fragments>
+    </template>
   </div>
 </template>
 
 <script lang="ts" setup>
+import Unauthenticated from './pages/Unauthenticated.vue'
 import { useRouter, PageFragments } from '@navigare/vue3'
+
+defineProps({
+  layout: String,
+})
 
 const router = useRouter()
 </script>

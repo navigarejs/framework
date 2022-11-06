@@ -1,6 +1,13 @@
 import { getConfiguration } from './configuration'
 import { getRoutes, writeTypes } from './routes'
-import { Options, Adapter, Configuration, Plugin } from './types'
+import {
+  Options,
+  Adapter,
+  Configuration,
+  Plugin,
+  ResolvedOptions,
+} from './types'
+import { generateChunkName } from './utilities'
 import _generate from '@babel/generator'
 import { parse } from '@babel/parser'
 import _traverse from '@babel/traverse'
@@ -23,14 +30,12 @@ import {
   importSpecifier,
   stringLiteral,
 } from '@babel/types'
-import { RawRoute, RawRoutes, throwError } from '@navigare/core'
+import { RawRoute, RawRoutes } from '@navigare/core'
 import { Server as SSRServer, serveSSR } from '@navigare/ssr'
-import crypto from 'crypto'
 import makeDebugger from 'debug'
 import getPort from 'get-port'
 import globby from 'globby'
 import cloneDeep from 'lodash.clonedeep'
-import defaultsDeep from 'lodash.defaultsdeep'
 import get from 'lodash.get'
 import isArray from 'lodash.isarray'
 import isObject from 'lodash.isobject'
@@ -52,17 +57,21 @@ const require = createRequire(import.meta.url)
 
 const debug = makeDebugger('navigare:laravel:index')
 
-export default function createNavigarePlugin(options: Options = {}): Plugin {
-  defaultsDeep(options, {
+export default function cresateNavigarePlugin(options: Options = {}): Plugin {
+  const resolvedOptions: ResolvedOptions = {
     routes: Adapter.Laravel,
     configuration: Adapter.Laravel,
     interval: 15000,
-  })
-  let currentRoutes: RawRoutes = isObject(options.routes) ? options.routes : {}
+    buildId: Date.now(),
+    ...options,
+  }
+  let currentRoutes: RawRoutes = isObject(resolvedOptions.routes)
+    ? resolvedOptions.routes
+    : {}
   let currentConfiguration: Configuration | null = isObject(
-    options.configuration,
+    resolvedOptions.configuration,
   )
-    ? options.configuration
+    ? resolvedOptions.configuration
     : null
   let currentComponents: string[] = []
   let ssr = false
@@ -74,15 +83,6 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
   }
   const currentUsedRoutes: Record<string, string[]> = {}
   const files: Record<string, string> = {}
-  const buildId = Math.random().toString()
-  const getChunkName = (name: string) => {
-    const hash = crypto
-      .createHash('md5')
-      .update(`${buildId}-${name}`)
-      .digest('hex')
-
-    return `${hash}.mjs`
-  }
 
   return {
     name: 'navigare',
@@ -117,7 +117,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
       // Read routes regularly in case no routes were provided
       const updateRoutes = async () => {
         try {
-          currentRoutes = await getRoutes(options, env, ssr)
+          currentRoutes = await getRoutes(resolvedOptions, env, ssr)
           debug('read routes: %O', currentRoutes)
 
           // Write types
@@ -141,7 +141,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
         }
 
         // Update routes in a while again
-        const interval = Number(options.interval)
+        const interval = Number(resolvedOptions.interval)
         if (environment.command === 'serve' && interval > 0) {
           setTimeout(updateRoutes, interval)
         }
@@ -151,7 +151,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
       // Read configuration regularly in case no configuration was provided
       const updateConfiguration = async () => {
         try {
-          currentConfiguration = await getConfiguration(options, env)
+          currentConfiguration = await getConfiguration(resolvedOptions, env)
           debug('read configuration: %O', currentConfiguration)
         } catch (error) {
           if (error instanceof Error) {
@@ -160,7 +160,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
         }
 
         // Update configuration in a while again
-        const interval = Number(options.interval)
+        const interval = Number(resolvedOptions.interval)
         if (environment.command === 'serve' && interval > 0) {
           setTimeout(updateConfiguration, interval)
         }
@@ -181,7 +181,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
         }
 
         // Update components in a while again
-        const interval = Number(options.interval)
+        const interval = Number(resolvedOptions.interval)
         if (environment.command === 'serve' && interval > 0) {
           setTimeout(updateComponents, interval)
         }
@@ -226,7 +226,7 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
               }
 
               const id = path.relative(process.cwd(), chunkInfo.facadeModuleId)
-              return getChunkName(id)
+              return generateChunkName(resolvedOptions.buildId, id)
             },
           },
         },
@@ -301,16 +301,6 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
       })
     },
 
-    /*moduleParsed(module) {
-      if (!module.isEntry) {
-        return
-      }
-
-       module.dynamicImporters.push([
-        "resources/scripts/pages/Home.vue",
-       ]) 
-    },*/
-
     buildStart() {
       // Include all possible components in final build
       if (environment.command === 'build') {
@@ -350,11 +340,18 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
 
           // Extract route name
           const routeName = routeCall.arguments[0].value
-          const rawRoute: RawRoute | undefined = cloneDeep(
+          let rawRoute: RawRoute | undefined = cloneDeep(
             currentRoutes?.[routeName],
           )
           if (!rawRoute) {
-            throwError(`"${routeName}" is not a valid route name`)
+            /*// Set a dummy route that will only fail at runtime
+            rawRoute = {
+              name: routeName as any,
+              methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'],
+              uri: '',
+            }*/
+            this.warn(`"${routeName}" is not a valid route name`)
+            return
           }
 
           // Update path of used components based on the build manifest
@@ -362,7 +359,10 @@ export default function createNavigarePlugin(options: Options = {}): Plugin {
             rawRoute.components = rawRoute.components?.map((component) => {
               return {
                 ...component,
-                path: getChunkName(component.path),
+                path: generateChunkName(
+                  resolvedOptions.buildId,
+                  component.path,
+                ),
               }
             })
           }

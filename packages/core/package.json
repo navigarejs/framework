@@ -47,7 +47,6 @@
     "release": "yarn semantic-release"
   },
   "dependencies": {
-    "@vue/devtools-api": "^6.4.5",
     "lodash.castarray": "^4.4.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",

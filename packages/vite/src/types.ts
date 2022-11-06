@@ -41,7 +41,7 @@ export interface Options {
   routes?: Adapter | RawRoutes | string
 
   /**
-   * Interval that determines how often the routes will be refreshed.
+   * Interval that determines how often the routes and configuration will be refreshed.
    */
   interval?: number | false
 
@@ -57,33 +57,39 @@ export interface Options {
   configuration?: Adapter | Configuration | string
 
   /**
-   * Whether to allow overrides from the base configuration. If false, base
-   * options will be ignored, so stuff like `--host 0.0.0.0` won't work.
-   *
-   * @default true
+   * Defines the build ID that will be used as a base to generate
+   * deterministic chunk names.
    */
-  allowOverrides?: boolean
+  buildId?: string | number
+}
+
+export interface ResolvedOptions {
+  /**
+   * Source of routes and configuration.
+   */
+  routes: Adapter | RawRoutes | string
 
   /**
-   * List of file changes to listen to.
+   * Interval that determines how often the routes and configuration will be refreshed.
    */
-  watch?: WatchInput[] | WatchOptions
-}
+  interval: number | false
 
-export interface WatchOptions {
-  reloadOnBladeUpdates?: boolean
-  reloadOnControllerUpdates?: boolean
-  reloadOnConfigUpdates?: boolean
-  input?: WatchInput[]
-}
+  /**
+   * Path to PHP executable.
+   */
+  php?: string
 
-export interface WatchInputHandlerParameters {
-  file: string
-}
+  /**
+   * A configuration object or a path to a configuration file.
+   * Setting to false disables reading the configuration file path from the `CONFIG_PATH_NAVIGARE` environment variable.
+   */
+  configuration: Adapter | Configuration | string
 
-export interface WatchInput {
-  condition: (file: string) => boolean
-  handle: (parameters: WatchInputHandlerParameters) => void
+  /**
+   * Defines the build ID that will be used as a base to generate
+   * deterministic chunk names.
+   */
+  buildId: string | number
 }
 
 export interface PhpFinderOptions {

@@ -23,7 +23,7 @@
     "typescript": "^4.8.4"
   },
   "scripts": {
-    "prepare": "husky install && yarn workspaces foreach run build",
+    "prepare": "husky install && yarn workspaces foreach --topological-dev --exclude @navigare/docs run build",
     "develop": "yarn workspaces foreach --interlaced --parallel --verbose run develop",
     "release": "yarn workspaces foreach --verbose run release",
     "format": "prettier --write .",

@@ -21,7 +21,7 @@
     />
     <link
       rel="modulepreload"
-      href="/assets/index.md.c3f13406.lean.js"
+      href="/assets/architecture.md.52def4ee.lean.js"
     />
 
     <meta
@@ -527,7 +527,59 @@
                       data-v-5978566a
                       data-v-00130f26
                     >
-                      <!--[--><!--]--><!--[--><!--]--><!----><!--[--><!--]-->
+                      <!--[--><!--]--><!--[--><!--]-->
+                      <div
+                        class="VPDocAsideOutline has-outline"
+                        data-v-00130f26
+                        data-v-b4b2ef0c
+                      >
+                        <div
+                          class="content"
+                          data-v-b4b2ef0c
+                        >
+                          <div
+                            class="outline-marker"
+                            data-v-b4b2ef0c
+                          ></div>
+                          <div
+                            class="outline-title"
+                            data-v-b4b2ef0c
+                          >
+                            On this page
+                          </div>
+                          <nav
+                            aria-labelledby="doc-outline-aria-label"
+                            data-v-b4b2ef0c
+                          >
+                            <span
+                              class="visually-hidden"
+                              id="doc-outline-aria-label"
+                              data-v-b4b2ef0c
+                            >
+                              Table of Contents for current page
+                            </span>
+                            <ul
+                              class="root"
+                              data-v-b4b2ef0c
+                            >
+                              <!--[-->
+                              <li
+                                style=""
+                                data-v-b4b2ef0c
+                              >
+                                <a
+                                  class="outline-link"
+                                  href="#client"
+                                  data-v-b4b2ef0c
+                                  >Client</a
+                                ><!---->
+                              </li>
+                              <!--]-->
+                            </ul>
+                          </nav>
+                        </div>
+                      </div>
+                      <!--[--><!--]-->
                       <div
                         class="spacer"
                         data-v-00130f26
@@ -551,10 +603,85 @@
                   >
                     <div
                       style="position: relative"
-                      class="vp-doc index.m"
+                      class="vp-doc architecture.m"
                       data-v-5978566a
                     >
-                      <div><p>Test2</p></div>
+                      <div>
+                        <ul>
+                          <li>
+                            <p>Development</p>
+                            <ul>
+                              <li>
+                                SSR
+                                <ul>
+                                  <li>Adapter does not read any manifest</li>
+                                  <li>
+                                    Adapter calls SSR server
+                                    <ul>
+                                      <li>
+                                        Adapter prepares page so it can resolve
+                                        the dependencies via
+                                        <strong>absolute paths</strong>
+                                      </li>
+                                      <li>
+                                        Adapter passes page client manifest to
+                                        SSR server so it can generate the
+                                        preload links
+                                      </li>
+                                    </ul>
+                                  </li>
+                                  <li>Adapter renders page</li>
+                                </ul>
+                              </li>
+                              <li>
+                                <h2
+                                  id="client"
+                                  tabindex="-1"
+                                >
+                                  Client
+                                  <a
+                                    class="header-anchor"
+                                    href="#client"
+                                    aria-hidden="true"
+                                    >#</a
+                                  >
+                                </h2>
+                              </li>
+                            </ul>
+                          </li>
+                          <li>
+                            <p>Production</p>
+                            <ul>
+                              <li>
+                                SSR
+                                <ul>
+                                  <li>Adapter reads SSR and client manifest</li>
+                                  <li>
+                                    Adapter calls SSR server
+                                    <ul>
+                                      <li>
+                                        Adapter prepares page using SSR manifest
+                                        so it can resolve the
+                                        <strong>built</strong> dependencies via
+                                        <strong>absolute paths</strong>
+                                      </li>
+                                      <li>
+                                        Adapter passes page client manifest to
+                                        SSR server so it can generate the
+                                        preload links
+                                      </li>
+                                    </ul>
+                                  </li>
+                                  <li>
+                                    Adapter renders page using client manifest
+                                  </li>
+                                </ul>
+                              </li>
+                              <li>Client</li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </main>
                   <!---->

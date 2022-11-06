@@ -3905,8 +3905,7 @@ const Yc = (...e) => {
 function Gc(e) {
   return be(e) ? document.querySelector(e) : e
 }
-var Jc =
-  '{"lang":"en-US","title":"VitePress","description":"A VitePress site","base":"/","head":[],"appearance":true,"themeConfig":{},"locales":{},"langs":{},"scrollOffset":90}'
+var Jc = `{"lang":"en-US","title":"navigare","description":"A framework for creating server-driven single page apps.","base":"/","head":[],"appearance":true,"themeConfig":{"logo":"https://raw.githubusercontent.com/jaulz/navigare/main/assets/logo.svg","footer":{"copyright":"Made by <a class=\\"underline\\" href=\\"https://twitter.com/jaulz\\">Julian Hundeloh</a>","message":"Released under the <a href=\\"https://navigarejs.github.com/framework/blob/main/LICENSE\\">MIT License</a>."},"editLink":{"repo":"jaulz/navigare","branch":"main","dir":"packages/docs","text":"Suggest changes to this page"},"socialLinks":[{"icon":"twitter","link":"https://twitter.com/jaulz"},{"icon":"github","link":"'https://github.com/jaulz/navigare"}]},"locales":{},"langs":{},"scrollOffset":90}`
 const Xc = /^https?:/i,
   Uo = 'vitepress-theme-appearance',
   Oe = typeof window != 'undefined'
@@ -7463,4 +7462,4 @@ if (Oe) {
     pp(t.route, n.site), e.mount('#app')
   })
 }
-export { M as _, p as a, m as c, kp as createApp, d as o }
+export { M as _, ac as a, p as b, m as c, kp as createApp, d as o }

@@ -50,6 +50,8 @@
     "release": "yarn semantic-release"
   },
   "devDependencies": {
+    "@navigare/core": "^1.0.29",
+    "@navigare/ssr": "^1.0.21",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/exec": "^6.0.3",
     "@trivago/prettier-plugin-sort-imports": "^3.4.0",
@@ -58,7 +60,6 @@
     "@types/babel__traverse": "^7.18.2",
     "@types/debug": "^4.1.7",
     "@types/lodash.clonedeep": "^4.5.7",
-    "@types/lodash.defaultsdeep": "^4.6.7",
     "@types/lodash.get": "^4.0.7",
     "@types/lodash.isarray": "^4.0.7",
     "@types/lodash.isobject": "^3.0.7",
@@ -97,7 +98,6 @@
     "get-port": "^5.0.0",
     "globby": "11",
     "lodash.clonedeep": "^4.5.0",
-    "lodash.defaultsdeep": "^4.6.1",
     "lodash.get": "^4.4.2",
     "lodash.isarray": "^4.0.0",
     "lodash.isobject": "^3.0.2",

@@ -1,11 +1,21 @@
 import { PhpFinderOptions } from './types'
 import { isDefined } from '@navigare/core'
 import c from 'chalk'
+import crypto from 'crypto'
 import makeDebugger from 'debug'
 import * as execa from 'execa'
 import { loadEnv } from 'vite'
 
 const debug = makeDebugger('navigare:laravel:utilities')
+
+export const generateChunkName = (buildId: string | number, name: string) => {
+  const hash = crypto
+    .createHash('md5')
+    .update(`${buildId}-${name}`)
+    .digest('hex')
+
+  return `${hash}.mjs`
+}
 
 export function parseUrl(href?: string) {
   if (!href) {
