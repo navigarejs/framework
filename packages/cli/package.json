@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@navigare/core": "^1.0.31",
-    "@navigare/ssr": "^1.0.21",
+    "@navigare/ssr": "^1.0.22",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/exec": "^6.0.3",
     "@trivago/prettier-plugin-sort-imports": "^3.4.0",
@@ -78,7 +78,7 @@
   },
   "peerDependencies": {
     "@navigare/core": "^1.0.31",
-    "@navigare/ssr": "^1.0.21"
+    "@navigare/ssr": "^1.0.22"
   },
   "dependencies": {
     "chalk": "4",
