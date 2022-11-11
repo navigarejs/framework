@@ -1,10 +1,17 @@
 import { FormControl, FormErrors, FormOptions } from './types'
 import useRouter from './useRouter'
-import { VisitData, Routable, VisitProgress, getKeys } from '@navigare/core'
+import {
+  VisitData,
+  Routable,
+  VisitProgress,
+  getKeys,
+  isDefined,
+} from '@navigare/core'
+import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
-import isArray from 'lodash.isarray'
 import isEqual from 'lodash.isequal'
 import isFunction from 'lodash.isfunction'
+import set from 'lodash.set'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
 const globalDisabled = ref(false)
@@ -73,6 +80,13 @@ export default function createForm<
       manualDisabled.value || computedDisabled.value || globalDisabled.value
     )
   })
+  const validationRequests: Record<
+    string,
+    {
+      abortController?: AbortController
+      request: () => void
+    }
+  > = {}
 
   // Remember values
   watch(
@@ -189,6 +203,95 @@ export default function createForm<
       },
     ),
 
+    validate: markRaw(async (path) => {
+      let validationErrors: FormErrors = {}
+      const name = control.getInputName(path)
+
+      // Run one validation at a time for the given path
+      validationRequests[name] = validationRequests[name] ?? {
+        request: async () => {
+          const validationRequest = validationRequests[name]
+
+          // Cancel potential previous request
+          validationRequest?.abortController?.abort()
+
+          // Call back-end with precognition mode
+          try {
+            // Remove files from values
+            const sanitizedValues = Object.fromEntries(
+              Object.entries(cloneDeep(values))
+                .map(([name, value]) => {
+                  if (value instanceof Blob) {
+                    return undefined
+                  }
+
+                  return [name, value]
+                })
+                .filter(isDefined),
+            )
+
+            // Stop unnecessary requests early
+            if (
+              !getKeys(sanitizedValues).length ||
+              !(name in sanitizedValues)
+            ) {
+              return
+            }
+
+            // Run request with Precognition header
+            const abortController = new AbortController()
+            validationRequest.abortController = abortController
+
+            const { method, location, data } = router.instance.resolveRoutable(
+              routable.value,
+              sanitizedValues,
+            )
+
+            await router.instance.axios({
+              method,
+              data,
+              url: location.href,
+              headers: {
+                Precognition: true,
+                'Precognition-Validate-Only': name,
+              },
+              signal: abortController.signal,
+            })
+
+            // Clear previous errors if this validation was successful
+            if (name) {
+              set(errors.value, name, [])
+            } else {
+              errors.value = {}
+            }
+
+            // Clear request
+            delete validationRequests[name].abortController
+          } catch (error) {
+            if (router.instance.axios.isAxiosError(error)) {
+              if (error.code === 'ERR_CANCELED') {
+                // Ignore
+              } else {
+                const { response } = error
+
+                validationErrors = response?.data.errors ?? {}
+                for (const [key, messages] of Object.entries(
+                  validationErrors,
+                )) {
+                  errors.value[key] = messages
+                }
+              }
+            } else {
+              throw error
+            }
+          }
+        },
+      }
+
+      // Call debounced request
+      await validationRequests[name]?.request()
+    }),
+
     reset: markRaw(() => {
       errors.value = {}
 
@@ -216,15 +319,15 @@ export default function createForm<
     }),
 
     block: markRaw((path) => {
-      blockers.value[isArray(path) ? path.join('.') : path] = true
+      blockers.value[control.getInputName(path)] = true
     }),
 
     unblock: markRaw((path) => {
-      blockers.value[isArray(path) ? path.join('.') : path] = false
+      blockers.value[control.getInputName(path)] = false
     }),
 
     focus: markRaw((path) => {
-      focus.value = isArray(path) ? path.join('.') : path
+      focus.value = control.getInputName(path)
     }),
 
     blur: markRaw(() => {
@@ -251,286 +354,31 @@ export default function createForm<
         )
       },
     ),
+
+    getInputName: markRaw((path) => {
+      if (!path) {
+        return ''
+      }
+
+      return castArray(
+        path instanceof Event
+          ? (path.target as HTMLInputElement | undefined)?.name
+          : path,
+      ).join('.')
+    }),
+
+    getInputId: markRaw((path) => {
+      if (!path) {
+        return ''
+      }
+
+      return castArray(
+        path instanceof Event
+          ? (path.target as HTMLInputElement | undefined)?.name
+          : path,
+      ).join('.')
+    }),
   })
-
-  /*const rememberKey =
-    typeof rememberKeyOrData === 'string' ? rememberKeyOrData : null
-  const data: TValues =
-    (typeof rememberKeyOrData === 'string' ? maybeData : rememberKeyOrData) ||
-    ({} as TValues)
-  const restored = (
-    rememberKey ? router.instance.restore(rememberKey) : {}
-  ) as FormRestore<TValues>
-
-  let defaults = cloneDeep(data)
-  let cancelToken: VisitCancelToken | null = null
-  let recentlySuccessfulTimeoutId: ReturnType<typeof setTimeout> | null = null
-  let transform: FormTransformer<TValues, TTransformedValues> = (data) =>
-    data as unknown as TTransformedValues
-
-  const form = reactive<Form<TValues, TTransformedValues>>({
-    ...(restored ? restored.data : data),
-
-    isDirty: false,
-
-    errors: restored.errors ?? {},
-
-    hasErrors: false,
-
-    processing: false,
-
-    progress: null,
-
-    wasSuccessful: false,
-
-    recentlySuccessful: false,
-
-    data() {
-      return cloneDeep(data)
-    },
-
-    transform(callback) {
-      transform = callback
-
-      return this
-    },
-
-    defaults(key, value): Form<TValues, TTransformedValues> {
-      if (isDefined(key)) {
-        defaults = Object.assign(
-          {},
-          cloneDeep(defaults),
-          isDefined(value) ? { [key]: value } : key,
-        )
-      } else {
-        defaults = form.data()
-      }
-
-      return form
-    },
-
-    reset(...keys): Form<TValues, TTransformedValues> {
-      const clonedDefaults = cloneDeep(defaults)
-
-      if (keys.length === 0) {
-        Object.assign(form, clonedDefaults)
-      } else {
-        Object.assign(
-          form,
-          getKeys(clonedDefaults)
-            .filter((key) => keys.includes(key))
-            .reduce((carry, key) => {
-              carry[key] = clonedDefaults[key]
-              return carry
-            }, {} as TValues),
-        )
-      }
-
-      return form
-    },
-
-    setError(key, value): Form<TValues, TTransformedValues> {
-      Object.assign(form.errors, { [key]: value })
-
-      form.hasErrors = Object.keys(form.errors).length > 0
-
-      return form
-    },
-
-    setErrors(errors): Form<TValues, TTransformedValues> {
-      Object.assign(form.errors, errors)
-
-      form.hasErrors = Object.keys(form.errors).length > 0
-
-      return form
-    },
-
-    clearErrors(...keys): Form<TValues, TTransformedValues> {
-      form.errors = Object.keys(form.errors).reduce(
-        (carry, field) => ({
-          ...carry,
-          ...(keys.length > 0 && !keys.includes(field as FormKey<TValues>)
-            ? { [field]: this.errors[field] }
-            : {}),
-        }),
-        {},
-      )
-
-      form.hasErrors = Object.keys(form.errors).length > 0
-
-      return form
-    },
-
-    async submit(methodOrRoute, routableOrOptions, maybeOptions = {}) {
-      const method = isString(methodOrRoute)
-        ? methodOrRoute
-        : methodOrRoute.method
-      const routable = isString(methodOrRoute)
-        ? (routableOrOptions as Routable)
-        : methodOrRoute
-      const options = isString(methodOrRoute)
-        ? (maybeOptions as VisitOptions)
-        : (routableOrOptions as VisitOptions)
-      const transformedData = transform(form.data())
-      const baseOptions: Partial<VisitOptions> = {
-        ...options,
-
-        onCancelToken: (token) => {
-          cancelToken = token
-
-          if (options.onCancelToken) {
-            return options.onCancelToken(token)
-          }
-        },
-
-        onBefore: (visit) => {
-          form.wasSuccessful = false
-          form.recentlySuccessful = false
-
-          if (recentlySuccessfulTimeoutId) {
-            clearTimeout(recentlySuccessfulTimeoutId)
-          }
-
-          if (options.onBefore) {
-            return options.onBefore(visit)
-          }
-        },
-
-        onStart: (visit) => {
-          form.processing = true
-
-          if (options.onStart) {
-            return options.onStart(visit)
-          }
-        },
-
-        onProgress: (event) => {
-          form.progress = event.detail.progress ?? null
-
-          if (options.onProgress) {
-            return options.onProgress(event)
-          }
-        },
-
-        onSuccess: async (page) => {
-          form.processing = false
-          form.progress = null
-          form.clearErrors()
-          form.wasSuccessful = true
-          form.recentlySuccessful = true
-
-          // Keep timer for recently successful state
-          recentlySuccessfulTimeoutId = setTimeout(() => {
-            form.recentlySuccessful = false
-          }, 2000)
-
-          const onSuccess = options.onSuccess
-            ? await options.onSuccess(page)
-            : null
-
-          defaults = cloneDeep(this.data())
-
-          form.isDirty = false
-
-          return onSuccess
-        },
-
-        onError: (event) => {
-          const { errors } = event.detail
-
-          form.processing = false
-          form.progress = null
-          form.clearErrors().setErrors(errors)
-
-          if (options.onError) {
-            return options.onError(event)
-          }
-        },
-
-        onCancel: (event) => {
-          form.processing = false
-          form.progress = null
-
-          if (options.onCancel) {
-            return options.onCancel(event)
-          }
-        },
-
-        onFinish: (activeVisit) => {
-          form.processing = false
-          form.progress = null
-          cancelToken = null
-
-          if (options.onFinish) {
-            return options.onFinish(activeVisit)
-          }
-        },
-      }
-
-      // Delete method has a different signature so we have a special case here
-      if (method === RouteMethod.DELETE) {
-        return await router.instance.delete(routable, {
-          ...baseOptions,
-          data: transformedData,
-        })
-      }
-
-      return await router.instance[method](
-        routable,
-        transformedData,
-        baseOptions,
-      )
-    },
-
-    async get(routable, options): Promise<ActiveVisit> {
-      return await form.submit(RouteMethod.GET, routable, options)
-    },
-
-    async post(routable, options): Promise<ActiveVisit> {
-      return await form.submit(RouteMethod.POST, routable, options)
-    },
-
-    async put(routable, options): Promise<ActiveVisit> {
-      return await form.submit(RouteMethod.PUT, routable, options)
-    },
-
-    async patch(routable, options): Promise<ActiveVisit> {
-      return await form.submit(RouteMethod.PATCH, routable, options)
-    },
-
-    async delete(routable, options): Promise<ActiveVisit> {
-      return await form.submit(RouteMethod.DELETE, routable, options)
-    },
-
-    cancel() {
-      cancelToken?.cancel()
-    },
-
-    __rememberable: rememberKey === null,
-
-    __remember(): FormRestore<TValues> {
-      return { data: form.data(), errors: this.errors }
-    },
-
-    __restore(restored) {
-      Object.assign(this, restored.data)
-
-      this.setError(restored.errors)
-    },
-  })
-
-  // Remember values
-  watch(
-    form,
-    (newValue) => {
-      form.isDirty = !isEqual(form.data(), defaults)
-
-      if (rememberKey) {
-        router.instance.remember(cloneDeep(newValue.__remember()), rememberKey)
-      }
-    },
-    { immediate: true, deep: true },
-  )*/
 
   return control
 }

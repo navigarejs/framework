@@ -1,15 +1,18 @@
+import provideFormContext from './provideFormContext'
 import { FormControl } from './types'
 import useRouter from './useRouter'
-import { RawRouteMethod, VisitData } from '@navigare/core'
+import { RawRouteMethod, throwError } from '@navigare/core'
 import { computed, PropType, ref } from 'vue'
 import { defineComponent, h } from 'vue'
 
 export default defineComponent({
   name: 'Form',
 
+  navigare: true,
+
   props: {
     form: {
-      type: Object as PropType<FormControl<VisitData>>,
+      type: Object as PropType<FormControl>,
       required: true,
     },
 
@@ -22,6 +25,12 @@ export default defineComponent({
     const router = useRouter()
     const element = ref<HTMLElement | null>()
     const target = computed(() => {
+      if (!props.form) {
+        throwError(
+          'You must pass a form (that was created via `createForm`) to the Form component.',
+        )
+      }
+
       return router.instance.resolveRoutable(
         props.form.routable,
         {},
@@ -30,6 +39,9 @@ export default defineComponent({
         },
       )
     })
+
+    // Provide context
+    provideFormContext(props.form)
 
     return () => {
       return h(

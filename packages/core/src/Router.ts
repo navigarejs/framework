@@ -24,7 +24,6 @@ import {
   VisitId,
   VisitOptions,
   RouterLocation,
-  PageFragments,
   RouterOptions,
   RouteDefaults,
   Events,
@@ -39,26 +38,29 @@ import {
   isSSR,
   throwError,
   mergeDataIntoQueryString,
-  getInitialFragments,
-  mergeFragments,
+  mergePages,
   objectToFormData,
   hasFiles,
   createEmitter,
   mapRouteMethod,
-  safe,
   safeParse,
   serialize,
+  getKeys,
+  getDeferredPageProperties,
 } from './utilities'
 import {
   default as Axios,
   AxiosResponse,
   AxiosResponseHeaders,
   RawAxiosResponseHeaders,
+  AxiosStatic,
 } from 'axios'
+import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
 import debounce from 'lodash.debounce'
 import isArray from 'lodash.isarray'
 import isObject from 'lodash.isobject'
+import isString from 'lodash.isstring'
 import uniq from 'lodash.uniq'
 import { SetRequired } from 'type-fest'
 
@@ -118,16 +120,19 @@ export default class Router<TComponentModule> {
 
   protected componentModules: Record<string, TComponentModule> = {}
 
+  public axios: AxiosStatic
+
   public constructor(options: RouterOptions<TComponentModule>) {
     const { initialPage } = options
     this.options = options
     this.activeVisit = this.createVisit({
       location: initialPage.location,
     })
-    this.internalPages.push({
+    this.setPage({
       ...initialPage,
       visit: this.activeVisit,
     })
+    this.axios = Axios
 
     // Handle initial page
     if (!isSSR()) {
@@ -144,6 +149,11 @@ export default class Router<TComponentModule> {
         this.setupEventListeners()
       }, 0)
     }
+
+    // Listen to own exceptions
+    this.on('exception', (event) => {
+      console.error(event.detail.exception)
+    })
   }
 
   protected async handleInitialPageVisit(page: Page): Promise<void> {
@@ -186,6 +196,10 @@ export default class Router<TComponentModule> {
   }
 
   protected resetScrollPositions(): void {
+    if (isSSR()) {
+      return
+    }
+
     window.scrollTo(0, 0)
 
     this.scrollRegions().forEach((region) => {
@@ -259,7 +273,7 @@ export default class Router<TComponentModule> {
 
       window.location.href = location.href
 
-      if (this.createLocation(window.location.href).url === location.url) {
+      if (this.createLocation(window.location.href).href === location.href) {
         window.location.reload()
       }
     } catch (error) {
@@ -376,11 +390,12 @@ export default class Router<TComponentModule> {
     }
 
     // Inform listeners about new page
-    this.pageIndex--
+    history.back()
+    /*this.pageIndex--
     this.emitter.emit(
       'navigate',
       createNavigateEvent(this.page, this.internalPages, this.pageIndex, false),
-    )
+    )*/
   }
 
   public async visit(
@@ -389,7 +404,6 @@ export default class Router<TComponentModule> {
   ): Promise<Visit> {
     let { preserveScroll = false, preserveState = false } = options
     const {
-      data = {},
       replace = false,
       properties = [],
       headers = {},
@@ -406,11 +420,15 @@ export default class Router<TComponentModule> {
       onInvalid,
       onException,
     } = options
-    const { location, method } = this.resolveRoutable(routable, data, {
-      method: options.method,
-      forceFormData,
-      queryStringArrayFormat,
-    })
+    const { location, method, data } = this.resolveRoutable(
+      routable,
+      options.data,
+      {
+        method: options.method,
+        forceFormData,
+        queryStringArrayFormat,
+      },
+    )
 
     const visit: Visit = this.createVisit({
       location,
@@ -460,10 +478,10 @@ export default class Router<TComponentModule> {
     this.emit('start', createStartEvent(this.activeVisit), onStart)
 
     try {
-      const response = await Axios({
+      const response = await this.axios({
         method,
 
-        url: location.url,
+        url: location.href,
 
         data: method === RouteMethod.GET ? {} : data,
 
@@ -478,7 +496,7 @@ export default class Router<TComponentModule> {
           'X-Navigare': true,
           ...(properties.length
             ? {
-                'X-Navigare-Properties': properties,
+                'X-Navigare-Select': properties,
               }
             : {}),
           ...(errorBag && errorBag.length
@@ -577,7 +595,7 @@ export default class Router<TComponentModule> {
       if (
         location.hash &&
         !nextPage.location.hash &&
-        location.url === nextPage.location.url
+        location.href === nextPage.location.href
       ) {
         nextPage.location.hash = location.hash
       }
@@ -592,11 +610,13 @@ export default class Router<TComponentModule> {
       // Check if any errors occurred
       const errors = this.page.properties.errors || {}
       if (Object.keys(errors).length > 0) {
-        const scopedErrors = errorBag
-          ? errors[errorBag]
-            ? errors[errorBag]
-            : {}
-          : errors
+        const scopedErrors = Object.fromEntries(
+          Object.entries(
+            errorBag ? (errors[errorBag] ? errors[errorBag] : {}) : errors,
+          ).map(([name, message]) => {
+            return [name, castArray(message)]
+          }),
+        )
 
         this.emit(
           'error',
@@ -630,7 +650,7 @@ export default class Router<TComponentModule> {
           if (
             location.hash &&
             !redirectLocation.hash &&
-            location.url === redirectLocation.url
+            location.href === redirectLocation.href
           ) {
             redirectLocation.hash = location.hash
           }
@@ -670,18 +690,6 @@ export default class Router<TComponentModule> {
     return headers[name.toLowerCase()]
   }
 
-  protected mergeFragments(
-    fragments: PageFragments,
-    nextFragments: PageFragments,
-  ): PageFragments {
-    const initialFragments = getInitialFragments(this.options.fragments)
-
-    return mergeFragments(
-      mergeFragments(initialFragments, fragments),
-      nextFragments,
-    )
-  }
-
   protected async setPage(
     page: Page,
     {
@@ -693,17 +701,29 @@ export default class Router<TComponentModule> {
       preserveState?: VisitPreserveStateOption
     } = {},
   ): Promise<Page> {
-    const nextPage: Page = {
-      ...page,
-      fragments: this.mergeFragments(this.page.fragments, page.fragments),
-    }
+    const initialVisit = !this.page
+
+    // Merge current and incoming page into next page
+    const pageWithBase = mergePages(
+      page.base,
+      {
+        ...page,
+        base: undefined,
+      },
+      this.options.fragments,
+      initialVisit,
+    )
+    const nextPage = mergePages(this.page, pageWithBase, this.options.fragments)
 
     // Reuse or initialize scroll regions and state
     nextPage.scrollRegions = nextPage.scrollRegions || []
     nextPage.rememberedState = nextPage.rememberedState || {}
 
     // Either replace the current state or push the next state
-    if (replace || nextPage.location.href === window.location.href) {
+    if (
+      replace ||
+      (!isSSR() && nextPage.location.href === window.location.href)
+    ) {
       this.replaceState(nextPage)
     } else {
       this.pushState(nextPage)
@@ -715,15 +735,29 @@ export default class Router<TComponentModule> {
     }
 
     // Inform listeners about new page
-    this.emitter.emit(
-      'navigate',
-      createNavigateEvent(
-        this.page,
-        this.internalPages,
-        this.pageIndex,
-        replace,
-      ),
-    )
+    if (!initialVisit) {
+      this.emitter.emit(
+        'navigate',
+        createNavigateEvent(
+          this.page,
+          this.internalPages,
+          this.pageIndex,
+          replace,
+        ),
+      )
+    }
+
+    // Load deferred properties in the background
+    const deferredProperties = getDeferredPageProperties(this.page)
+    if (getKeys(deferredProperties).length > 0) {
+      setTimeout(() => {
+        this.reload({
+          headers: {
+            'X-Navigare-Properties': getKeys(deferredProperties).join(','),
+          },
+        })
+      }, 1)
+    }
 
     return nextPage
   }
@@ -734,14 +768,18 @@ export default class Router<TComponentModule> {
     this.internalPages.length = this.pageIndex + 1
     this.internalPages[this.pageIndex] = page
 
-    window.history.pushState(serialize(page), '', page.location.href)
+    if (!isSSR()) {
+      window.history.pushState(serialize(page), '', page.location.href)
+    }
   }
 
   protected replaceState(page: Page): void {
     // Simply replace the page at the current page index
     this.internalPage = page
 
-    window.history.replaceState(serialize(page), '', page.location.href)
+    if (!isSSR()) {
+      window.history.replaceState(serialize(page), '', page.location.href)
+    }
   }
 
   protected getComponentId(component: PageComponent): string {
@@ -805,6 +843,10 @@ export default class Router<TComponentModule> {
         return await this.getComponentModule(component)
       }),
     )
+
+    if (page.base) {
+      await this.resolvePage(page.base)
+    }
   }
 
   protected async handlePopstateEvent(event: PopStateEvent): Promise<void> {
@@ -951,18 +993,16 @@ export default class Router<TComponentModule> {
       routable instanceof URL
         ? routable.href
         : routable instanceof Route || isObject(routable)
-        ? safe(() => {
-            return routable.getHref(
-              this.location,
-              data instanceof FormData ? {} : data,
-              {
-                queryStringArrayFormat: options.queryStringArrayFormat,
-              },
-            )
-          })
+        ? routable.getHref(
+            this.location,
+            data instanceof FormData ? {} : data,
+            {
+              queryStringArrayFormat: options.queryStringArrayFormat,
+            },
+          )
         : routable
     let finalData = data
-    const method =
+    let method =
       routable instanceof Route
         ? routable.method
         : mapRouteMethod(options.method) ?? RouteMethod.GET
@@ -978,7 +1018,11 @@ export default class Router<TComponentModule> {
     }
 
     // Check if there is potentially an issue with the setup
-    if (isObject(routable) && !(routable instanceof Route)) {
+    if (
+      isObject(routable) &&
+      !(routable instanceof Route) &&
+      !(routable instanceof URL)
+    ) {
       console.warn(
         `It seems that there is an issue with Navigare. Maybe you have two different versions of \`@navigare/core\` installed?`,
       )
@@ -991,7 +1035,12 @@ export default class Router<TComponentModule> {
       finalData = objectToFormData(data)
     }
 
-    if (!(finalData instanceof FormData)) {
+    // During form submissions replace method with POST to allow file uploads
+    if (finalData instanceof FormData) {
+      finalData.append('_method', method)
+      method = RouteMethod.POST
+    } else {
+      // Otherwise merge data into query string
       const merged = mergeDataIntoQueryString(
         method,
         finalHref,
@@ -1039,8 +1088,7 @@ export default class Router<TComponentModule> {
     urlWithoutHash.hash = ''
 
     return {
-      url: urlWithoutHash.href,
-      href: url.href,
+      href: urlWithoutHash.href,
       host: url.host,
       hostname: url.hostname,
       origin: url.origin,
@@ -1055,10 +1103,11 @@ export default class Router<TComponentModule> {
   public matches(
     comparableRoute: Routable | PartialRoute,
     route: Route,
+    location: RouterLocation,
     defaults: RouteDefaults,
   ): boolean {
     // Check if the route matches the other route
-    return route.matches(comparableRoute, defaults)
+    return route.matches(comparableRoute, location, defaults)
   }
 
   public on<TEventName extends EventNames>(
@@ -1089,5 +1138,11 @@ export default class Router<TComponentModule> {
     }
 
     return this.emitter.emit(name, event as any)
+  }
+
+  public isRoutable(routable: any): routable is Routable {
+    return (
+      routable instanceof Route || routable instanceof URL || isString(routable)
+    )
   }
 }

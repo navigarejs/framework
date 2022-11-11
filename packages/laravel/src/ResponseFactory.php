@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response as BaseResponse;
 use Illuminate\Support\Traits\Macroable;
+use Navigare\View\DeferredProperty;
+use Navigare\View\LazyProperty;
 
-class NavigareFactory
+class ResponseFactory
 {
   use Macroable;
 
@@ -20,7 +22,7 @@ class NavigareFactory
 
   protected ?Configuration $configuration = null;
 
-  protected ?string $parentURL = null;
+  protected ?string $baseURL = null;
 
   protected array $extensions = [];
 
@@ -41,6 +43,17 @@ class NavigareFactory
   }
 
   /**
+   * Set root view (i.e. the blade component) for the Navigare response.
+   *
+   * @param  string $name
+   * @return self
+   */
+  public function rootView(string $name): self
+  {
+    return $this->setRootView($name);
+  }
+
+  /**
    * Set layout for the Navigare response.
    *
    * @param  string $name
@@ -51,6 +64,17 @@ class NavigareFactory
     $this->layout = $name;
 
     return $this;
+  }
+
+  /**
+   * Set layout for the Navigare response.
+   *
+   * @param  string $name
+   * @return self
+   */
+  public function layout(string $name): self
+  {
+    return $this->setLayout($name);
   }
 
   /**
@@ -84,7 +108,7 @@ class NavigareFactory
    */
   public function extends(string $url): self
   {
-    $this->parentURL = $url;
+    $this->baseURL = $url;
 
     return $this;
   }
@@ -100,6 +124,17 @@ class NavigareFactory
     $this->version = $version;
 
     return $this;
+  }
+
+  /**
+   * Set version.
+   *
+   * @param  Closure|string|null  $version
+   * @return self
+   */
+  public function version(Closure|string|null $version): self
+  {
+    return $this->setVersion($version);
   }
 
   /**
@@ -129,14 +164,25 @@ class NavigareFactory
   }
 
   /**
-   * Create instance of LazyProp.
+   * Create instance of LazyProperty.
    *
    * @param  Closure  $callback
-   * @return LazyProp
+   * @return LazyProperty
    */
-  public function lazy(Closure $callback): LazyProp
+  public function lazy(Closure $callback): LazyProperty
   {
-    return new LazyProp($callback);
+    return new LazyProperty($callback);
+  }
+
+  /**
+   * Create instance of DeferredProperty.
+   *
+   * @param  Closure  $callback
+   * @return DeferredProperty
+   */
+  public function deferred(Closure $callback): DeferredProperty
+  {
+    return new DeferredProperty($callback);
   }
 
   /**
@@ -155,7 +201,7 @@ class NavigareFactory
     $response = new Response(
       rootView: $this->rootView,
       configuration: $this->getConfiguration(),
-      parentURL: $this->parentURL,
+      baseURL: $this->baseURL,
       version: $this->getVersion(),
       extensions: $this->extensions,
       layout: $this->layout

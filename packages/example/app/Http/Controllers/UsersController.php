@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Users\StoreRequest;
+use App\Http\Requests\Users\UpdateRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -15,11 +17,11 @@ class UsersController extends Controller
 {
   public function index()
   {
-    return Navigare::render('Users/Index', [
+    return Navigare::render('users/Index', [
       'filters' => Request::all('search', 'role', 'trashed'),
       'users' => Auth::user()
         ->account->users()
-        ->orderByName()
+        ->orderBy('updated_at', 'DESC')
         ->filter(Request::only('search', 'role', 'trashed'))
         ->get()
         ->transform(
@@ -44,39 +46,26 @@ class UsersController extends Controller
 
   public function create()
   {
-    return Navigare::render('Users/Create');
+    return Navigare::modal('users/Create')->extends(route('users.index'));
   }
 
-  public function store()
+  public function store(StoreRequest $request)
   {
-    Request::validate([
-      'first_name' => ['required', 'max:50'],
-      'last_name' => ['required', 'max:50'],
-      'email' => ['required', 'max:50', 'email', Rule::unique('users')],
-      'password' => ['nullable'],
-      'owner' => ['required', 'boolean'],
-      'photo' => ['nullable', 'image'],
-    ]);
-
     Auth::user()
       ->account->users()
       ->create([
-        'first_name' => Request::get('first_name'),
-        'last_name' => Request::get('last_name'),
-        'email' => Request::get('email'),
-        'password' => Request::get('password'),
-        'owner' => Request::get('owner'),
+        ...$request->safe()->except(['photo']),
         'photo_path' => Request::file('photo')
           ? Request::file('photo')->store('users')
           : null,
       ]);
 
-    return Redirect::route('users')->with('success', 'User created.');
+    return Redirect::route('users.index')->with('success', 'User created.');
   }
 
   public function edit(User $user)
   {
-    return Navigare::render('Users/Edit', [
+    return Navigare::render('users/Edit', [
       'user' => [
         'id' => $user->id,
         'first_name' => $user->first_name,
@@ -96,7 +85,7 @@ class UsersController extends Controller
     ]);
   }
 
-  public function update(User $user)
+  public function update(UpdateRequest $request, User $user)
   {
     if (App::environment('demo') && $user->isDemoUser()) {
       return Redirect::back()->with(
@@ -104,29 +93,20 @@ class UsersController extends Controller
         'Updating the demo user is not allowed.'
       );
     }
+    $user->update(
+      $request->safe()->only(['first_name', 'last_name', 'email', 'owner'])
+    );
 
-    Request::validate([
-      'first_name' => ['required', 'max:50'],
-      'last_name' => ['required', 'max:50'],
-      'email' => [
-        'required',
-        'max:50',
-        'email',
-        Rule::unique('users')->ignore($user->id),
-      ],
-      'password' => ['nullable'],
-      'owner' => ['required', 'boolean'],
-      'photo' => ['nullable', 'image'],
-    ]);
-
-    $user->update(Request::only('first_name', 'last_name', 'email', 'owner'));
-
-    if (Request::file('photo')) {
-      $user->update(['photo_path' => Request::file('photo')->store('users')]);
+    if (Request::has('photo')) {
+      if (Request::file('photo')) {
+        $user->update(['photo_path' => Request::file('photo')->store('users')]);
+      } else {
+        $user->update(['photo_path' => null]);
+      }
     }
 
     if (Request::get('password')) {
-      $user->update(['password' => Request::get('password')]);
+      $user->update(['password' => $request->validated('password')]);
     }
 
     return Redirect::back()->with('success', 'User updated.');

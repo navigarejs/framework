@@ -8,7 +8,7 @@ import {
   RouteDefaults,
   QueryStringArrayFormat,
 } from './types'
-import { throwError, getKeys } from './utilities'
+import { throwError } from './utilities'
 import get from 'lodash.get'
 import isBoolean from 'lodash.isboolean'
 import { stringify } from 'qs'
@@ -42,24 +42,12 @@ export default class Route<
   ): string {
     // Get parameters that don't correspond to any route segments to append them to the query
     const parameters = this.getParameters(defaults)
-    const unhandled = getKeys(this.parameters)
-      .filter(
-        (key) =>
-          !this.getParameterSegments(location).some(({ name }) => name === key),
-      )
-      .filter((key) => key !== '_query')
-      .reduce(
-        (result, key) => ({
-          ...result,
-          [key]: this.parameters[key],
-        }),
-        {},
-      )
+    const query = this.getQueryParameters(location, defaults, this.absolute)
 
     return [
       this.compile(location, parameters),
       stringify(
-        { ...unhandled, ...get(this.parameters, '_query') },
+        { ...query, ...get(this.parameters, '_query') },
         {
           addQueryPrefix: true,
           arrayFormat: options.queryStringArrayFormat,
@@ -82,43 +70,6 @@ export default class Route<
    */
   public getUrl(location: RouterLocation): URL {
     return new URL(this.getHref(location), location.href)
-  }
-
-  /**
-   * Get a 'template' of the complete URL for this route.
-   *
-   * @example
-   * https://{user}.github.io/{repository}
-   */
-  getTemplate(location: RouterLocation): string {
-    // If we're building just a path there's no origin, otherwise: if this route has a
-    // domain configured we construct the origin with that, if not we use the app URL
-    const origin = this.rawRoute.domain
-      ? `${location.protocol}://${this.rawRoute.domain}${
-          location.port ? `:${location.port}` : ''
-        }`
-      : this.absolute
-      ? location.origin
-      : ''
-
-    return `${origin}/${this.rawRoute.uri}`.replace(/\/+$/, '')
-  }
-
-  /**
-   * Get an array of objects representing the parameters that this route accepts.
-   *
-   * @example
-   * [{ name: 'team', required: true }, { name: 'user', required: false }]
-   */
-  getParameterSegments(location: RouterLocation) {
-    const template = this.getTemplate(location)
-
-    return (
-      template.match(/{[^}?]+\??}/g)?.map((segment) => ({
-        name: segment.replace(/{|\??}/g, ''),
-        required: !/\?}$/.test(segment),
-      })) ?? []
-    )
   }
 
   /**
@@ -159,9 +110,9 @@ export default class Route<
     location: RouterLocation,
     parameters: RouteParameters<TName>,
   ): string {
-    const segments = this.getParameterSegments(location)
+    const segments = this.getParameterSegments(location, this.absolute)
     const { wheres = {} } = this.rawRoute
-    const template = this.getTemplate(location)
+    const template = this.getTemplate(location, this.absolute)
 
     if (!segments.length) {
       return template

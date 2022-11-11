@@ -81,7 +81,7 @@ class RawRoute implements Arrayable
         // Get type of parameter
         // In case it's not bound to a Model we simply return "true" to signal that any string can be passed
         $type = $parameter->getType()?->getName();
-        if (!$type || is_string($type)) {
+        if (!$type || !class_exists($type)) {
           return [
             $parameter->getName() => true,
           ];
@@ -90,7 +90,7 @@ class RawRoute implements Arrayable
         // Otherwise we will try to identify the identifier
         $model = class_exists(Reflector::class)
           ? Reflector::getParameterClassName($parameter)
-          : $parameter->getType()->getName();
+          : $type;
         $override =
           (new ReflectionClass($model))->isInstantiable() &&
           (new ReflectionMethod($model, 'getRouteKeyName'))->class !==
@@ -179,9 +179,9 @@ class RawRoute implements Arrayable
       'name' => $this->name,
       'uri' => $this->uri,
       'methods' => $this->methods,
-      'wheres' => $this->wheres,
+      'wheres' => (object) $this->wheres,
       'domain' => $this->domain,
-      'bindings' => $this->bindings,
+      'bindings' => (object) $this->bindings,
       'components' => $this->components
         ->map(function ($component) use ($ssr, $configuration) {
           return $component->toArray($ssr, $configuration);

@@ -7,7 +7,10 @@ exports[`reads routes from Laravel 1`] = `
       "name": null,
     },
     "components": [
-      "pages/Welcome.vue",
+      {
+        "id": "nested/Details.vue",
+        "path": "resources/scripts/pages/nested/Details.vue",
+      },
     ],
     "domain": "navigare.test",
     "method": "GET",
@@ -28,7 +31,10 @@ exports[`reads routes from file 1`] = `
       "name": null,
     },
     "components": [
-      "pages/Welcome.vue",
+      {
+        "id": "nested/Details.vue",
+        "path": "resources/scripts/pages/nested/Details.vue",
+      },
     ],
     "domain": "navigare.test",
     "method": "GET",

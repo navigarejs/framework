@@ -55,7 +55,6 @@ class Location implements Arrayable
   public function toArray()
   {
     return [
-      'url' => $this->href,
       'href' => $this->href,
       'host' => $this->host,
       'hostname' => $this->hostname,

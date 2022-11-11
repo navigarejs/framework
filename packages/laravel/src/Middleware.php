@@ -116,16 +116,22 @@ class Middleware
       return $this->getVersion($request);
     });
 
-    // Set extensions
+    // Expose validation errors by default
     Navigare::extend(function (Request $request, NavigareResponse $response) {
       $response->with([
         'errors' => function () use ($request) {
-          return collect($this->resolveValidationErrors($request));
+          return $this->resolveValidationErrors($request);
         },
       ]);
+    });
 
+    // Expose shared props
+    Navigare::extend(function (Request $request, NavigareResponse $response) {
       $response->with($this->share($request));
+    });
 
+    // Call extend of the middleware
+    Navigare::extend(function (Request $request, NavigareResponse $response) {
       $this->extend($request, $response);
     });
 

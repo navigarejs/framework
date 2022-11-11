@@ -236,24 +236,32 @@ export default async function (
         throw new Error('MANIFEST_DOES_NOT_EXIST')
       }
 
+      // Get render app function
+      const renderApp: RenderApp = (
+        vite
+          ? await vite.ssrLoadModule(input, {
+              fixStacktrace: true,
+            })
+          : // @ts-ignore
+            await import(input)
+      ).default
+
       // Load manifest
       const loadedManifest: Manifest = vite
         ? /*new Proxy(
         {},
         {
-          get(_target, _id: string): ManifestChunk | undefined {
+          get(_target, id: string): ManifestChunk | undefined {
             const module = vite?.moduleGraph.getModuleById(path.join(vite?.config.root || '', id))
-            const hmrPort = Number(vite?.config.server.hmr?.port)
-            
+            // const hmrPort = Number(vite?.config.server.hmr?.port)
             if (!module) {
               return undefined
             }
+            console.log(module.url)
 
             return {
               file: module.url,
             }
-
-            return undefined
           },
         },
       )*/ {}
@@ -264,14 +272,36 @@ export default async function (
             },
           )
 
-      // Get render app function
-      const renderApp: RenderApp = await (vite
-        ? await vite.ssrLoadModule(input, {
-            fixStacktrace: true,
-          })
-        : // @ts-ignore
-          await import(input)
-      ).default
+      // Get initial styles in development mode
+      // TODO: for some reason it only takes the first stylesheet
+      // See: https://github.com/vitejs/vite/issues/2282
+      const inputModule = await vite?.moduleGraph.getModuleByUrl(input, true)
+      const styles = Array.from(inputModule?.importers ?? [])
+        .map((importer) => {
+          return {
+            url: importer.url,
+            content: importer.ssrModule?.default,
+          }
+        })
+        .map(({ content }) => {
+          const id = Math.random().toString(16).substring(2)
+
+          return `
+            <style id="${id}" type="text/css" data-vite-dev-id="${id}">
+              ${content}
+            </style>
+            <script> 
+              window.onload = () => {
+                const style = document.getElementById('${id}')
+                const script = style.nextElementSibling
+
+                style.remove()
+                script.remove()
+              }
+            </script>
+          `
+        })
+        .join('')
 
       // Render and reply with result
       response.json(
@@ -280,6 +310,7 @@ export default async function (
           manifest: loadedManifest,
           logger,
           vite,
+          defaultHeadTags: `${styles}`,
         }),
       )
 

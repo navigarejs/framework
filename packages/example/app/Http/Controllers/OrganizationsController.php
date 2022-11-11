@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Organizations\StoreRequest;
+use App\Http\Requests\Organizations\UpdateRequest;
 use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -14,47 +16,40 @@ class OrganizationsController extends Controller
   {
     return Navigare::render('Organizations/Index', [
       'filters' => Request::all('search', 'trashed'),
-      'organizations' => Auth::user()
-        ->account->organizations()
-        ->orderBy('name')
-        ->filter(Request::only('search', 'trashed'))
-        ->paginate(10)
-        ->withQueryString()
-        ->through(
-          fn($organization) => [
-            'id' => $organization->id,
-            'name' => $organization->name,
-            'phone' => $organization->phone,
-            'city' => $organization->city,
-            'deleted_at' => $organization->deleted_at,
-          ]
-        ),
+      'organizations' => Navigare::deferred(
+        fn() => Auth::user()
+          ->account->organizations()
+          ->orderBy('updated_at', 'DESC')
+          ->filter(Request::only('search', 'trashed'))
+          ->paginate(10)
+          ->withQueryString()
+          ->through(
+            fn($organization) => [
+              'id' => $organization->id,
+              'name' => $organization->name,
+              'phone' => $organization->phone,
+              'city' => $organization->city,
+              'deleted_at' => $organization->deleted_at,
+            ]
+          )
+      ),
     ]);
   }
 
   public function create()
   {
-    return Navigare::render('Organizations/Create');
+    return Navigare::modal('Organizations/Create')->extends(
+      route('organizations.index')
+    );
   }
 
-  public function store()
+  public function store(StoreRequest $request)
   {
     Auth::user()
       ->account->organizations()
-      ->create(
-        Request::validate([
-          'name' => ['required', 'max:100'],
-          'email' => ['nullable', 'max:50', 'email'],
-          'phone' => ['nullable', 'max:50'],
-          'address' => ['nullable', 'max:150'],
-          'city' => ['nullable', 'max:50'],
-          'region' => ['nullable', 'max:50'],
-          'country' => ['nullable', 'max:2'],
-          'postal_code' => ['nullable', 'max:25'],
-        ])
-      );
+      ->create($request->validated());
 
-    return Redirect::route('organizations')->with(
+    return Redirect::route('organizations.index')->with(
       'success',
       'Organization created.'
     );
@@ -74,29 +69,18 @@ class OrganizationsController extends Controller
         'country' => $organization->country,
         'postal_code' => $organization->postal_code,
         'deleted_at' => $organization->deleted_at,
-        'contacts' => $organization
-          ->contacts()
-          ->orderByName()
-          ->get()
-          ->map->only('id', 'name', 'city', 'phone'),
       ],
+      'contacts' => $organization
+        ->contacts()
+        ->orderByName()
+        ->get()
+        ->map->only('id', 'name', 'city', 'phone'),
     ]);
   }
 
-  public function update(Organization $organization)
+  public function update(UpdateRequest $request, Organization $organization)
   {
-    $organization->update(
-      Request::validate([
-        'name' => ['required', 'max:100'],
-        'email' => ['nullable', 'max:50', 'email'],
-        'phone' => ['nullable', 'max:50'],
-        'address' => ['nullable', 'max:150'],
-        'city' => ['nullable', 'max:50'],
-        'region' => ['nullable', 'max:50'],
-        'country' => ['nullable', 'max:2'],
-        'postal_code' => ['nullable', 'max:25'],
-      ])
-    );
+    $organization->update($request->validated());
 
     return Redirect::back()->with('success', 'Organization updated.');
   }

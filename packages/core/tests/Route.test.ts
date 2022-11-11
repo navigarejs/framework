@@ -12,12 +12,12 @@ import {
 import { describe, expect, it } from 'vitest'
 
 const location: RouterLocation = {
-  href: 'https://navigare.test:443/',
-  host: 'navigare.test:443',
+  href: 'https://navigare.test:1337/',
+  host: 'navigare.test:1337',
   hostname: 'navigare.test',
-  origin: 'https://navigare.test:443',
+  origin: 'https://navigare.test:1337',
   pathname: '',
-  port: '443',
+  port: '1337',
   protocol: 'https',
   search: '',
   hash: '',
@@ -286,7 +286,7 @@ it('can generate a URL with no parameters', () => {
       location,
       defaults,
     ),
-  ).toEqual('https://navigare.test:443/posts')
+  ).toEqual('https://navigare.test:1337/posts')
 })
 
 it('can generate a URL with default parameters', () => {
@@ -304,7 +304,7 @@ it('can generate a URL with default parameters', () => {
       },
       true,
     ).getHref(location, defaults),
-  ).toEqual('https://navigare.test:443/en/posts')
+  ).toEqual('https://navigare.test:1337/en/posts')
 })
 
 it('can generate a URL with filled optional parameters', () => {
@@ -327,7 +327,7 @@ it('can generate a URL with filled optional parameters', () => {
       true,
     ).getHref(location, defaults),
   ).toEqual(
-    'https://navigare.test:443/subscribers/123/conversations/email/1234',
+    'https://navigare.test:1337/subscribers/123/conversations/email/1234',
   )
 })
 
@@ -361,7 +361,7 @@ it('can generate a URL for a route with domain parameters', () => {
       team: 'jaulz',
       id: 1,
     }).getHref(location, defaults),
-  ).toEqual('https://jaulz.navigare.test:443/users/1')
+  ).toEqual('https://jaulz.navigare.test:1337/users/1')
 
   // route with required domain parameters and default parameters
   expect(
@@ -370,7 +370,7 @@ it('can generate a URL for a route with domain parameters', () => {
       id: 1,
       locale: Default,
     }).getHref(location, defaults),
-  ).toEqual('https://jaulz.navigare.test:443/en/users/1')
+  ).toEqual('https://jaulz.navigare.test:1337/en/users/1')
 })
 
 it('can generate a URL for a route with a custom route model binding scope', () => {
@@ -413,18 +413,18 @@ it('can error if a route model binding key is missing', () => {
       comment: { count: 20 },
     }).getHref(location, defaults),
   ).toThrow(
-    /object passed as "comment" parameter is missing route model binding key "uuid"/,
+    /an object was passed to parameter "comment" but it is missing the property "uuid"/,
   )
 })
 
 it('can return base URL if path is "/"', () => {
   expect(
     new Route(rawRoutes['home'] as never, {}).getHref(location, defaults),
-  ).toEqual('')
+  ).toEqual('/')
 
   expect(
     new Route(rawRoutes['home'] as never, {}, true).getHref(location, defaults),
-  ).toEqual('https://navigare.test:443')
+  ).toEqual('https://navigare.test:1337')
 })
 
 it('can ignore an optional parameter', () => {
@@ -569,7 +569,7 @@ it('can handle trailing path segments in the base URL', () => {
     }).getHref(
       {
         ...location,
-        href: 'https://test.thing:443/ab/cd/',
+        href: 'https://test.thing:1337/ab/cd/',
         pathname: 'ab/cd/',
       },
       defaults,
@@ -584,7 +584,7 @@ it('can URL-encode named parameters', () => {
     }).getHref(
       {
         ...location,
-        href: 'https://test.thing:443/ab/cd/',
+        href: 'https://test.thing:1337/ab/cd/',
         pathname: 'ab/cd/',
       },
       defaults,
@@ -598,7 +598,7 @@ it('can URL-encode named parameters', () => {
     }).getHref(
       {
         ...location,
-        href: 'https://test.thing:443/ab/cd/',
+        href: 'https://test.thing:1337/ab/cd/',
         pathname: 'ab/cd/',
       },
       defaults,
@@ -628,13 +628,53 @@ describe('matches other routes', () => {
     expect(
       new Route(rawRoutes['posts.show'] as never, {
         post: 1,
-      }).matches('posts.*'),
+      }).matches('posts.*', location),
     ).toEqual(true)
 
     expect(
       new Route(rawRoutes['posts.show'] as never, {
         post: 1,
-      }).matches('no-posts.*'),
+        comments: false,
+      }).matches('posts.*', location),
+    ).toEqual(true)
+
+    expect(
+      new Route(rawRoutes['posts.show'] as never, {
+        post: 1,
+      }).matches('no-posts.*', location),
+    ).toEqual(false)
+  })
+
+  it('by URL', () => {
+    expect(
+      new Route(rawRoutes['posts.show'] as never, {
+        post: 1,
+      }).matches(new URL('https://navigare.test:1337/posts/5'), location),
+    ).toEqual(true)
+
+    expect(
+      new Route(rawRoutes['posts.show'] as never, {
+        post: 1,
+      }).matches(
+        new URL('https://navigare.test:1337/posts/5?comments=true'),
+        location,
+      ),
+    ).toEqual(false)
+
+    expect(
+      new Route(rawRoutes['posts.show'] as never, {
+        post: 1,
+        comments: false,
+      }).matches(
+        new URL('https://navigare.test:1337/posts/5?comments=true'),
+        location,
+      ),
+    ).toEqual(false)
+
+    expect(
+      new Route(rawRoutes['posts.show'] as never, {
+        post: 1,
+      }).matches(new URL('https://navigare.test:1337/test'), location),
     ).toEqual(false)
   })
 
@@ -643,7 +683,7 @@ describe('matches other routes', () => {
       post: 1,
     })
 
-    expect(route.matches(route)).toEqual(true)
+    expect(route.matches(route, location)).toEqual(true)
 
     expect(
       route.matches(
@@ -651,6 +691,7 @@ describe('matches other routes', () => {
           post: 1,
           section: 'details',
         }),
+        location,
       ),
     ).toEqual(true)
 
@@ -659,11 +700,12 @@ describe('matches other routes', () => {
         new Route(rawRoutes['posts.show'] as never, {
           post: 2,
         }),
+        location,
       ),
     ).toEqual(false)
 
     expect(
-      route.matches(new Route(rawRoutes['posts.index'] as never, {})),
+      route.matches(new Route(rawRoutes['posts.index'] as never, {}), location),
     ).toEqual(false)
   })
 
@@ -677,6 +719,7 @@ describe('matches other routes', () => {
         new PartialRoute(rawRoutes['posts.show'] as never, {
           post: Wildcard,
         }),
+        location,
       ),
     ).toEqual(true)
   })

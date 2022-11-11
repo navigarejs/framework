@@ -2140,6 +2140,7 @@ __metadata:
     prettier: ^2.7.1
     qs: ^6.11.0
     tailwindcss: ^3.2.1
+    tua-body-scroll-lock: ^1.2.1
     vite: ^3.2.0
     vue: ^3.2.41
   languageName: unknown
@@ -2267,6 +2268,7 @@ __metadata:
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
     "@types/lodash.castarray": ^4.4.7
     "@types/lodash.clonedeep": ^4.5.7
+    "@types/lodash.debounce": ^4.0.7
     "@types/lodash.isarray": ^4.0.7
     "@types/lodash.isboolean": ^3.0.7
     "@types/lodash.isequal": ^4.5.6
@@ -2275,6 +2277,7 @@ __metadata:
     "@types/lodash.isobject": ^3.0.7
     "@types/lodash.isstring": ^4.0.7
     "@types/lodash.issymbol": ^4.0.7
+    "@types/lodash.set": ^4.3.7
     "@types/semantic-release": ^17.2.4
     "@vue/devtools-api": ^6.4.5
     "@vueuse/head": ^0.9.8
@@ -2282,6 +2285,7 @@ __metadata:
     eslint: ^8.26.0
     lodash.castarray: ^4.4.0
     lodash.clonedeep: ^4.5.0
+    lodash.debounce: ^4.0.8
     lodash.isarray: ^4.0.0
     lodash.isboolean: ^3.0.3
     lodash.isequal: ^4.5.0
@@ -2290,6 +2294,7 @@ __metadata:
     lodash.isobject: ^3.0.2
     lodash.isstring: ^4.0.1
     lodash.issymbol: ^4.0.1
+    lodash.set: ^4.3.2
     microbundle: ^0.15.1
     prettier: ^2.7.1
     semantic-release: ^19.0.5
@@ -3200,6 +3205,15 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: 94cd6fb8e606756a28f45d63c658aacfbce11a151f7fa322c4a3e87aa50d8bf26e0ae8cba0250070a7c5a6792fc51f79abf4c648bbb1850692be386cd76cd0ca
+  languageName: node
+  linkType: hard
+
+"@types/lodash.set@npm:^4.3.7":
+  version: 4.3.7
+  resolution: "@types/lodash.set@npm:4.3.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 18bedc56ff2ed38b4efbeefef3b5bc0edfa24c821e5242d2c6180875cf890f4b98b325179ce71dd2e412e719d5a497857a9a494ce1be3245a69a97f2e17a624b
   languageName: node
   linkType: hard
 
@@ -8406,6 +8420,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.set@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "lodash.set@npm:4.3.2"
+  checksum: a9122f49eef9f2d0fc9061a33d87f8e5b8c6b23d46e8b9e9ce1529d3588d79741bd1145a3abdfa3b13082703e65af27ff18d8a07bfc22b9be32f3fc36f763f70
+  languageName: node
+  linkType: hard
+
 "lodash.uniq@npm:^4.5.0":
   version: 4.5.0
   resolution: "lodash.uniq@npm:4.5.0"
@@ -12044,6 +12065,13 @@ __metadata:
   peerDependencies:
     typescript: ">=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta"
   checksum: 1843f4c1b2e0f975e08c4c21caa4af4f7f65a12ac1b81b3b8489366826259323feb3fc7a243123453d2d1a02314205a7634e048d4a8009921da19f99755cdc48
+  languageName: node
+  linkType: hard
+
+"tua-body-scroll-lock@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "tua-body-scroll-lock@npm:1.2.1"
+  checksum: 695d367f0d6facea4c14ed31b5d6e4ec70c4f92e7151c30ac639adb9030c3f1bf49a84ed623b012911d5d2212c4c178f1f073174d03d7a0f76feb2c624869884
   languageName: node
   linkType: hard
 

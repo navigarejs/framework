@@ -113,14 +113,14 @@ export default function useRouter() {
     }),
 
     matches: markRaw((comparableRoute, route) => {
-      return router.matches(
+      const matches = router.matches(
         comparableRoute,
-        route ??
-          (fragment.rawRoute
-            ? new Route(fragment.rawRoute, fragment.parameters, false)
-            : new Route(page.value.rawRoute, page.value.parameters, false)),
+        route ?? new Route(fragment.rawRoute, fragment.parameters, true),
+        fragment.location,
         fragment.defaults,
       )
+
+      return matches
     }),
 
     on: markRaw((name, listener) => {

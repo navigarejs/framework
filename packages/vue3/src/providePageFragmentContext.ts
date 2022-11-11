@@ -1,39 +1,19 @@
 import { ContextOf } from './types'
-import useRouter from './useRouter'
-import { PageFragment, Page } from '@navigare/core'
-import { computed, InjectionKey, provide, reactive } from 'vue'
+import { Page } from '@navigare/core'
+import { InjectionKey, provide } from 'vue'
 
 export const PageFragmentContext: InjectionKey<{
   name: string | null
-  fragment: PageFragment | null
+  properties: Page['properties'] & Record<string, any>
   rawRoute: Page['rawRoute']
   parameters: Page['parameters']
   defaults: Page['defaults']
+  location: Page['location']
 }> = Symbol('PageFragmentContext')
 
 export default function providePageFragmentContext(
-  name: string,
-  getFragment: () => PageFragment | null,
+  context: ContextOf<typeof PageFragmentContext>,
 ): ContextOf<typeof PageFragmentContext> {
-  const router = useRouter()
-  const fragment = computed(getFragment)
-  const rawRoute = computed(
-    () => fragment.value?.rawRoute ?? router.page.rawRoute,
-  )
-  const parameters = computed(
-    () => fragment.value?.parameters ?? router.page.parameters,
-  )
-  const defaults = computed(
-    () => fragment.value?.defaults ?? router.page.defaults,
-  )
-  const context: ContextOf<typeof PageFragmentContext> = reactive({
-    name,
-    fragment,
-    rawRoute,
-    parameters,
-    defaults,
-  })
-
   // Provide context
   provide(PageFragmentContext, context)
 

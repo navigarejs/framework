@@ -8,6 +8,6 @@ class DashboardController extends Controller
 {
   public function index()
   {
-    return Navigare::render('Dashboard/Index');
+    return Navigare::render('dashboard/Index');
   }
 }

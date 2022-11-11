@@ -4,6 +4,8 @@ import { defineComponent, h, PropType } from 'vue'
 export default defineComponent({
   name: 'DefaultLayout',
 
+  navigare: true,
+
   props: {
     layout: {
       type: [String, null] as PropType<string | null>,

@@ -30,11 +30,24 @@ export function getVNodeText(
   return getVNodesText(isFunction(vnode) ? vnode() : castArray(vnode))
 }
 
+export function getRouteType() {
+  return [String, Object, Array] as PropType<
+    Routable | [Routable, ...(PartialRoute | string)[]]
+  >
+}
+
 export function getRouteProp() {
   return {
-    type: [String, Object, Array] as PropType<
-      Routable | [Routable, ...PartialRoute[]]
-    >,
-    required: true,
+    type: getRouteType(),
   }
+}
+
+export function ensureFunction(
+  func: unknown,
+): ((...args: unknown[]) => unknown) | undefined {
+  if (!isFunction(func)) {
+    return undefined
+  }
+
+  return func
 }

@@ -25,6 +25,19 @@ class PageFragment implements Arrayable
   }
 
   /**
+   * Merge properties.
+   *
+   * @param Collection $properties
+   * @return self
+   */
+  public function mergeProperties(Collection $properties): self
+  {
+    $this->properties = $this->properties->merge($properties);
+
+    return $this;
+  }
+
+  /**
    * Get the instance as an array.
    *
    * @param bool $ssr
@@ -41,11 +54,11 @@ class PageFragment implements Arrayable
       'name' => $this->name,
       'component' => $this->component->toArray($ssr, $configuration),
       'properties' => $this->properties->toArray(),
-      'defaults' => $this->defaults->toArray(),
-      'parameters' => $this->parameters->toArray(),
-      'rawRoute' => $this->rawRoute->toArray($ssr, $configuration),
-      'location' => $this->location->toArray(),
-      'timestamp' => Carbon::now()->timestamp,
+      /*'defaults' => $this->defaults?->toArray(),
+      'parameters' => $this->parameters?->toArray(),
+      'rawRoute' => $this->rawRoute?->toArray($ssr, $configuration),
+      'location' => $this->location?->toArray(),
+      'timestamp' => Carbon::now()->timestamp,*/
     ];
   }
 }

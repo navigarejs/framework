@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Contacts\StoreRequest;
+use App\Http\Requests\Contacts\UpdateRequest;
 use App\Models\Contact;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -13,12 +15,12 @@ class ContactsController extends Controller
 {
   public function index()
   {
-    return Navigare::render('Contacts/Index', [
+    return Navigare::render('contacts/Index', [
       'filters' => Request::all('search', 'trashed'),
       'contacts' => Auth::user()
         ->account->contacts()
         ->with('organization')
-        ->orderByName()
+        ->orderBy('updated_at', 'DESC')
         ->filter(Request::only('search', 'trashed'))
         ->paginate(10)
         ->withQueryString()
@@ -39,45 +41,30 @@ class ContactsController extends Controller
 
   public function create()
   {
-    return Navigare::render('Contacts/Create', [
+    return Navigare::modal('contacts/Create', [
       'organizations' => Auth::user()
         ->account->organizations()
         ->orderBy('name')
         ->get()
         ->map->only('id', 'name'),
-    ]);
+    ])->extends(route('contacts.index'));
   }
 
-  public function store()
+  public function store(StoreRequest $request)
   {
     Auth::user()
       ->account->contacts()
-      ->create(
-        Request::validate([
-          'first_name' => ['required', 'max:50'],
-          'last_name' => ['required', 'max:50'],
-          'organization_id' => [
-            'nullable',
-            Rule::exists('organizations', 'id')->where(function ($query) {
-              $query->where('account_id', Auth::user()->account_id);
-            }),
-          ],
-          'email' => ['nullable', 'max:50', 'email'],
-          'phone' => ['nullable', 'max:50'],
-          'address' => ['nullable', 'max:150'],
-          'city' => ['nullable', 'max:50'],
-          'region' => ['nullable', 'max:50'],
-          'country' => ['nullable', 'max:2'],
-          'postal_code' => ['nullable', 'max:25'],
-        ])
-      );
+      ->create($request->validated());
 
-    return Redirect::route('contacts')->with('success', 'Contact created.');
+    return Redirect::route('contacts.index')->with(
+      'success',
+      'Contact created.'
+    );
   }
 
   public function edit(Contact $contact)
   {
-    return Navigare::render('Contacts/Edit', [
+    return Navigare::render('contacts/Edit', [
       'contact' => [
         'id' => $contact->id,
         'first_name' => $contact->first_name,
@@ -100,27 +87,9 @@ class ContactsController extends Controller
     ]);
   }
 
-  public function update(Contact $contact)
+  public function update(UpdateRequest $request, Contact $contact)
   {
-    $contact->update(
-      Request::validate([
-        'first_name' => ['required', 'max:50'],
-        'last_name' => ['required', 'max:50'],
-        'organization_id' => [
-          'nullable',
-          Rule::exists('organizations', 'id')->where(
-            fn($query) => $query->where('account_id', Auth::user()->account_id)
-          ),
-        ],
-        'email' => ['nullable', 'max:50', 'email'],
-        'phone' => ['nullable', 'max:50'],
-        'address' => ['nullable', 'max:150'],
-        'city' => ['nullable', 'max:50'],
-        'region' => ['nullable', 'max:50'],
-        'country' => ['nullable', 'max:2'],
-        'postal_code' => ['nullable', 'max:25'],
-      ])
-    );
+    $contact->update($request->validated());
 
     return Redirect::back()->with('success', 'Contact updated.');
   }

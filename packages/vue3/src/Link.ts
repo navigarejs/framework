@@ -1,26 +1,18 @@
-import useRouter from './useRouter'
-import { getRouteProp } from './utilities'
+import RoutableVue from './Routable'
+import { ensureFunction, getRouteProp } from './utilities'
 import {
   shouldInterceptLink,
   RawRouteMethod,
-  throwError,
+  VisitData,
+  Routable,
   RouteMethod,
+  PageComponent,
+  RouterLocation,
+  VisitOptions,
 } from '@navigare/core'
-import castArray from 'lodash.castarray'
-import isArray from 'lodash.isarray'
-import isFunction from 'lodash.isfunction'
-import type { DefineComponent, PropType } from 'vue'
+import isString from 'lodash.isstring'
+import { DefineComponent, normalizeClass, PropType } from 'vue'
 import { defineComponent, h } from 'vue'
-
-const ensureFunction = (func: unknown): (() => void) | undefined => {
-  if (!isFunction(func)) {
-    return undefined
-  }
-
-  return (...args: unknown[]) => {
-    func(...args)
-  }
-}
 
 export default defineComponent({
   name: 'Link',
@@ -30,11 +22,10 @@ export default defineComponent({
   props: {
     as: {
       type: [String, Object] as PropType<string | DefineComponent>,
-      default: 'a',
     },
 
     data: {
-      type: Object,
+      type: Object as PropType<VisitData>,
       default: () => ({}),
     },
 
@@ -42,6 +33,7 @@ export default defineComponent({
 
     method: {
       type: String as PropType<RawRouteMethod>,
+      default: () => 'GET',
     },
 
     replace: {
@@ -74,88 +66,125 @@ export default defineComponent({
       default: 'brackets',
     },
 
+    active: {
+      type: Boolean,
+    },
+
     activeClass: {
-      type: String,
+      type: [String, Array, Object],
+    },
+
+    inactiveClass: {
+      type: [String, Array, Object],
+    },
+
+    pendingClass: {
+      type: [String, Array, Object],
     },
   },
 
-  setup(props, { slots, attrs }) {
-    const router = useRouter()
+  emits: {
+    click: (_event: MouseEvent) => true,
+  },
 
+  setup(props, { slots, attrs, emit }) {
     return () => {
-      const as = props.as.toLowerCase()
-      const routable = isArray(props.route) ? props.route[0] : props.route
-
-      if (!routable) {
-        throwError(
-          'a valid `route` must be set on Link, did you forget to set the property?',
-        )
-      }
-
-      // Resolve routable
-      const { method, location, components } = router.instance.resolveRoutable(
-        routable,
-        props.data,
+      return h(
+        RoutableVue,
         {
+          route: props.route,
+          data: props.data,
           method: props.method,
         },
-      )
-      const foreign = location.origin !== router.location.origin
-
-      // Warn about issues with non-GET requests
-      if (as === 'a' && method !== RouteMethod.GET) {
-        console.warn(
-          `Creating POST/PUT/PATCH/DELETE <a> links is discouraged as it causes "Open Link in New Tab/Window" accessibility issues.\n\nPlease specify a more appropriate element using the "as" attribute. For example:\n\n<Link route="${props.route}" method="${method}" as="button">...</Link>`,
-        )
-      }
-
-      // Check if the passed route matches the current location
-      const matches = castArray(props.route).some((route) => {
-        return router.matches(route)
-      })
-
-      return h(
-        props.as as DefineComponent,
         {
-          ...attrs,
-          class: matches ? props.activeClass ?? attrs.class : attrs.class,
-          href: location.href,
-          rel: foreign ? 'noopener noreferrer' : undefined,
-          onMouseenter() {
-            // Preload components whenever the user hovers a link so
-            // we don't lose time when the actual response comes in
-            Promise.all(
-              components.map((component) => {
-                return router.instance.getComponentModule(component)
-              }),
-            )
-          },
-          onClick: (event: MouseEvent) => {
-            if (!shouldInterceptLink(event)) {
-              return
+          default: ({
+            active,
+            foreign,
+            method,
+            location,
+            preload,
+            visit,
+            navigating: pending,
+          }: {
+            routable: Routable
+            active: boolean
+            foreign: boolean
+            method: RouteMethod | undefined
+            components: PageComponent[] | undefined
+            location: RouterLocation | undefined
+            preload: () => Promise<void>
+            visit: (options?: VisitOptions) => Promise<void>
+            navigating: boolean
+          }) => {
+            const as =
+              props.as ||
+              (method ? (method.toUpperCase() === 'GET' ? 'a' : 'button') : 'a')
+
+            // Warn about issues with non-GET requests
+            if (
+              isString(as) &&
+              as.toLowerCase() === 'a' &&
+              method &&
+              method.toUpperCase() !== 'GET'
+            ) {
+              console.warn(
+                `Creating POST/PUT/PATCH/DELETE <a> links is discouraged as it causes "Open Link in New Tab/Window" accessibility issues.\n\nPlease specify a more appropriate element using the "as" attribute. For example:\n\n<Link route="${props.route}" method="${method}" as="button">...</Link>`,
+              )
             }
 
-            event.preventDefault()
+            return h(
+              as as DefineComponent,
+              {
+                ...attrs,
+                'data-pending': pending,
+                'data-active': active,
+                class: normalizeClass([
+                  attrs.class,
+                  active || props.active
+                    ? props.activeClass
+                    : props.inactiveClass,
+                  pending ? props.pendingClass : undefined,
+                ]),
+                href: location?.href,
+                rel: foreign ? 'noopener noreferrer' : undefined,
+                onMouseenter() {
+                  // Preload components whenever the user hovers a link so
+                  // we don't lose time when the actual response comes in
+                  preload()
+                },
+                onClick: (event: MouseEvent) => {
+                  if (
+                    !props.route ||
+                    attrs.disabled ||
+                    !shouldInterceptLink(event)
+                  ) {
+                    emit('click', event)
+                    return
+                  }
 
-            router.instance.visit(routable, {
-              data: props.data,
-              method: props.method,
-              replace: props.replace,
-              preserveScroll: props.preserveScroll,
-              preserveState: props.preserveState ?? method !== 'get',
-              properties: props.properties,
-              headers: props.headers,
-              onBefore: ensureFunction(attrs.onBefore),
-              onStart: ensureFunction(attrs.onStart),
-              onProgress: ensureFunction(attrs.onProgress),
-              onFinish: ensureFunction(attrs.onFinish),
-              onCancel: ensureFunction(attrs.onCancel),
-              onSuccess: ensureFunction(attrs.onSuccess),
-              onError: ensureFunction(attrs.onError),
-            })
+                  event.preventDefault()
+
+                  visit({
+                    replace: props.replace,
+                    preserveScroll: props.preserveScroll,
+                    preserveState:
+                      props.preserveState ?? method?.toUpperCase() !== 'GET',
+                    properties: props.properties,
+                    headers: props.headers,
+                    onBefore: ensureFunction(attrs.onBefore),
+                    onStart: ensureFunction(attrs.onStart),
+                    onProgress: ensureFunction(attrs.onProgress),
+                    onFinish: ensureFunction(attrs.onFinish),
+                    onCancel: ensureFunction(attrs.onCancel),
+                    onSuccess: ensureFunction(attrs.onSuccess),
+                    onError: ensureFunction(attrs.onError),
+                  })
+                },
+              },
+              slots,
+            )
           },
         },
-        slots,
       )
     }
   },

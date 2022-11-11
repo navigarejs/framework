@@ -3,6 +3,7 @@
 namespace Navigare\View;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Navigare\Configuration;
 use Navigare\Exceptions\PageComponentNotFoundException;
@@ -65,7 +66,10 @@ class PageComponent implements Arrayable
    */
   public function resolveSSRPath(Configuration $configuration): string
   {
-    $path = join(DIRECTORY_SEPARATOR, array_filter([base_path(), $this->path]));
+    $path =
+      join(DIRECTORY_SEPARATOR, array_filter([base_path(), $this->path])) .
+      '?timestamp=' .
+      Carbon::now()->timestamp;
 
     if ($manifest = $configuration->getSSRManifest()) {
       $path = $manifest->resolve($this->path);
@@ -91,7 +95,7 @@ class PageComponent implements Arrayable
    */
   public function resolveClientPath(Configuration $configuration): string
   {
-    $path = $this->path;
+    $path = $this->path . '?timestamp=' . Carbon::now()->timestamp;
 
     if ($manifest = $configuration->getClientManifest()) {
       $path = $manifest->resolve($this->path);

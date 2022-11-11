@@ -16,11 +16,17 @@ export { default as renderNavigareApp, default as renderApp } from './renderApp'
 
 export { Head as NavigareHead, Head } from '@vueuse/head'
 
-export { default as NavigareRoot, default as Root } from './Root'
+export { default as NavigareDeferred, default as Deferred } from './Deferred'
 
 export { default as NavigareForm, default as Form } from './Form'
 
+export { default as NavigareInput, default as Input } from './Input'
+
 export { default as NavigareLink, default as Link } from './Link'
+
+export { default as NavigareRoot, default as Root } from './Root'
+
+export { default as NavigareRoutable, default as Routable } from './Routable'
 
 export {
   default as NavigarePageFragments,

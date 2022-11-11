@@ -23,7 +23,7 @@ return [
 
     'port' => 13715,
 
-    'timeout' => 1,
+    'timeout' => 2,
 
     'input' => 'resources/scripts/ssr.ts',
 

@@ -1,4 +1,5 @@
-import '../css/app.css'
+import '../css/app.pcss'
+import '../css/base.pcss'
 import Layout from './Layout.vue'
 import { Page } from '@navigare/core'
 import { createNavigareApp } from '@navigare/vue3'
@@ -12,7 +13,9 @@ export default function createApp(initialPage?: Page) {
       // Create Vue app with Navigare component as root
       const app = createVueApp({
         render: () => {
-          return h(Root, props, () => h(Layout))
+          return h(Root, props, {
+            default: ({}) => h(Layout, {}),
+          })
         },
       })
 
@@ -20,6 +23,12 @@ export default function createApp(initialPage?: Page) {
     },
 
     fragments: {
+      default: {},
+
+      left: {
+        lazy: false,
+      },
+
       modal: {
         stacked: true,
       },

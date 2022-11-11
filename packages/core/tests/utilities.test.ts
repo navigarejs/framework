@@ -1,18 +1,28 @@
-import { PageFragment, RawRoute, RouterLocation } from '../src'
+import {
+  PageFragment,
+  PageFragmentProperties,
+  RawRoute,
+  RouterLocation,
+} from '../src'
+import { Page } from '../src/types'
 import { getInitialFragments, mergeFragments } from '../src/utilities'
 import { describe, expect, it } from 'vitest'
 
-const location: RouterLocation = {
-  href: 'https://navigare.test:443/',
-  host: 'navigare.test:443',
-  hostname: 'navigare.test',
-  origin: 'https://navigare.test:443',
-  pathname: '',
-  port: '443',
-  protocol: 'https',
-  search: '',
-  hash: '',
-  state: undefined,
+const createLocation = (options: { pathname: string }): RouterLocation => {
+  const { pathname = '' } = options
+
+  return {
+    href: `https://navigare.test:443/${pathname}`,
+    host: 'navigare.test:443',
+    hostname: 'navigare.test',
+    origin: 'https://navigare.test:443',
+    pathname,
+    port: '443',
+    protocol: 'https',
+    search: '',
+    hash: '',
+    state: undefined,
+  }
 }
 
 describe('getInitialFragments', () => {
@@ -58,14 +68,28 @@ describe('getInitialFragments', () => {
 })
 
 describe('mergeFragments', () => {
-  const createFragment = (): PageFragment => {
+  const createPage = (pathname: string = ''): Page => {
     return {
-      component: '',
+      location: createLocation({
+        pathname,
+      }),
       defaults: {},
-      location,
       parameters: {},
-      props: {},
       rawRoute: null as unknown as RawRoute,
+    } as Page
+  }
+
+  const createFragment = (
+    properties: PageFragmentProperties = {},
+    page: Page = createPage(),
+  ): PageFragment => {
+    return {
+      component: {
+        id: '',
+        path: '',
+      },
+      properties,
+      page,
     }
   }
 
@@ -119,8 +143,15 @@ describe('mergeFragments', () => {
   })
 
   it('merges stacked fragments by concatenating them', () => {
-    const initialModalFragment = createFragment()
-    const nextModalFragment = createFragment()
+    const initialModalFragment = createFragment({
+      initial: true,
+    })
+    const nextModalFragment = createFragment(
+      {
+        initial: false,
+      },
+      createPage('next'),
+    )
 
     expect(
       mergeFragments(
@@ -133,6 +164,28 @@ describe('mergeFragments', () => {
       ),
     ).toEqual({
       modal: [initialModalFragment, nextModalFragment],
+    })
+  })
+
+  it('merges stacked fragments by reusing previous fragments', () => {
+    const initialModalFragment = createFragment({
+      initial: true,
+    })
+    const nextModalFragment = createFragment({
+      initial: false,
+    })
+
+    expect(
+      mergeFragments(
+        {
+          modal: [initialModalFragment],
+        },
+        {
+          modal: nextModalFragment,
+        },
+      ),
+    ).toEqual({
+      modal: [nextModalFragment],
     })
   })
 

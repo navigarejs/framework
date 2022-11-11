@@ -21,30 +21,27 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Auth
-
 Route::get('login', [AuthenticatedSessionController::class, 'create'])
-  ->name('login')
+  ->name('auth.login')
   ->middleware('guest');
 
 Route::post('login', [AuthenticatedSessionController::class, 'store'])
-  ->name('login.store')
+  ->name('auth.login.store')
   ->middleware('guest');
 
 Route::delete('logout', [
   AuthenticatedSessionController::class,
   'destroy',
-])->name('logout');
+])->name('auth.logout');
 
 // Dashboard
-
 Route::get('/', [DashboardController::class, 'index'])
-  ->name('dashboard')
+  ->name('dashboard.index')
   ->middleware('auth');
 
 // Users
-
 Route::get('users', [UsersController::class, 'index'])
-  ->name('users')
+  ->name('users.index')
   ->middleware('auth');
 
 Route::get('users/create', [UsersController::class, 'create'])
@@ -72,9 +69,8 @@ Route::put('users/{user}/restore', [UsersController::class, 'restore'])
   ->middleware('auth');
 
 // Organizations
-
 Route::get('organizations', [OrganizationsController::class, 'index'])
-  ->name('organizations')
+  ->name('organizations.index')
   ->middleware('auth');
 
 Route::get('organizations/create', [OrganizationsController::class, 'create'])
@@ -114,9 +110,8 @@ Route::put('organizations/{organization}/restore', [
   ->middleware('auth');
 
 // Contacts
-
 Route::get('contacts', [ContactsController::class, 'index'])
-  ->name('contacts')
+  ->name('contacts.index')
   ->middleware('auth');
 
 Route::get('contacts/create', [ContactsController::class, 'create'])
@@ -144,13 +139,15 @@ Route::put('contacts/{contact}/restore', [ContactsController::class, 'restore'])
   ->middleware('auth');
 
 // Reports
-
 Route::get('reports', [ReportsController::class, 'index'])
-  ->name('reports')
+  ->name('reports.index')
+  ->middleware('auth');
+
+Route::get('reports/{name}', [ReportsController::class, 'show'])
+  ->name('reports.show')
   ->middleware('auth');
 
 // Images
-
-Route::get('/img/{path}', [ImagesController::class, 'show'])
+Route::get('/images/{path}', [ImagesController::class, 'show'])
   ->where('path', '.*')
   ->name('image');

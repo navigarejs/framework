@@ -21,7 +21,8 @@ class Page implements Arrayable
     public Location $location,
     public Collection $defaults,
     public Collection $parameters,
-    ?Collection $fragments = null
+    ?Collection $fragments = null,
+    public ?Page $base = null
   ) {
     $this->fragments = collect($fragments ?? []);
   }
@@ -57,15 +58,16 @@ class Page implements Arrayable
       ) {
         return $fragment->toArray($ssr, $configuration);
       }),
-      'properties' => $this->properties->toArray(),
-      'defaults' => $this->defaults->toArray(),
+      'properties' => (object) $this->properties->toArray(),
+      'defaults' => (object) $this->defaults->toArray(),
       'layout' => $this->layout,
       'version' => $this->version,
       'rawRoute' => $this->rawRoute->toArray($ssr),
       'location' => $this->location->toArray(),
-      'parameters' => $this->parameters->toArray(),
+      'parameters' => (object) $this->parameters->toArray(),
       'csrf' => $this->csrf,
       'timestamp' => Carbon::now()->timestamp,
+      'base' => $this->base?->toArray($ssr, $configuration),
     ];
   }
 }

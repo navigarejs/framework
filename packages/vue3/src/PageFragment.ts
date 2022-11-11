@@ -1,6 +1,9 @@
-import providePageFragmentContext from './providePageFragmentContext'
+import providePageFragmentContext, {
+  PageFragmentContext,
+} from './providePageFragmentContext'
+import { ContextOf } from './types'
 import useRouter from './useRouter'
-import { PageFragment } from '@navigare/core'
+import { PageFragment, safe } from '@navigare/core'
 import {
   computed,
   defineAsyncComponent,
@@ -8,6 +11,8 @@ import {
   h,
   markRaw,
   PropType,
+  reactive,
+  toRefs,
 } from 'vue'
 
 export default defineComponent({
@@ -36,7 +41,22 @@ export default defineComponent({
       return fragment.value.component
     })
     const properties = computed(() => {
-      return fragment.value.properties
+      return {
+        ...fragment.value.page!.properties,
+        ...fragment.value.properties,
+      }
+    })
+    const rawRoute = computed(() => {
+      return fragment.value.page!.rawRoute
+    })
+    const parameters = computed(() => {
+      return fragment.value.page!.parameters
+    })
+    const defaults = computed(() => {
+      return fragment.value.page!.defaults
+    })
+    const location = computed(() => {
+      return fragment.value.page!.location
     })
     const componentModule = computed(() => {
       const module = router.instance.getComponentModule(component.value)
@@ -53,15 +73,25 @@ export default defineComponent({
     })
 
     // Provide context to children
-    providePageFragmentContext(props.name, () => {
-      return fragment.value
+    const context: ContextOf<typeof PageFragmentContext> = reactive({
+      name: props.name,
+      rawRoute,
+      parameters,
+      defaults,
+      location,
+      properties,
     })
+    providePageFragmentContext(context)
 
     return () => {
       const defaultSlot = slots.default
 
-      // Enable inheritance of attributes
-      // componentModule.value.inheritAttrs = true // !!component.inheritAttrs
+      // Disable inheritance of attributes
+      safe(() => {
+        Object.assign(componentModule.value, {
+          inheritAttrs: false,
+        })
+      })
 
       // Render component
       const renderedComponentModule = h(
@@ -73,9 +103,12 @@ export default defineComponent({
       )
 
       if (defaultSlot) {
-        return defaultSlot({
-          component: renderedComponentModule,
-        })
+        return defaultSlot(
+          reactive({
+            ...toRefs(context),
+            component: markRaw(renderedComponentModule),
+          }),
+        )
       }
 
       return renderedComponentModule

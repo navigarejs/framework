@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Traits\Macroable;
 use Navigare\Router\RawRoute;
 use Navigare\Support\SelectedProperty;
+use Navigare\View\DeferredProperty;
+use Navigare\View\LazyProperty;
 use Navigare\View\Location;
 use Navigare\View\Page;
 use Navigare\View\PageComponent;
@@ -34,12 +36,13 @@ class Response implements Responsable
     protected string $version = '',
     protected array $extensions = [],
     protected ?Collection $properties = null,
-    protected ?string $parentURL = null,
+    protected ?string $baseURL = null,
     protected ?string $layout = null,
-    protected ?array $viewData = [],
+    protected ?Collection $viewData = null,
     protected ?array $fragments = []
   ) {
     $this->properties = $properties ?? collect([]);
+    $this->viewData = $viewData ?? collect([]);
   }
 
   /**
@@ -74,7 +77,11 @@ class Response implements Responsable
     }
 
     if (is_array($key)) {
-      $properties->merge($key);
+      $values = $key;
+
+      foreach ($values as $key => $value) {
+        $properties->put($key, $value);
+      }
     } else {
       $properties->put($key, $value);
     }
@@ -105,6 +112,8 @@ class Response implements Responsable
   }
 
   /**
+   * Extend data that will be passed to the view template.
+   *
    * @param  string|array  $key
    * @param  mixed|null  $value
    * @return $this
@@ -112,9 +121,13 @@ class Response implements Responsable
   public function withViewData($key, $value = null): self
   {
     if (is_array($key)) {
-      $this->viewData = array_merge($this->viewData, $key);
+      $values = $key;
+
+      foreach ($values as $key => $value) {
+        $this->viewData->put($key, $value);
+      }
     } else {
-      $this->viewData[$key] = $value;
+      $this->viewData->put($key, $value);
     }
 
     return $this;
@@ -136,12 +149,12 @@ class Response implements Responsable
   /**
    * Inherit from a base page (i.e. for modals the page that is in the background).
    *
-   * @param string $parentURL
+   * @param string $baseURL
    * @return Response
    */
-  public function inherits(string $parentURL): self
+  public function extends(string $baseURL): self
   {
-    $this->parentURL = $parentURL;
+    $this->baseURL = $baseURL;
 
     return $this;
   }
@@ -179,14 +192,13 @@ class Response implements Responsable
 
     $defaults = $this->getDefaults();
 
-    $parameters = collect($request->route()->parameters())->filter(function (
-      $value,
-      $name
-    ) use ($rawRoute) {
+    $parameters = collect(
+      $request->all() + $request->route()->parameters()
+    ) /*->filter(function ($value, $name) use ($rawRoute) {
       return isset($rawRoute->bindings[$name]);
-    });
+    })*/;
 
-    // Parse "properties" header into readable format
+    // Parse "select" header into readable format
     $selectedProperties = collect(
       explode(',', $request->header('X-Navigare-Properties', ''))
     )
@@ -211,10 +223,7 @@ class Response implements Responsable
       ->map(function ($fragment) use (
         $selectedProperties,
         $request,
-        $rawRoute,
-        $location,
-        $defaults,
-        $parameters
+        $location
       ) {
         $properties = collect(
           $selectedProperties->count() > 0
@@ -227,19 +236,14 @@ class Response implements Responsable
                   return $selectedProperty->name;
                 })
             )
-            : $fragment->properties->filter(function ($property) {
-              return !($property instanceof LazyProp);
-            })
+            : $fragment->properties
         );
 
         $fragment->properties = $this->resolvePropertyInstances(
           $request,
           $properties
         );
-        $fragment->rawRoute = $rawRoute;
         $fragment->location = $location;
-        $fragment->defaults = $defaults;
-        $fragment->parameters = $parameters;
 
         return $fragment;
       });
@@ -269,15 +273,15 @@ class Response implements Responsable
     }
 
     // Get base page for first rendering and merge fragments
-    if ($this->parentURL) {
+    if ($this->baseURL) {
       $basePage = $this->getBasePage($request);
 
-      $page->mergeFragments($basePage->fragments);
+      $page->base = $basePage;
     }
 
     return ResponseFactory::view(
       $this->rootView,
-      $this->viewData + ['page' => $page],
+      $this->viewData->toArray() + ['page' => $page],
       200,
       [
         'X-Navigare' => true,
@@ -305,7 +309,7 @@ class Response implements Responsable
   }
 
   /**
-   * Return parent page.
+   * Return base page.
    *
    * @param  \Illuminate\Http\Request  $originalRequest
    * @return Page
@@ -313,7 +317,7 @@ class Response implements Responsable
   public function getBasePage(Request $originalRequest): Page
   {
     $request = Request::create(
-      $this->parentURL,
+      $this->baseURL,
       Request::METHOD_GET,
       $originalRequest->query->all(),
       $originalRequest->cookies->all(),
@@ -371,8 +375,20 @@ class Response implements Responsable
         $value = App::call($value);
       }
 
-      if ($value instanceof LazyProp) {
-        $value = App::call($value);
+      if ($value instanceof LazyProperty) {
+        if ($request->headers->has('X-Navigare-Properties')) {
+          $value = App::call($value);
+        }
+      }
+
+      if ($value instanceof DeferredProperty) {
+        if ($request->headers->has('X-Navigare-Properties')) {
+          $value = App::call($value);
+        } else {
+          $value = [
+            '__deferred' => true,
+          ];
+        }
       }
 
       if ($value instanceof PromiseInterface) {

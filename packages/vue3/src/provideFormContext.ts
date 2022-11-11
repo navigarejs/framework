@@ -1,13 +1,12 @@
 import { ContextOf, FormControl } from './types'
-import { VisitData } from '@navigare/core'
 import { InjectionKey, markRaw, provide, reactive } from 'vue'
 
 export const FormContext: InjectionKey<{
-  form: FormControl<VisitData>
+  form: FormControl | null
 }> = Symbol('FormContext')
 
 export default function provideFormContext(
-  form: FormControl<VisitData>,
+  form: FormControl,
 ): ContextOf<typeof FormContext> {
   const context: ContextOf<typeof FormContext> = reactive({
     form: markRaw(form),

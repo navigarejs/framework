@@ -1,10 +1,10 @@
 <?php
 
-namespace Navigare;
+namespace Navigare\View;
 
 use Illuminate\Support\Facades\App;
 
-class LazyProp
+class DeferredProperty
 {
   protected $callback;
 

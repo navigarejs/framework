@@ -6,27 +6,19 @@
       <div>
         <img
           class="mx-auto h-12 w-auto"
-          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-          alt="Your Company"
+          src="https://raw.githubusercontent.com/navigarejs/framework/main/assets/logo.svg"
+          alt="Navigare"
         />
         <h2
           class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900"
         >
           Sign in to your account
         </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-          Or
-          <a
-            href="#"
-            class="font-medium text-indigo-600 hover:text-indigo-500"
-            >start your 14-day free trial</a
-          >
-        </p>
       </div>
-      <form
+
+      <navigare-form
         class="mt-8 space-y-6"
-        action="#"
-        method="POST"
+        :form="form"
       >
         <input
           type="hidden"
@@ -34,35 +26,48 @@
           value="true"
         />
         <div class="-space-y-px rounded-md shadow-sm">
+          <div class="my-2">
+            Use
+            <q
+              @click="form.values.email = 'johndoe@example.com'"
+              class="cursor-pointer"
+              >johndoe@example.com</q
+            >
+            and
+            <q
+              @click="form.values.password = 'secretpassword'"
+              class="cursor-pointer"
+              >secretpassword</q
+            >
+            to sign in.
+          </div>
+
           <div>
             <label
-              for="email-address"
+              :for="form.getInputId('email')"
               class="sr-only"
               >Email address</label
             >
-            <input
-              id="email-address"
+            <navigare-input
               name="email"
               type="email"
               autocomplete="email"
-              required
-              class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+              class="relative block w-full appearance-none rounded-none rounded-t-md"
               placeholder="Email address"
             />
           </div>
+
           <div>
             <label
-              for="password"
+              :for="form.getInputId('password')"
               class="sr-only"
               >Password</label
             >
-            <input
-              id="password"
+            <navigare-input
               name="password"
               type="password"
               autocomplete="current-password"
-              required
-              class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+              class="transition-all relative block w-full appearance-none rounded-none rounded-b-md"
               placeholder="Password"
             />
           </div>
@@ -70,54 +75,60 @@
 
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
+            <navigare-input
+              name="remember"
               type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              class="h-4 w-4 rounded border-gray-300 text-indigo-600"
             />
             <label
-              for="remember-me"
+              :for="form.getInputId('remember')"
               class="ml-2 block text-sm text-gray-900"
               >Remember me</label
             >
           </div>
 
-          <div class="text-sm">
-            <a
-              href="#"
-              class="font-medium text-indigo-600 hover:text-indigo-500"
-              >Forgot your password?</a
-            >
-          </div>
+          <!--
+              <div class="text-sm">
+              <a
+                href="#"
+                class="font-medium text-indigo-600 hover:text-indigo-500"
+                >Forgot your password?</a
+              >
+            </div>
+          -->
         </div>
 
         <div>
-          <push-button>
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-              <!-- Heroicon name: mini/lock-closed -->
-              <svg
-                class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </span>
+          <push-button
+            :processing="form.processing"
+            :click="form.submit"
+            variant="primary"
+            class="w-full"
+          >
+            <template #icon>
+              <icon
+                name="locked"
+                class="h-4 w-4 text-indigo-500 group-hover:text-indigo-400"
+              />
+            </template>
+
             Sign in
           </push-button>
         </div>
-      </form>
+      </navigare-form>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { NavigareLink } from '@navigare/vue3'
+<script lang="ts" setup>
+import Icon from '../components/Icon.vue'
+import PushButton from '../components/PushButton.vue'
+import { RawRouteParameters, route } from '@navigare/core'
+import { NavigareInput, NavigareForm, createForm } from '@navigare/vue3'
+
+const form = createForm('login', route('auth.login.store'), {
+  email: 'johndoe@example.com',
+  password: '',
+  remember: true,
+})
 </script>

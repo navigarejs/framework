@@ -1,6 +1,9 @@
 import {
+  DeferredValue,
+  Page,
   PageFragment,
   PageFragments,
+  PageProperties,
   RawRouteMethod,
   RouterOptions,
   VisitData,
@@ -11,8 +14,10 @@ import {
   QueryStringArrayFormat,
 } from './types'
 import castArray from 'lodash.castarray'
+import cloneDeep from 'lodash.clonedeep'
 import isArray from 'lodash.isarray'
 import isFunction from 'lodash.isfunction'
+import isObject from 'lodash.isobject'
 import merge from 'lodash.merge'
 import uniq from 'lodash.uniq'
 import { stringify, parse } from 'qs'
@@ -120,8 +125,8 @@ export function mergeDataIntoQueryString(
   }
 }
 
-export function getInitialFragments<TComponent>(
-  options?: RouterOptions<TComponent>['fragments'],
+export function getInitialFragments<TComponentModule>(
+  options?: RouterOptions<TComponentModule>['fragments'],
 ): PageFragments {
   return Object.fromEntries(
     Object.entries(options || {})
@@ -132,26 +137,51 @@ export function getInitialFragments<TComponent>(
   )
 }
 
-export function mergeFragments(
-  fragments: PageFragments,
+export function mergeFragments<TComponentModule>(
+  currentFragments: PageFragments,
   nextFragments: PageFragments,
+  options: RouterOptions<TComponentModule>['fragments'] = {},
 ): PageFragments {
-  return uniq([...getKeys(fragments), ...getKeys(nextFragments)]).reduce(
+  return uniq([...getKeys(currentFragments), ...getKeys(nextFragments)]).reduce(
     (cumulatedFragments, name) => {
       let mergedFragment: PageFragment | PageFragment[] | null =
         cumulatedFragments[name] ?? null
-      const nextFragment = nextFragments[name] as PageFragment | null
+      /*const currentFragment = currentFragments[name] as
+        | PageFragment
+        | PageFragment[]
+        | null
+        | undefined*/
+      const nextFragment = nextFragments[name] as
+        | PageFragment
+        | PageFragment[]
+        | null
+        | undefined
 
       // Keep accumulating stacked fragments as long as the next one is not empty
       if (isArray(mergedFragment)) {
         if (nextFragment) {
-          mergedFragment = [...mergedFragment, ...castArray(nextFragment)]
+          const lastFragment = mergedFragment[mergedFragment.length - 1]
+
+          // In case the last modal points to the same URL, we will replace it
+          for (const fragment of castArray(nextFragment)) {
+            if (
+              lastFragment?.page &&
+              fragment.page &&
+              lastFragment?.page?.location.href === fragment.page?.location.href
+            ) {
+              mergedFragment.splice(mergedFragment.length - 1, 1, fragment)
+            } else {
+              mergedFragment.push(fragment)
+            }
+          }
         } else {
           mergedFragment = []
         }
       } else if (nextFragment) {
         mergedFragment = nextFragment
-      } else if (isNull(nextFragment)) {
+      } else if (nextFragment === null) {
+        mergedFragment = null
+      } else if (options[name]?.lazy === false && !nextFragment) {
         mergedFragment = null
       }
 
@@ -160,8 +190,44 @@ export function mergeFragments(
         [name]: mergedFragment,
       }
     },
-    fragments,
+    currentFragments,
   )
+}
+
+export function assignPageToFragments(page: Page) {
+  for (const fragments of Object.values(page.fragments)) {
+    for (const fragment of castArray(fragments).filter(isNotNull)) {
+      if (fragment.page) {
+        continue
+      }
+
+      fragment.page = cloneDeep(page)
+    }
+  }
+}
+
+export function mergePages<TComponentModule>(
+  page: Page | undefined,
+  nextPage: Page,
+  options: RouterOptions<TComponentModule>['fragments'] = {},
+  initialVisit: boolean = false,
+): Page {
+  const initialFragments = initialVisit ? getInitialFragments(options) : {}
+
+  // Assign pages to fragments
+  if (page) {
+    assignPageToFragments(page)
+  }
+  assignPageToFragments(nextPage)
+
+  // Merge fragments
+  nextPage.fragments = mergeFragments(
+    mergeFragments(initialFragments, page?.fragments || {}, options),
+    nextPage.fragments,
+    options,
+  )
+
+  return nextPage
 }
 
 export function isNull<TValue>(value: TValue | null): value is null {
@@ -396,4 +462,63 @@ export function serialize<TInput>(input: TInput): string {
 
     return value
   })
+}
+
+export function isDeferred<TInput>(
+  input: TInput | DeferredValue,
+): input is DeferredValue {
+  if (!isObject(input)) {
+    return false
+  }
+
+  return input.__deferred === true
+}
+
+export function getPageProperties(page: Page): PageProperties {
+  const allFragmentProperties = Object.entries(page.fragments).reduce(
+    (cumulatedProperties, [fragmentName, fragment]) => {
+      const getPropertySelectors = (properties: Record<string, any>) => {
+        return Object.fromEntries(
+          Object.entries(properties).map(([propertyName, value]) => {
+            return [`${fragmentName}/${propertyName}`, value]
+          }),
+        )
+      }
+
+      if (!fragment) {
+        return cumulatedProperties
+      }
+
+      if (isArray(fragment)) {
+        return {
+          ...cumulatedProperties,
+          ...fragment.reduce((cumulatedNestedProperties, nestedFragment) => {
+            return {
+              ...cumulatedNestedProperties,
+              ...getPropertySelectors(nestedFragment.properties),
+            }
+          }, {}),
+        }
+      }
+
+      return {
+        ...cumulatedProperties,
+        ...getPropertySelectors(fragment.properties),
+      }
+    },
+    {},
+  )
+
+  return {
+    ...page.properties,
+    ...allFragmentProperties,
+  }
+}
+
+export function getDeferredPageProperties(page: Page): Partial<PageProperties> {
+  return Object.fromEntries(
+    Object.entries(getPageProperties(page)).filter(([, property]) => {
+      return isDeferred(property)
+    }),
+  )
 }

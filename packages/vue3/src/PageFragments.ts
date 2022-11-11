@@ -1,6 +1,8 @@
-import PageFragment from './PageFragment'
+import PageFragmentVue from './PageFragment'
+import { PageFragmentContext } from './providePageFragmentContext'
+import { ContextOf } from './types'
 import useRouter from './useRouter'
-import { isDefined, isNotNull } from '@navigare/core'
+import { isDefined, isNotNull, PageFragment } from '@navigare/core'
 import castArray from 'lodash.castarray'
 import { computed, VNode, defineComponent, h } from 'vue'
 
@@ -27,9 +29,9 @@ export default defineComponent({
     return () => {
       const { default: defaultSlot, fragment: fragmentSlot } = slots
 
-      const renderedFragments = fragments.value.map((fragment) => {
+      const renderFragment = (fragment: PageFragment) => {
         return h(
-          PageFragment,
+          PageFragmentVue,
           {
             // key: `${fragment.component.uri}-${fragment.location.url}`,
             name: props.name,
@@ -37,21 +39,30 @@ export default defineComponent({
           },
           {
             default: fragmentSlot
-              ? (slotProps: { component: VNode }) => {
+              ? (
+                  slotProps: ContextOf<typeof PageFragmentContext> & {
+                    component: VNode
+                  },
+                ) => {
                   return fragmentSlot(slotProps)
                 }
               : null,
           },
         )
-      })
+      }
 
       if (defaultSlot) {
         return defaultSlot({
-          fragments: renderedFragments,
+          fragments: fragments.value.map((fragment) => {
+            return {
+              ...fragment,
+              component: renderFragment(fragment),
+            }
+          }),
         })
       }
 
-      return renderedFragments
+      return fragments.value.map(renderFragment)
     }
   },
 })

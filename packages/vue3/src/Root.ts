@@ -54,6 +54,7 @@ export default defineComponent({
 
       return h(DefaultLayout, {
         layout: layout.value,
+        router: props.router,
       })
     }
   },

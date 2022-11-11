@@ -13,6 +13,7 @@ export type RouterOptions<TComponent> = {
     string,
     {
       stacked?: boolean
+      lazy?: boolean
     }
   >
 }
@@ -23,7 +24,6 @@ export type ComponentModuleResolver<TComponent> = (
 ) => Promise<TComponent>
 
 export type RouterLocation = {
-  url: string
   href: string
   host: string
   hostname: string
@@ -37,9 +37,15 @@ export type RouterLocation = {
 }
 
 // Pages
+export type DeferredValue = {
+  __deferred: true
+}
+
+export type DeferredProperty<TValue = any> = DeferredValue | TValue
+
 export type PageDefaults = Record<string, any>
 
-export type PageErrors = Record<string, string>
+export type PageErrors = Record<string, string[]>
 
 export type PageErrorBag = Record<string, PageErrors>
 
@@ -59,10 +65,11 @@ export type PageComponent = {
 export type PageFragment = {
   component: PageComponent
   properties: PageFragmentProperties
-  rawRoute: RawRoute
+  /*rawRoute: RawRoute
   location: RouterLocation
   defaults: PageDefaults
-  parameters: Record<string, RouteParameter>
+  parameters: Record<string, RouteParameter>*/
+  page?: Page
 }
 
 export type PageFragments = Record<string, PageFragment | PageFragment[] | null>
@@ -72,7 +79,7 @@ export interface Page {
   csrf: string | null
   fragments: PageFragments
   properties: PageProperties & {
-    errors: PageErrors & PageErrorBag
+    errors?: PageErrors & PageErrorBag
   }
   rawRoute: RawRoute
   location: RouterLocation
@@ -81,6 +88,8 @@ export interface Page {
   version: string | null
   layout: string | null
   timestamp: number
+  base?: Page
+
   obsolete: boolean
   scrollRegions: Array<{ top: number; left: number }>
   rememberedState: PageRememberedState
@@ -218,6 +227,7 @@ export type FormDataConvertible =
   | boolean
   | number
   | null
+  | Record<string, any>
 
 export type VisitData = Record<string, FormDataConvertible> | FormData
 
@@ -306,11 +316,11 @@ export type Component = unknown
 export type Routes = GeneratedRoutes & {}
 
 export enum RouteMethod {
-  GET = 'get',
-  POST = 'post',
-  PUT = 'put',
-  PATCH = 'patch',
-  DELETE = 'delete',
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
+  DELETE = 'DELETE',
 }
 
 export type RouteName = keyof Routes

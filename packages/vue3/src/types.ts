@@ -1,11 +1,11 @@
 import type Root from './Root'
 import type plugin from './plugin'
+import { PageFragmentContext } from './providePageFragmentContext'
 import {
   ComponentModuleResolver,
   EventListener,
   EventNames,
   Page,
-  PageFragment,
   PageFragments,
   PartialRoute,
   Routable,
@@ -56,12 +56,7 @@ export type RouterControl = {
   latestPage: Page
   pages: Page[]
   layout: string | null
-  fragment: {
-    fragment: PageFragment | null
-    rawRoute: Page['rawRoute']
-    parameters: Page['parameters']
-    defaults: Page['defaults']
-  }
+  fragment: ContextOf<typeof PageFragmentContext>
   fragments: PageFragments
   processing: boolean
   get(
@@ -122,7 +117,7 @@ export type FormTransformer<TData, TTransformedData extends VisitData> = (
 ) => TTransformedData
 
 export interface FormErrors {
-  [key: string]: string | FormErrors
+  [name: string]: string[]
 }
 
 export interface FormSubmitOptions {
@@ -136,8 +131,10 @@ export interface FormOptions extends VisitOptions {
   remember?: boolean
 }
 
+export type FormInputPath = string | number | (string | number)[]
+
 export interface FormControl<
-  TValues extends VisitData,
+  TValues extends VisitData = VisitData,
   // TTransformedValues extends VisitData = TValues,
 > {
   name: string
@@ -164,19 +161,21 @@ export interface FormControl<
 
   submit(options?: FormSubmitOptions): Promise<Visit | undefined>
 
+  validate(path: FormInputPath | InputEvent): Promise<void>
+
   reset(): void
 
   clear(): void
 
   set(values?: Partial<TValues>): void
 
-  block(path: string | string[]): void
+  block(path: FormInputPath): void
 
-  unblock(path: string | string[]): void
+  unblock(path: FormInputPath): void
 
-  focus(path: string | string[]): void
+  focus(path: FormInputPath): void
 
-  blur(path: string | string[]): void
+  blur(path: FormInputPath): void
 
   enable(): void
 
@@ -188,6 +187,10 @@ export interface FormControl<
     getInitialPartialValues: (values: TValues) => TPartialValues,
     options?: FormOptions,
   ): FormControl<TPartialValues>
+
+  getInputId(path: FormInputPath | InputEvent): string
+
+  getInputName(path: FormInputPath | InputEvent): string
 }
 
 // Helpers
