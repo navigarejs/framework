@@ -167,7 +167,7 @@ export default class PartialRoute<TName extends RouteName = RouteName> {
     // If we're building just a path there's no origin, otherwise: if this route has a
     // domain configured we construct the origin with that, if not we use the app URL
     const origin = this.rawRoute.domain
-      ? `${location.protocol}://${this.rawRoute.domain}${
+      ? `${location.protocol}//${this.rawRoute.domain}${
           location.port ? `:${location.port}` : ''
         }`
       : absolute
