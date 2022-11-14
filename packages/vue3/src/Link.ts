@@ -29,6 +29,10 @@ export default defineComponent({
       default: () => ({}),
     },
 
+    href: {
+      type: String,
+    },
+
     route: getRouteProp(),
 
     method: {
@@ -88,6 +92,12 @@ export default defineComponent({
   },
 
   setup(props, { slots, attrs, emit }) {
+    if (props.href) {
+      console.warn(
+        'Pass the `route` prop instead of the `href` attribute to `Link` to ensure proper routing.',
+      )
+    }
+
     return () => {
       return h(
         RoutableVue,
@@ -130,6 +140,11 @@ export default defineComponent({
               console.warn(
                 `Creating POST/PUT/PATCH/DELETE <a> links is discouraged as it causes "Open Link in New Tab/Window" accessibility issues.\n\nPlease specify a more appropriate element using the "as" attribute. For example:\n\n<Link route="${props.route}" method="${method}" as="button">...</Link>`,
               )
+            }
+
+            // Render fallback if required
+            if (!location?.href && slots.default) {
+              return slots.default()
             }
 
             return h(
