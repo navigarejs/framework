@@ -21,6 +21,7 @@ class RawRoutes
   /**
    * Prepare route for output.
    *
+   * @param Route|string $route
    * @param Configuration $configuration
    * @return RawRoute|null
    */

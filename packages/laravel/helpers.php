@@ -1,7 +1,5 @@
 <?php
 
-use Navigare\RawRoutes;
-
 if (!function_exists('navigare')) {
   /**
    * Access Navigare via helper.
@@ -27,10 +25,13 @@ if (!function_exists('rawRoute')) {
    * Get raw route via helper.
    *
    * @param Route|string $route
+   * @param ?\Navigare\Configuration $configuration
    * @return ?mixed
    */
-  function rawRoute($route)
+  function rawRoute($route, \Navigare\Configuration $configuration = null)
   {
-    return RawRoutes::get($route);
+    $configuration = $configuration ?? \Navigare\Navigare::getConfiguration();
+
+    return \Navigare\Router\RawRoutes::get($route, $configuration);
   }
 }
