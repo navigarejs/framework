@@ -68,8 +68,14 @@ export default class Route<
   /**
    * Get the compiled URL string for the current route and parameters.
    */
-  public getUrl(location: RouterLocation): URL {
-    return new URL(this.getHref(location), location.href)
+  public getUrl(
+    location: RouterLocation,
+    defaults: RouteDefaults = {},
+    options: {
+      queryStringArrayFormat?: QueryStringArrayFormat
+    } = {},
+  ): URL {
+    return new URL(this.getHref(location, defaults, options), location.href)
   }
 
   /**

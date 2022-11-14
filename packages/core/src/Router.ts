@@ -993,13 +993,9 @@ export default class Router<TComponentModule> {
       routable instanceof URL
         ? routable.href
         : routable instanceof Route || isObject(routable)
-        ? routable.getHref(
-            this.location,
-            data instanceof FormData ? {} : data,
-            {
-              queryStringArrayFormat: options.queryStringArrayFormat,
-            },
-          )
+        ? routable.getHref(this.location, this.page.defaults, {
+            queryStringArrayFormat: options.queryStringArrayFormat,
+          })
         : routable
     let finalData = data
     let method =
