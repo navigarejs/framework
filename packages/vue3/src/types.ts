@@ -39,7 +39,7 @@ export type Options = {
 }
 
 export type Setup = (options: {
-  Root: typeof Root
+  NavigareRoot: typeof Root
   props: PropsOf<typeof Root>
   router: Router<DefineComponent>
   plugin: typeof plugin
