@@ -37,10 +37,17 @@ export { default as plugin } from './plugin'
 
 export { default as useNavigareForm, default as useForm } from './useForm'
 
+export { default as useNavigarePage, default as usePage } from './usePage'
+
 export {
   default as useNavigarePageFragment,
   default as usePageFragment,
 } from './usePageFragment'
+
+export {
+  default as useNavigareParameter,
+  default as useParameter,
+} from './useParameter'
 
 export { default as useNavigareRouter, default as useRouter } from './useRouter'
 
