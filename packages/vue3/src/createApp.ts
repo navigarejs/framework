@@ -57,7 +57,6 @@ export default async function createApp({
   // Create root instance
   const root = setup({
     Root,
-    NavigareRoot: Root,
     props: {
       router,
       layout: options.initialPage.layout,
