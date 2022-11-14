@@ -628,20 +628,20 @@ describe('matches other routes', () => {
     expect(
       new Route(rawRoutes['posts.show'] as never, {
         post: 1,
-      }).matches('posts.*', location),
+      }).match('posts.*', location),
     ).toEqual(true)
 
     expect(
       new Route(rawRoutes['posts.show'] as never, {
         post: 1,
         comments: false,
-      }).matches('posts.*', location),
+      }).match('posts.*', location),
     ).toEqual(true)
 
     expect(
       new Route(rawRoutes['posts.show'] as never, {
         post: 1,
-      }).matches('no-posts.*', location),
+      }).match('no-posts.*', location),
     ).toEqual(false)
   })
 
@@ -649,13 +649,13 @@ describe('matches other routes', () => {
     expect(
       new Route(rawRoutes['posts.show'] as never, {
         post: 1,
-      }).matches(new URL('https://navigare.test:1337/posts/5'), location),
+      }).match(new URL('https://navigare.test:1337/posts/5'), location),
     ).toEqual(true)
 
     expect(
       new Route(rawRoutes['posts.show'] as never, {
         post: 1,
-      }).matches(
+      }).match(
         new URL('https://navigare.test:1337/posts/5?comments=true'),
         location,
       ),
@@ -665,7 +665,7 @@ describe('matches other routes', () => {
       new Route(rawRoutes['posts.show'] as never, {
         post: 1,
         comments: false,
-      }).matches(
+      }).match(
         new URL('https://navigare.test:1337/posts/5?comments=true'),
         location,
       ),
@@ -674,7 +674,7 @@ describe('matches other routes', () => {
     expect(
       new Route(rawRoutes['posts.show'] as never, {
         post: 1,
-      }).matches(new URL('https://navigare.test:1337/test'), location),
+      }).match(new URL('https://navigare.test:1337/test'), location),
     ).toEqual(false)
   })
 
@@ -683,10 +683,10 @@ describe('matches other routes', () => {
       post: 1,
     })
 
-    expect(route.matches(route, location)).toEqual(true)
+    expect(route.match(route, location)).toEqual(true)
 
     expect(
-      route.matches(
+      route.match(
         new Route(rawRoutes['posts.show'] as never, {
           post: 1,
           section: 'details',
@@ -696,7 +696,7 @@ describe('matches other routes', () => {
     ).toEqual(true)
 
     expect(
-      route.matches(
+      route.match(
         new Route(rawRoutes['posts.show'] as never, {
           post: 2,
         }),
@@ -705,7 +705,7 @@ describe('matches other routes', () => {
     ).toEqual(false)
 
     expect(
-      route.matches(new Route(rawRoutes['posts.index'] as never, {}), location),
+      route.match(new Route(rawRoutes['posts.index'] as never, {}), location),
     ).toEqual(false)
   })
 
@@ -715,7 +715,7 @@ describe('matches other routes', () => {
     })
 
     expect(
-      route.matches(
+      route.match(
         new PartialRoute(rawRoutes['posts.show'] as never, {
           post: Wildcard,
         }),

@@ -30,13 +30,13 @@ describe('matches other routes', () => {
     expect(
       new PartialRoute(rawRoutes['posts.show'] as never, {
         post: Wildcard,
-      }).matches('posts.*'),
+      }).match('posts.*'),
     ).toEqual(true)
 
     expect(
       new PartialRoute(rawRoutes['posts.show'] as never, {
         post: 1,
-      }).matches('no-posts.*'),
+      }).match('no-posts.*'),
     ).toEqual(false)
   })
 
@@ -45,10 +45,10 @@ describe('matches other routes', () => {
       post: Wildcard,
     })
 
-    expect(route.matches(route)).toEqual(true)
+    expect(route.match(route)).toEqual(true)
 
     expect(
-      route.matches(
+      route.match(
         new Route(rawRoutes['posts.show'] as never, {
           post: 1,
           section: 'details',
@@ -57,7 +57,7 @@ describe('matches other routes', () => {
     ).toEqual(true)
 
     expect(
-      route.matches(
+      route.match(
         new Route(rawRoutes['posts.show'] as never, {
           post: 2,
         }),
@@ -65,7 +65,7 @@ describe('matches other routes', () => {
     ).toEqual(true)
 
     expect(
-      route.matches(new Route(rawRoutes['posts.index'] as never, {})),
+      route.match(new Route(rawRoutes['posts.index'] as never, {})),
     ).toEqual(false)
   })
 
@@ -75,7 +75,7 @@ describe('matches other routes', () => {
     })
 
     expect(
-      route.matches(
+      route.match(
         new PartialRoute(rawRoutes['posts.show'] as never, {
           post: Wildcard,
         }),

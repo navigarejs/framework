@@ -180,7 +180,7 @@ export default class PartialRoute<TName extends RouteName = RouteName> {
   /**
    * Check if the route matches the given route
    */
-  public matches(
+  public match(
     comparableRoute: Routable | PartialRoute<RouteName>,
     location: RouterLocation,
     defaults: RouteDefaults = {},

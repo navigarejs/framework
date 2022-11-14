@@ -89,7 +89,7 @@ export type RouterControl = {
   back(fallback?: Routable): Promise<void>
   replace(routable: Routable): Promise<never>
   push(routable: Routable): Promise<never>
-  matches(
+  match(
     comparableRoute: Routable | PartialRoute<RouteName>,
     route?: Route<RouteName>,
   ): boolean

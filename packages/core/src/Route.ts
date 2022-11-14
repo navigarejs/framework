@@ -73,37 +73,6 @@ export default class Route<
   }
 
   /**
-   * Get whether this route's template matches the given URL.
-   */
-  /*matches(location: RouterLocation, url: string) {
-    if (!this.rawRoute.methods.includes('GET')) {
-      return false
-    }
-
-    // Transform the route's template into a regex that will match a hydrated URL,
-    // by replacing its parameter segments with matchers for parameter values
-    const { wheres = {} } = this.rawRoute
-    const pattern = this.getTemplate(location)
-      .replace(/(\/?){([^}?]*)(\??)}/g, (_, slash, segment, optional) => {
-        const regex = `(?<${segment}>${
-          wheres[segment]?.replace(/(^\^)|(\$$)/g, '') || '[^/?]+'
-        })`
-        return optional ? `(${slash}${regex})?` : `${slash}${regex}`
-      })
-      .replace(/^\w+:\/\//, '')
-
-    const [path, query] = url.replace(/^\w+:\/\//, '').split('?')
-
-    const matches = new RegExp(`^${pattern}/?$`).exec(path)
-
-    if (!matches) {
-      return false
-    }
-
-    return { params: matches.groups, query: parse(query) }
-  }*/
-
-  /**
    * Hydrate and return a complete URL for this route with the given parameters.
    */
   compile(

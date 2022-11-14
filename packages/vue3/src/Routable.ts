@@ -63,7 +63,7 @@ export default defineComponent({
       return castArray(props.route)
         .filter(isDefined)
         .some((route) => {
-          const matches = router.matches(route)
+          const matches = router.match(route)
 
           return matches
         })

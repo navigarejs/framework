@@ -6,7 +6,7 @@ import { defineComponent } from \\"../../../../../../node_modules/vue/dist/vue.r
 import { route } from \\"@navigare/core\\";
 const Component = defineComponent({
   setup() {
-    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"1fa1dabf45da756f169804234fdb296c.mjs\\" }] });
+    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"6005bcd98ec998ba104020dce65d927a.mjs\\" }] });
     return {
       rawRoute
     };
@@ -35,7 +35,7 @@ import { defineComponent, openBlock, createElementBlock, Fragment, createElement
 import { route } from \\"@navigare/core\\";
 const _sfc_main = defineComponent({
   setup() {
-    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"29bbb271369c636446f8e9f39e9d9a41.mjs\\" }] });
+    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"8400d93f0d1a8ea19d87e5b4dd11c3da.mjs\\" }] });
     return {
       rawRoute
     };
@@ -50,7 +50,7 @@ const _export_sfc = (sfc, props) => {
 };
 const _hoisted_1 = /* @__PURE__ */ createElementVNode(\\"div\\", null, \\"Hello World\\", -1);
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock(Fragment, null, [_hoisted_1, createElementVNode(\\"div\\", null, toDisplayString(_ctx.rawRoute), 1), createElementVNode(\\"div\\", null, toDisplayString(route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"29bbb271369c636446f8e9f39e9d9a41.mjs\\" }] })), 1)], 64);
+  return openBlock(), createElementBlock(Fragment, null, [_hoisted_1, createElementVNode(\\"div\\", null, toDisplayString(_ctx.rawRoute), 1), createElementVNode(\\"div\\", null, toDisplayString(route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"8400d93f0d1a8ea19d87e5b4dd11c3da.mjs\\" }] })), 1)], 64);
 }
 const Component = /* @__PURE__ */ _export_sfc(_sfc_main, [[\\"render\\", _sfc_render]]);
 defineComponent({
@@ -69,13 +69,13 @@ import { route } from \\"@navigare/core\\";
 defineComponent({
   name: \\"Component\\",
   setup() {
-    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"ca61ce9b117ec36665e93e481d19cd2a.mjs\\" }] });
+    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"1e113cf2e8c536a47998a0c97215e720.mjs\\" }] });
     return {
       rawRoute
     };
   },
   render(props) {
-    return createVNode(Fragment, null, [createVNode(\\"div\\", null, [createTextVNode(\\"Hello World\\")]), createVNode(\\"div\\", null, [props.rawRoute]), createVNode(\\"div\\", null, [route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"ca61ce9b117ec36665e93e481d19cd2a.mjs\\" }] })])]);
+    return createVNode(Fragment, null, [createVNode(\\"div\\", null, [createTextVNode(\\"Hello World\\")]), createVNode(\\"div\\", null, [props.rawRoute]), createVNode(\\"div\\", null, [route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"1e113cf2e8c536a47998a0c97215e720.mjs\\" }] })])]);
   }
 });
 
@@ -90,9 +90,9 @@ const _hoisted_1 = /* @__PURE__ */ createElementVNode(\\"div\\", null, \\"Hello 
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: \\"Setup\\",
   setup(__props) {
-    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"957305c5de9d82432efd3c72dcd1211b.mjs\\" }] });
+    const rawRoute = route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"476e3d1650d7da23dcd62ba292db615c.mjs\\" }] });
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock(Fragment, null, [_hoisted_1, createElementVNode(\\"div\\", null, toDisplayString(route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"957305c5de9d82432efd3c72dcd1211b.mjs\\" }] })), 1), createElementVNode(\\"div\\", null, toDisplayString(unref(rawRoute)), 1)], 64);
+      return openBlock(), createElementBlock(Fragment, null, [_hoisted_1, createElementVNode(\\"div\\", null, toDisplayString(route({ \\"name\\": \\"welcome\\", \\"uri\\": \\"welcome/{name?}\\", \\"method\\": \\"GET\\", \\"methods\\": [\\"GET\\", \\"HEAD\\"], \\"domain\\": \\"navigare.test\\", \\"bindings\\": { \\"name\\": null }, \\"components\\": [{ \\"id\\": \\"nested/Details.vue\\", \\"path\\": \\"476e3d1650d7da23dcd62ba292db615c.mjs\\" }] })), 1), createElementVNode(\\"div\\", null, toDisplayString(unref(rawRoute)), 1)], 64);
     };
   }
 });

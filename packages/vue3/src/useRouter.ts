@@ -112,8 +112,8 @@ export default function useRouter() {
       throwError('push is not yet implemented')
     }),
 
-    matches: markRaw((comparableRoute, route) => {
-      const matches = router.matches(
+    match: markRaw((comparableRoute, route) => {
+      const matches = router.match(
         comparableRoute,
         route ?? new Route(fragment.rawRoute, fragment.parameters, true),
         fragment.location,
