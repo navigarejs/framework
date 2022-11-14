@@ -19,6 +19,8 @@ export default defineComponent({
 
   navigare: true,
 
+  inheritAttrs: false,
+
   props: {
     as: {
       type: [String, Object] as PropType<string | DefineComponent>,
