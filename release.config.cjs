@@ -43,7 +43,7 @@ const createConfiguration = (publishCmd, plugins = []) => {
       [
         '@semantic-release/exec',
         {
-          prepareCmd: [
+          publishCmd: [
             'yarn',
             'git add ../../yarn.lock',
             'git add ../../packages/*/package.json',
