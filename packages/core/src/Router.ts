@@ -1100,14 +1100,14 @@ export default class Router<TComponentModule> {
     }
   }
 
-  public matches(
+  public match(
     comparableRoute: Routable | PartialRoute,
     route: Route,
     location: RouterLocation,
     defaults: RouteDefaults,
   ): boolean {
     // Check if the route matches the other route
-    return route.matches(comparableRoute, location, defaults)
+    return route.match(comparableRoute, location, defaults)
   }
 
   public on<TEventName extends EventNames>(
