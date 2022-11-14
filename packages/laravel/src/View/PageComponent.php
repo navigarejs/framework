@@ -66,10 +66,7 @@ class PageComponent implements Arrayable
    */
   public function resolveSSRPath(Configuration $configuration): string
   {
-    $path =
-      join(DIRECTORY_SEPARATOR, array_filter([base_path(), $this->path])) .
-      '?timestamp=' .
-      Carbon::now()->timestamp;
+    $path = join(DIRECTORY_SEPARATOR, array_filter([base_path(), $this->path]));
 
     if ($manifest = $configuration->getSSRManifest()) {
       $path = $manifest->resolve($this->path);
