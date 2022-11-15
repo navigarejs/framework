@@ -18,7 +18,7 @@ const location: RouterLocation = {
   origin: 'https://navigare.test:1337',
   pathname: '',
   port: '1337',
-  protocol: 'https',
+  protocol: 'https:',
   search: '',
   hash: '',
   state: undefined,

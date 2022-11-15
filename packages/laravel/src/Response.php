@@ -31,9 +31,9 @@ class Response implements Responsable
   use Macroable;
 
   public function __construct(
-    protected string $rootView = 'app',
     protected Configuration $configuration,
     protected string $version = '',
+    protected string $rootView = 'app',
     protected array $extensions = [],
     protected ?Collection $properties = null,
     protected ?string $baseURL = null,
@@ -98,7 +98,7 @@ class Response implements Responsable
    * @return self
    */
   public function withFragment(
-    string $fragmentName = 'default',
+    string $fragmentName,
     string $componentName,
     array|Arrayable $properties
   ): self {

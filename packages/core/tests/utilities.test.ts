@@ -142,82 +142,142 @@ describe('mergeFragments', () => {
     })
   })
 
-  it('merges stacked fragments by concatenating them', () => {
-    const initialModalFragment = createFragment({
-      initial: true,
+  describe('stacked', () => {
+    it('merges stacked fragments by concatenating them', () => {
+      const initialModalFragment = createFragment({
+        initial: true,
+      })
+      const nextModalFragment = createFragment(
+        {
+          initial: false,
+        },
+        createPage('next'),
+      )
+
+      expect(
+        mergeFragments(
+          {
+            modal: [initialModalFragment],
+          },
+          {
+            modal: nextModalFragment,
+          },
+        ),
+      ).toEqual({
+        modal: [initialModalFragment, nextModalFragment],
+      })
     })
-    const nextModalFragment = createFragment(
-      {
+
+    it('merges stacked fragments by reusing previous fragments', () => {
+      const initialModalFragment = createFragment({
+        initial: true,
+      })
+      const nextModalFragment = createFragment({
         initial: false,
-      },
-      createPage('next'),
-    )
+      })
 
-    expect(
-      mergeFragments(
-        {
-          modal: [initialModalFragment],
-        },
-        {
-          modal: nextModalFragment,
-        },
-      ),
-    ).toEqual({
-      modal: [initialModalFragment, nextModalFragment],
+      expect(
+        mergeFragments(
+          {
+            modal: [initialModalFragment],
+          },
+          {
+            modal: nextModalFragment,
+          },
+        ),
+      ).toEqual({
+        modal: [nextModalFragment],
+      })
+    })
+
+    it('cleans stacked fragments when next fragment is undefined', () => {
+      const initialModalFragment = createFragment()
+
+      expect(
+        mergeFragments(
+          {
+            modal: [initialModalFragment],
+          },
+          {},
+        ),
+      ).toEqual({
+        modal: [],
+      })
+    })
+
+    it('cleans stacked fragments when next fragment is null', () => {
+      const initialModalFragment = createFragment()
+
+      expect(
+        mergeFragments(
+          {
+            modal: [initialModalFragment],
+          },
+          {
+            modal: null,
+          },
+        ),
+      ).toEqual({
+        modal: [],
+      })
     })
   })
 
-  it('merges stacked fragments by reusing previous fragments', () => {
-    const initialModalFragment = createFragment({
-      initial: true,
+  describe('lazy', () => {
+    it('keeps lazy fragments in "default" when next fragment is undefined', () => {
+      const initialDefaultFragment = createFragment()
+
+      expect(
+        mergeFragments(
+          {
+            default: initialDefaultFragment,
+          },
+          {},
+          {},
+        ),
+      ).toEqual({
+        default: initialDefaultFragment,
+      })
     })
-    const nextModalFragment = createFragment({
-      initial: false,
+
+    it('removes fragments in "default" when explicitly not set to lazy and next fragment is undefined', () => {
+      const initialDefaultFragment = createFragment()
+
+      expect(
+        mergeFragments(
+          {
+            default: initialDefaultFragment,
+          },
+          {},
+          {
+            default: {
+              lazy: false,
+            },
+          },
+        ),
+      ).toEqual({
+        default: null,
+      })
     })
 
-    expect(
-      mergeFragments(
-        {
-          modal: [initialModalFragment],
-        },
-        {
-          modal: nextModalFragment,
-        },
-      ),
-    ).toEqual({
-      modal: [nextModalFragment],
-    })
-  })
+    it('keeps lazy fragments when next fragment is undefined', () => {
+      const initialDefaultFragment = createFragment()
 
-  it('cleans stacked fragments when next fragment is undefined', () => {
-    const initialModalFragment = createFragment()
-
-    expect(
-      mergeFragments(
-        {
-          modal: [initialModalFragment],
-        },
-        {},
-      ),
-    ).toEqual({
-      modal: [],
-    })
-  })
-
-  it('cleans stacked fragments when next fragment is null', () => {
-    const initialModalFragment = createFragment()
-
-    expect(
-      mergeFragments(
-        {
-          modal: [initialModalFragment],
-        },
-        {
-          modal: null,
-        },
-      ),
-    ).toEqual({
-      modal: [],
+      expect(
+        mergeFragments(
+          {
+            left: initialDefaultFragment,
+          },
+          {},
+          {
+            left: {
+              lazy: true,
+            },
+          },
+        ),
+      ).toEqual({
+        left: initialDefaultFragment,
+      })
     })
   })
 })

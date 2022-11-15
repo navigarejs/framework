@@ -181,7 +181,12 @@ export function mergeFragments<TComponentModule>(
         mergedFragment = nextFragment
       } else if (nextFragment === null) {
         mergedFragment = null
-      } else if (options[name]?.lazy === false && !nextFragment) {
+      } else if (
+        (isDefined(options[name]?.lazy)
+          ? !options[name]?.lazy
+          : name !== 'default') &&
+        !nextFragment
+      ) {
         mergedFragment = null
       }
 
