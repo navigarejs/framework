@@ -25,6 +25,7 @@ use Navigare\View\Location;
 use Navigare\View\Page;
 use Navigare\View\PageComponent;
 use Navigare\View\PageFragment;
+use ReflectionParameter;
 
 class Response implements Responsable
 {
@@ -33,9 +34,9 @@ class Response implements Responsable
   public function __construct(
     protected Configuration $configuration,
     protected string $version = '',
-    protected string $rootView = 'app',
     protected array $extensions = [],
     protected ?Collection $properties = null,
+    protected string $rootView = 'app',
     protected ?string $baseURL = null,
     protected ?string $layout = null,
     protected ?Collection $viewData = null,
@@ -186,17 +187,27 @@ class Response implements Responsable
     }
 
     // Prepare page
+    $route = $request->route();
+
     $rawRoute = RawRoute::fromRoute($request->route(), $this->configuration);
 
     $location = Location::fromRequest($request);
 
     $defaults = $this->getDefaults();
 
-    $parameters = collect(
-      $request->all() + $request->route()->parameters()
-    ) /*->filter(function ($value, $name) use ($rawRoute) {
-      return isset($rawRoute->bindings[$name]);
-    })*/;
+    $parameters = collect($request->query())->merge(
+      collect($request->route()->signatureParameters())
+        ->filter(function (ReflectionParameter $parameter) use ($route) {
+          return in_array($parameter->getName(), $route->parameterNames());
+        })
+        ->mapWithKeys(function (ReflectionParameter $parameter) use ($route) {
+          return [
+            $parameter->getName() => $route->originalParameter(
+              $parameter->getName()
+            ),
+          ];
+        })
+    );
 
     // Parse "select" header into readable format
     $selectedProperties = collect(

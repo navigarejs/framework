@@ -698,6 +698,18 @@ describe('matches other routes', () => {
     expect(
       route.match(
         new Route(rawRoutes['posts.show'] as never, {
+          post: {
+            id: 1,
+          },
+          section: 'details',
+        }),
+        location,
+      ),
+    ).toEqual(true)
+
+    expect(
+      route.match(
+        new Route(rawRoutes['posts.show'] as never, {
           post: 2,
         }),
         location,
