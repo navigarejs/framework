@@ -58,6 +58,9 @@ export default defineComponent({
     const location = computed(() => {
       return fragment.value.page!.location
     })
+    const key = computed(() => {
+      return location.value.href
+    })
     const componentModule = computed(() => {
       const module = router.instance.getComponentModule(component.value)
 
@@ -106,6 +109,7 @@ export default defineComponent({
         return defaultSlot(
           reactive({
             ...toRefs(context),
+            key: key.value,
             component: markRaw(renderedComponentModule),
           }),
         )

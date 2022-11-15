@@ -42,6 +42,7 @@ export default defineComponent({
               ? (
                   slotProps: ContextOf<typeof PageFragmentContext> & {
                     component: VNode
+                    key: string
                   },
                 ) => {
                   return fragmentSlot(slotProps)
