@@ -1,8 +1,8 @@
 import provideFormContext from './provideFormContext'
-import { FormControl, FormEvent } from './types'
+import { FormControl, FormEvent, FormEventListener } from './types'
 import useRouter from './useRouter'
 import { RawRouteMethod, throwError } from '@navigare/core'
-import { computed, PropType, ref } from 'vue'
+import { computed, onMounted, onUnmounted, PropType, ref } from 'vue'
 import { defineComponent, h } from 'vue'
 
 export default defineComponent({
@@ -22,11 +22,11 @@ export default defineComponent({
   },
 
   emits: {
-    success: (_event: FormEvent<'success'>) => true,
+    validate: (_event: FormEvent<'validate'>) => true,
     reset: (_event: FormEvent<'reset'>) => true,
   },
 
-  setup(props, { slots, attrs }) {
+  setup(props, { slots, attrs, emit }) {
     const router = useRouter()
     const element = ref<HTMLElement | null>()
     const target = computed(() => {
@@ -51,6 +51,22 @@ export default defineComponent({
 
     // Provide context
     provideFormContext(props.form)
+
+    // Emit events
+    const handleValidate: FormEventListener<'validate'> = (event) => {
+      emit('validate', event)
+    }
+    const handleReset: FormEventListener<'reset'> = (event) => {
+      emit('reset', event)
+    }
+    onMounted(() => {
+      props.form.on('validate', handleValidate)
+      props.form.on('reset', handleReset)
+    })
+    onUnmounted(() => {
+      props.form.off('validate', handleValidate)
+      props.form.off('reset', handleReset)
+    })
 
     return () => {
       return h(

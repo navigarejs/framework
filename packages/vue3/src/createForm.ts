@@ -34,7 +34,7 @@ export default function createForm<
   getRoutable:
     | TRoutable
     | (() => TRoutable)
-    | (() => (values: TValues) => Promise<any>),
+    | (() => (values: TValues) => any | Promise<any>),
   getInitialValues: TValues | (() => TValues),
   options: FormOptions<TValues, TRoutable> = {},
 ): FormControl<TValues> {
@@ -45,7 +45,13 @@ export default function createForm<
 
     return getName
   })
-  const emitter = createEmitter<FormEvents>({})
+  const emitter = createEmitter<FormEvents<TValues>>({
+    validate: {
+      options: {
+        cancelable: true,
+      },
+    },
+  })
   const router = useRouter()
   const routable = computed(() => {
     if (isFunction(getRoutable)) {
@@ -179,6 +185,15 @@ export default function createForm<
         const clonedValues = cloneDeep(values) as TValues
         const transform = options.transform || ((values) => values)
 
+        // Run `validate` hook
+        if (
+          !emitter.emit('validate', {
+            values: clonedValues,
+          })
+        ) {
+          return undefined
+        }
+
         // Submit via callback
         if (callback.value) {
           await callback.value(clonedValues)
@@ -192,64 +207,66 @@ export default function createForm<
           const visit = await router.instance.visit(routable.value, {
             data: transform(clonedValues),
 
-            onProgress(event) {
-              progress.value = event.detail.progress ?? null
+            events: {
+              progress(event) {
+                progress.value = event.detail.progress ?? null
 
-              visitOptions.onProgress?.(event)
-            },
+                visitOptions.events?.progress?.(event)
+              },
 
-            onError(event) {
-              errors.value = event.detail.errors
+              error(event) {
+                errors.value = event.detail.errors
 
-              visitOptions.onError?.(event)
-            },
+                visitOptions.events?.error?.(event)
+              },
 
-            onSuccess(event) {
-              // Reset errors
-              errors.value = {}
+              success(event) {
+                // Reset errors
+                errors.value = {}
 
-              // Reset values if requested
-              if (submitOptions.resetAfterSuccess) {
-                control.reset()
-              }
+                // Reset values if requested
+                if (submitOptions.resetAfterSuccess) {
+                  control.reset()
+                }
 
-              visitOptions.onSuccess?.(event)
-            },
+                visitOptions.events?.success?.(event)
+              },
 
-            onFinish(event) {
-              processing.value = false
-              globalDisabled.value = false
-              trigger.value = null
+              finish(event) {
+                processing.value = false
+                globalDisabled.value = false
+                trigger.value = null
 
-              visitOptions.onFinish?.(event)
-            },
+                visitOptions.events?.finish?.(event)
+              },
 
-            onBefore(event) {
-              visitOptions.onBefore?.(event)
-            },
+              before(event) {
+                visitOptions.events?.before?.(event)
+              },
 
-            onCancel(event) {
-              visitOptions.onCancel?.(event)
-            },
+              cancel(event) {
+                visitOptions.events?.cancel?.(event)
+              },
 
-            onStart(event) {
-              visitOptions.onStart?.(event)
-            },
+              start(event) {
+                visitOptions.events?.start?.(event)
+              },
 
-            onInvalid(event) {
-              processing.value = false
-              globalDisabled.value = false
-              trigger.value = null
+              invalid(event) {
+                processing.value = false
+                globalDisabled.value = false
+                trigger.value = null
 
-              visitOptions.onInvalid?.(event)
-            },
+                visitOptions.events?.invalid?.(event)
+              },
 
-            onException(event) {
-              processing.value = false
-              globalDisabled.value = false
-              trigger.value = null
+              exception(event) {
+                processing.value = false
+                globalDisabled.value = false
+                trigger.value = null
 
-              visitOptions.onException?.(event)
+                visitOptions.events?.exception?.(event)
+              },
             },
           })
 

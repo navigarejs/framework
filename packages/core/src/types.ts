@@ -17,15 +17,7 @@ export type RouterOptions<TComponent> = {
     }
   >
   events?: {
-    onBefore?: RouterEventListener<'before'>
-    onStart?: RouterEventListener<'start'>
-    onProgress?: RouterEventListener<'progress'>
-    onFinish?: RouterEventListener<'finish'>
-    onCancel?: RouterEventListener<'cancel'>
-    onSuccess?: RouterEventListener<'success'>
-    onError?: RouterEventListener<'error'>
-    onInvalid?: RouterEventListener<'invalid'>
-    onException?: RouterEventListener<'exception'>
+    [TEventName in RouterEventNames]: RouterEventListener<TEventName>
   }
 }
 
@@ -254,15 +246,9 @@ export type VisitOptions = Partial<{
   errorBag: string | null
   forceFormData: boolean
   queryStringArrayFormat: QueryStringArrayFormat
-  onBefore: RouterEventListener<'before'>
-  onStart: RouterEventListener<'start'>
-  onProgress: RouterEventListener<'progress'>
-  onFinish: RouterEventListener<'finish'>
-  onCancel: RouterEventListener<'cancel'>
-  onSuccess: RouterEventListener<'success'>
-  onError: RouterEventListener<'error'>
-  onInvalid: RouterEventListener<'invalid'>
-  onException: RouterEventListener<'exception'>
+  events: Partial<{
+    [TEventName in RouterEventNames]: RouterEventListener<TEventName>
+  }>
 }>
 
 export type Visit = {
@@ -284,15 +270,9 @@ export type Visit = {
   cancelToken?: VisitCancelToken
   cancel?: () => void
   interrupt?: () => void
-  onBefore?: RouterEventListener<'before'>
-  onStart?: RouterEventListener<'start'>
-  onProgress?: RouterEventListener<'progress'>
-  onFinish?: RouterEventListener<'finish'>
-  onCancel?: RouterEventListener<'cancel'>
-  onSuccess?: RouterEventListener<'success'>
-  onError?: RouterEventListener<'error'>
-  onInvalid?: RouterEventListener<'invalid'>
-  onException?: RouterEventListener<'exception'>
+  events: Partial<{
+    [TEventName in RouterEventNames]: RouterEventListener<TEventName>
+  }>
 }
 
 export type VisitId = string

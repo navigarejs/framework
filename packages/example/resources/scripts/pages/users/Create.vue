@@ -86,4 +86,8 @@ const form = createForm('users.create', route('users.store'), () => ({
   owner: false,
   photo: null,
 }))
+
+const form2 = createForm('test', () => async () => console.log('hello'), {
+  test: true,
+})
 </script>

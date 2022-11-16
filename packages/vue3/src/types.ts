@@ -126,10 +126,12 @@ export interface FormErrors {
   [name: string]: string[]
 }
 
-export type FormEvents = {
-  success: {
-    details: {}
-    result: void
+export type FormEvents<TValues extends VisitData = VisitData> = {
+  validate: {
+    details: {
+      values: TValues
+    }
+    result: boolean | void
   }
 
   reset: {
@@ -163,10 +165,19 @@ export type FormBaseOptions<TValues extends VisitData = VisitData> = {
   disabled?: () => boolean
   remember?: boolean
   transform?: (values: TValues) => any
+  events?: {
+    [TEventName in FormEventNames]: FormEventListener<TEventName>
+  }
 }
 
 export type FormVisitOptions<TValues extends VisitData = VisitData> =
-  FormBaseOptions<TValues> & VisitOptions
+  FormBaseOptions<TValues> &
+    Omit<VisitOptions, 'events'> &
+    Partial<{
+      events: VisitOptions['events'] & {
+        [TEventName in FormEventNames]: FormEventListener<TEventName>
+      }
+    }>
 
 export type FormOptions<
   TValues extends VisitData = VisitData,

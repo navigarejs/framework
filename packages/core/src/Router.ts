@@ -106,32 +106,20 @@ export default class Router<TComponentModule> {
 
   protected emitter = createEmitter<RouterEvents>({
     before: {
-      details: { cancelable: true },
+      options: { cancelable: true },
     },
     cancel: {
-      details: { cancelable: true },
+      options: { cancelable: true },
     },
-    error: {
-      details: {},
-    },
+    error: {},
     exception: {
-      details: { cancelable: true },
+      options: { cancelable: true },
     },
-    finish: {
-      details: {},
-    },
-    navigate: {
-      details: {},
-    },
-    progress: {
-      details: {},
-    },
-    start: {
-      details: {},
-    },
-    success: {
-      details: {},
-    },
+    finish: {},
+    navigate: {},
+    progress: {},
+    start: {},
+    success: {},
   })
 
   protected componentModules: Record<string, TComponentModule> = {}
@@ -167,15 +155,15 @@ export default class Router<TComponentModule> {
     }
 
     // Attach listeners
-    this.on('before', options.events?.onBefore)
-    this.on('start', options.events?.onStart)
-    this.on('progress', options.events?.onProgress)
-    this.on('finish', options.events?.onFinish)
-    this.on('cancel', options.events?.onCancel)
-    this.on('success', options.events?.onSuccess)
-    this.on('error', options.events?.onError)
-    this.on('invalid', options.events?.onInvalid)
-    this.on('exception', options.events?.onException)
+    this.on('before', options.events?.before)
+    this.on('start', options.events?.start)
+    this.on('progress', options.events?.progress)
+    this.on('finish', options.events?.finish)
+    this.on('cancel', options.events?.cancel)
+    this.on('success', options.events?.success)
+    this.on('error', options.events?.error)
+    this.on('invalid', options.events?.invalid)
+    this.on('exception', options.events?.exception)
 
     // Log exceptions by default
     this.on('exception', (event) => {
@@ -380,14 +368,14 @@ export default class Router<TComponentModule> {
       {
         visit: activeVisit,
       },
-      activeVisit.onCancel,
+      activeVisit.events.cancel,
     )
     this.emit(
       'finish',
       {
         visit: activeVisit,
       },
-      activeVisit.onFinish,
+      activeVisit.events.finish,
     )
   }
 
@@ -402,7 +390,7 @@ export default class Router<TComponentModule> {
         {
           visit,
         },
-        visit.onFinish,
+        visit.events.finish,
       )
     }
   }
@@ -455,15 +443,7 @@ export default class Router<TComponentModule> {
       errorBag = '',
       forceFormData = false,
       queryStringArrayFormat = QueryStringArrayFormat.Brackets,
-      onBefore,
-      onStart,
-      onProgress,
-      onFinish,
-      onCancel,
-      onSuccess,
-      onError,
-      onInvalid,
-      onException,
+      events = {},
     } = options
     const { location, method, data } = this.resolveRoutable(
       routable,
@@ -495,7 +475,7 @@ export default class Router<TComponentModule> {
         {
           visit,
         },
-        onBefore,
+        events?.before,
       )
     ) {
       return this.activeVisit!
@@ -509,15 +489,7 @@ export default class Router<TComponentModule> {
 
     this.activeVisit = {
       ...visit,
-      onBefore,
-      onStart,
-      onProgress,
-      onFinish,
-      onCancel,
-      onSuccess,
-      onError,
-      onException,
-      onInvalid,
+      events,
       queryStringArrayFormat,
       cancelToken: Axios.CancelToken.source(),
       cancel: () => {
@@ -533,7 +505,7 @@ export default class Router<TComponentModule> {
       {
         visit: this.activeVisit,
       },
-      onStart,
+      events?.start,
     )
 
     try {
@@ -574,7 +546,7 @@ export default class Router<TComponentModule> {
                 visit: this.activeVisit!,
                 progress,
               },
-              onProgress,
+              events?.progress,
             )
           }
         },
@@ -686,7 +658,7 @@ export default class Router<TComponentModule> {
             visit: this.activeVisit,
             errors: scopedErrors,
           },
-          onError,
+          events?.error,
         )
       } else {
         this.emit(
@@ -695,7 +667,7 @@ export default class Router<TComponentModule> {
             visit: this.activeVisit,
             page: this.page,
           },
-          onSuccess,
+          events?.success,
         )
       }
     } catch (error) {
@@ -731,7 +703,7 @@ export default class Router<TComponentModule> {
               visit: this.activeVisit,
               response: error.response,
             },
-            onInvalid,
+            events?.invalid,
           )
         ) {
           modal.show(error.response.data as any)
@@ -744,7 +716,7 @@ export default class Router<TComponentModule> {
           visit: this.activeVisit,
           error: error as Error,
         },
-        onException,
+        events?.exception,
       )
     }
 
@@ -1147,6 +1119,7 @@ export default class Router<TComponentModule> {
       completed: true,
       cancelled: false,
       interrupted: false,
+      events: visit.events || {},
       ...visit,
     }
   }

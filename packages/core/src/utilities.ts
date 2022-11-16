@@ -353,7 +353,7 @@ export function createEmitter<
 >(
   events: Partial<{
     [TEventName in keyof TEvents]: Partial<{
-      details: Partial<EventInit>
+      options: Partial<EventInit>
       handle: (result: TEvents[TEventName]['result']) => boolean
     }>
   }>,
@@ -421,7 +421,7 @@ export function createEmitter<
     ) => TEvents[TEventName]['result'],
   ): boolean => {
     const event = new CustomEvent(String(name), {
-      ...events[name],
+      ...events[name]?.options,
       detail: details,
     })
 
