@@ -127,6 +127,11 @@ export interface FormErrors {
 }
 
 export type FormEvents = {
+  success: {
+    details: {}
+    result: void
+  }
+
   reset: {
     details: {}
     result: void
@@ -141,8 +146,12 @@ export type FormEventDetails<TEventName extends FormEventNames> =
 export type FormEventResult<TEventName extends FormEventNames> =
   FormEvents[TEventName]['result']
 
+export type FormEvent<TEventName extends FormEventNames> = CustomEvent<
+  FormEventDetails<TEventName>
+>
+
 export type FormEventListener<TEventName extends FormEventNames> = (
-  event: CustomEvent<FormEventDetails<TEventName>>,
+  event: FormEvent<TEventName>,
 ) => FormEventResult<TEventName>
 
 export interface FormSubmitOptions {
@@ -232,6 +241,16 @@ export interface FormControl<
   getInputId(path: FormInputPath | InputEvent): string
 
   getInputName(path: FormInputPath | InputEvent): string
+
+  on<TEventName extends FormEventNames>(
+    name: TEventName,
+    listener: FormEventListener<TEventName>,
+  ): () => void
+
+  off<TEventName extends FormEventNames>(
+    name: TEventName,
+    listener: FormEventListener<TEventName>,
+  ): void
 }
 
 // Helpers

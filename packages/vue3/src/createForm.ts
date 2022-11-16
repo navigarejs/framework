@@ -1,6 +1,8 @@
 import {
   FormControl,
   FormErrors,
+  FormEventListener,
+  FormEventNames,
   FormEvents,
   FormOptions,
   FormTrigger,
@@ -439,6 +441,28 @@ export default function createForm<
           : path,
       ).join('.')
     }),
+
+    on: markRaw(
+      <TEventName extends FormEventNames>(
+        name: TEventName,
+        listener?: FormEventListener<TEventName>,
+      ): (() => void) => {
+        if (!listener) {
+          return () => undefined
+        }
+
+        return this.emitter.on(name, listener)
+      },
+    ),
+
+    off: markRaw(
+      <TEventName extends FormEventNames>(
+        name: TEventName,
+        listener: FormEventListener<TEventName>,
+      ): void => {
+        return this.emitter.off(name, listener)
+      },
+    ),
   })
 
   return control

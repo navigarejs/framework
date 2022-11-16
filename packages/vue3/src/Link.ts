@@ -9,6 +9,7 @@ import {
   PageComponent,
   RouterLocation,
   VisitOptions,
+  RouterEvent,
 } from '@navigare/core'
 import isString from 'lodash.isstring'
 import { DefineComponent, normalizeClass, PropType } from 'vue'
@@ -91,6 +92,13 @@ export default defineComponent({
 
   emits: {
     click: (_event: MouseEvent) => true,
+    before: (_event: RouterEvent<'before'>) => true,
+    start: (_event: RouterEvent<'start'>) => true,
+    progress: (_event: RouterEvent<'progress'>) => true,
+    finish: (_event: RouterEvent<'finish'>) => true,
+    cancel: (_event: RouterEvent<'cancel'>) => true,
+    success: (_event: RouterEvent<'success'>) => true,
+    error: (_event: RouterEvent<'error'>) => true,
   },
 
   setup(props, { slots, attrs, emit }) {

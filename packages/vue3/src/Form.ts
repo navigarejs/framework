@@ -1,5 +1,5 @@
 import provideFormContext from './provideFormContext'
-import { FormControl } from './types'
+import { FormControl, FormEvent } from './types'
 import useRouter from './useRouter'
 import { RawRouteMethod, throwError } from '@navigare/core'
 import { computed, PropType, ref } from 'vue'
@@ -19,6 +19,11 @@ export default defineComponent({
     method: {
       type: String as PropType<RawRouteMethod>,
     },
+  },
+
+  emits: {
+    success: (_event: FormEvent<'success'>) => true,
+    reset: (_event: FormEvent<'reset'>) => true,
   },
 
   setup(props, { slots, attrs }) {

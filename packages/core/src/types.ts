@@ -197,8 +197,12 @@ export type RouterEventDetails<TEventName extends RouterEventNames> =
 export type RouterEventResult<TEventName extends RouterEventNames> =
   RouterEvents[TEventName]['result']
 
+export type RouterEvent<TEventName extends RouterEventNames> = CustomEvent<
+  RouterEventDetails<TEventName>
+>
+
 export type RouterEventListener<TEventName extends RouterEventNames> = (
-  event: CustomEvent<RouterEventDetails<TEventName>>,
+  event: RouterEvent<TEventName>,
 ) => RouterEventResult<TEventName>
 
 // Visits
