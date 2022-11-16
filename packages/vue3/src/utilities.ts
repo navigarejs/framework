@@ -44,7 +44,7 @@ export function getRouteProp() {
 
 export function ensureFunction(
   func: unknown,
-): ((...args: unknown[]) => unknown) | undefined {
+): ((...args: unknown[]) => any) | undefined {
   if (!isFunction(func)) {
     return undefined
   }

@@ -1,6 +1,6 @@
 import DefaultLayout from './DefaultLayout'
 import provideRouterContext from './provideRouterContext'
-import { EventListener, Router } from '@navigare/core'
+import { RouterEventListener, Router } from '@navigare/core'
 import {
   defineComponent,
   h,
@@ -32,7 +32,7 @@ export default defineComponent({
     const layout = ref<string | null>(props.layout)
 
     // Handle navigate event to update layout
-    const handleNavigate: EventListener<'navigate'> = (event) => {
+    const handleNavigate: RouterEventListener<'navigate'> = (event) => {
       layout.value = event.detail.page.layout
     }
     onMounted(() => {

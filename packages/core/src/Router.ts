@@ -1,17 +1,5 @@
 import PartialRoute from './PartialRoute'
 import Route from './Route'
-import {
-  createBeforeEvent,
-  createCancelEvent,
-  createErrorEvent,
-  createExceptionEvent,
-  createFinishEvent,
-  createInvalidEvent,
-  createNavigateEvent,
-  createProgressEvent,
-  createStartEvent,
-  createSuccessEvent,
-} from './events'
 import modal from './modal'
 import {
   LocationVisit,
@@ -26,13 +14,13 @@ import {
   RouterLocation,
   RouterOptions,
   RouteDefaults,
-  Events,
-  EventNames,
-  EventListener,
+  RouterEvents,
+  RouterEventListener,
   RawRouteMethod,
-  Event as RouterEvent,
   Visit,
   PageComponent,
+  RouterEventNames,
+  RouterEventDetails,
 } from './types'
 import {
   isSSR,
@@ -116,7 +104,35 @@ export default class Router<TComponentModule> {
     return this.page.location
   }
 
-  protected emitter = createEmitter<Events>()
+  protected emitter = createEmitter<RouterEvents>({
+    before: {
+      details: { cancelable: true },
+    },
+    cancel: {
+      details: { cancelable: true },
+    },
+    error: {
+      details: {},
+    },
+    exception: {
+      details: { cancelable: true },
+    },
+    finish: {
+      details: {},
+    },
+    navigate: {
+      details: {},
+    },
+    progress: {
+      details: {},
+    },
+    start: {
+      details: {},
+    },
+    success: {
+      details: {},
+    },
+  })
 
   protected componentModules: Record<string, TComponentModule> = {}
 
@@ -150,11 +166,6 @@ export default class Router<TComponentModule> {
       }, 0)
     }
 
-    // Log exceptions by default
-    this.on('exception', (event) => {
-      console.error(event.detail.exception)
-    })
-
     // Attach listeners
     this.on('before', options.events?.onBefore)
     this.on('start', options.events?.onStart)
@@ -165,6 +176,11 @@ export default class Router<TComponentModule> {
     this.on('error', options.events?.onError)
     this.on('invalid', options.events?.onInvalid)
     this.on('exception', options.events?.onException)
+
+    // Log exceptions by default
+    this.on('exception', (event) => {
+      console.error(event.detail.error)
+    })
   }
 
   protected async handleInitialPageVisit(page: Page): Promise<void> {
@@ -359,8 +375,20 @@ export default class Router<TComponentModule> {
     activeVisit.cancelled = true
     activeVisit.interrupted = interrupt ? true : false
 
-    this.emit('cancel', createCancelEvent(activeVisit), activeVisit.onCancel)
-    this.emit('finish', createFinishEvent(activeVisit), activeVisit.onFinish)
+    this.emit(
+      'cancel',
+      {
+        visit: activeVisit,
+      },
+      activeVisit.onCancel,
+    )
+    this.emit(
+      'finish',
+      {
+        visit: activeVisit,
+      },
+      activeVisit.onFinish,
+    )
   }
 
   protected finishVisit(visit: Visit): void {
@@ -369,7 +397,13 @@ export default class Router<TComponentModule> {
       visit.cancelled = false
       visit.interrupted = false
 
-      this.emit('finish', createFinishEvent(visit), visit.onFinish)
+      this.emit(
+        'finish',
+        {
+          visit,
+        },
+        visit.onFinish,
+      )
     }
   }
 
@@ -455,7 +489,15 @@ export default class Router<TComponentModule> {
       queryStringArrayFormat,
     })
 
-    if (!this.emit('before', createBeforeEvent(visit), onBefore)) {
+    if (
+      !this.emit(
+        'before',
+        {
+          visit,
+        },
+        onBefore,
+      )
+    ) {
       return this.activeVisit!
     }
 
@@ -486,7 +528,13 @@ export default class Router<TComponentModule> {
       },
     }
 
-    this.emit('start', createStartEvent(this.activeVisit), onStart)
+    this.emit(
+      'start',
+      {
+        visit: this.activeVisit,
+      },
+      onStart,
+    )
 
     try {
       const response = await this.axios({
@@ -522,7 +570,10 @@ export default class Router<TComponentModule> {
           if (data instanceof FormData) {
             this.emit(
               'progress',
-              createProgressEvent(this.activeVisit!, progress),
+              {
+                visit: this.activeVisit!,
+                progress,
+              },
               onProgress,
             )
           }
@@ -631,13 +682,19 @@ export default class Router<TComponentModule> {
 
         this.emit(
           'error',
-          createErrorEvent(this.activeVisit, scopedErrors),
+          {
+            visit: this.activeVisit,
+            errors: scopedErrors,
+          },
           onError,
         )
       } else {
         this.emit(
           'success',
-          createSuccessEvent(this.activeVisit, this.page),
+          {
+            visit: this.activeVisit,
+            page: this.page,
+          },
           onSuccess,
         )
       }
@@ -670,7 +727,10 @@ export default class Router<TComponentModule> {
         } else if (
           this.emit(
             'invalid',
-            createInvalidEvent(this.activeVisit, error.response),
+            {
+              visit: this.activeVisit,
+              response: error.response,
+            },
             onInvalid,
           )
         ) {
@@ -680,7 +740,10 @@ export default class Router<TComponentModule> {
 
       this.emit(
         'exception',
-        createExceptionEvent(this.activeVisit, error as Error),
+        {
+          visit: this.activeVisit,
+          error: error as Error,
+        },
         onException,
       )
     }
@@ -747,15 +810,13 @@ export default class Router<TComponentModule> {
 
     // Inform listeners about new page
     if (!initialVisit) {
-      this.emitter.emit(
-        'navigate',
-        createNavigateEvent(
-          this.page,
-          this.internalPages,
-          this.pageIndex,
-          replace,
-        ),
-      )
+      this.emitter.emit('navigate', {
+        page: this.page,
+        visit: this.page.visit,
+        pages: this.internalPages,
+        pageIndex: this.pageIndex,
+        replace,
+      })
     }
 
     // Load deferred properties in the background
@@ -886,10 +947,13 @@ export default class Router<TComponentModule> {
       this.restoreScrollPositions()
     }
 
-    this.emitter.emit(
-      'navigate',
-      createNavigateEvent(this.page, this.internalPages, this.pageIndex, false),
-    )
+    this.emitter.emit('navigate', {
+      visit: this.page.visit,
+      page: this.page,
+      pageIndex: this.pageIndex,
+      pages: this.internalPages,
+      replace: false,
+    })
   }
 
   public async reload(
@@ -1117,9 +1181,9 @@ export default class Router<TComponentModule> {
     return route.match(comparableRoute, location, defaults)
   }
 
-  public on<TEventName extends EventNames>(
+  public on<TEventName extends RouterEventNames>(
     name: TEventName,
-    listener?: EventListener<TEventName>,
+    listener?: RouterEventListener<TEventName>,
   ): () => void {
     if (!listener) {
       return () => undefined
@@ -1128,27 +1192,19 @@ export default class Router<TComponentModule> {
     return this.emitter.on(name, listener)
   }
 
-  public off<TEventName extends EventNames>(
+  public off<TEventName extends RouterEventNames>(
     name: TEventName,
-    listener: EventListener<TEventName>,
+    listener: RouterEventListener<TEventName>,
   ): void {
     return this.emitter.off(name, listener)
   }
 
-  public emit<TEventName extends EventNames>(
+  public emit<TEventName extends RouterEventNames>(
     name: TEventName,
-    event: RouterEvent<TEventName>,
-    localListener?: EventListener<TEventName>,
+    details: RouterEventDetails<TEventName>,
+    initialListener?: RouterEventListener<TEventName>,
   ): boolean {
-    if (localListener) {
-      localListener(event)
-
-      if (event.cancelable && event.defaultPrevented) {
-        return false
-      }
-    }
-
-    return this.emitter.emit(name, event as any)
+    return this.emitter.emit(name, details, initialListener)
   }
 
   public isRoutable(routable: any): routable is Routable {

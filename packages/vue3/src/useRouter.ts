@@ -1,7 +1,7 @@
 import { injectRouterContext } from './injectRouterContext'
 import { RouterControl } from './types'
 import usePageFragment from './usePageFragment'
-import { EventListener, Route, throwError } from '@navigare/core'
+import { RouterEventListener, Route, throwError } from '@navigare/core'
 import { computed, markRaw, onMounted, onUnmounted, reactive, ref } from 'vue'
 
 export default function useRouter() {
@@ -27,19 +27,19 @@ export default function useRouter() {
   const processing = ref(false)
 
   // Listen to current page
-  const handleFinish: EventListener<'finish'> = () => {
+  const handleFinish: RouterEventListener<'finish'> = () => {
     processing.value = false
   }
-  const handleStart: EventListener<'start'> = () => {
+  const handleStart: RouterEventListener<'start'> = () => {
     processing.value = true
   }
-  const handleNavigate: EventListener<'navigate'> = (event) => {
+  const handleNavigate: RouterEventListener<'navigate'> = (event) => {
     page.value = event.detail.page
     previousPage.value = router.previousPage
     latestPage.value = router.latestPage
     pages.value = router.pages
   }
-  const handleSuccess: EventListener<'success'> = () => {}
+  const handleSuccess: RouterEventListener<'success'> = () => {}
   onMounted(() => {
     router.on('finish', handleFinish)
     router.on('start', handleStart)

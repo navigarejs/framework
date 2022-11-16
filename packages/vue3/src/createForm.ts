@@ -1,6 +1,7 @@
 import {
   FormControl,
   FormErrors,
+  FormEvents,
   FormOptions,
   FormTrigger,
   FormVisitOptions,
@@ -12,6 +13,7 @@ import {
   VisitProgress,
   getKeys,
   isDefined,
+  createEmitter,
 } from '@navigare/core'
 import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
@@ -41,6 +43,7 @@ export default function createForm<
 
     return getName
   })
+  const emitter = createEmitter<FormEvents>({})
   const router = useRouter()
   const routable = computed(() => {
     if (isFunction(getRoutable)) {
@@ -352,6 +355,8 @@ export default function createForm<
       errors.value = {}
 
       control.set(initialValues.value)
+
+      emitter.emit('reset', {})
     }),
 
     clear: markRaw(() => {

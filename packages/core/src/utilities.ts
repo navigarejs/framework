@@ -342,24 +342,48 @@ export function hasFiles(data: VisitData | FormDataConvertible): boolean {
   return false
 }
 
-export function createEmitter<TEvents extends Record<string, any>>(): {
+export function createEmitter<
+  TEvents extends Record<
+    string,
+    {
+      details: Record<any, any>
+      result: any
+    }
+  >,
+>(
+  events: Partial<{
+    [TEventName in keyof TEvents]: Partial<{
+      details: Partial<EventInit>
+      handle: (result: TEvents[TEventName]['result']) => boolean
+    }>
+  }>,
+): {
   off: <TEventName extends keyof TEvents>(
     name: TEventName,
-    listener: (event: TEvents[TEventName]) => void,
+    listener: (
+      event: CustomEvent<TEvents[TEventName]['details']>,
+    ) => TEvents[TEventName]['result'],
   ) => void
   on: <TEventName extends keyof TEvents>(
     name: TEventName,
-    listener: (event: TEvents[TEventName]) => void,
+    listener: (
+      event: CustomEvent<TEvents[TEventName]['details']>,
+    ) => TEvents[TEventName]['result'],
   ) => () => void
   emit: <TEventName extends keyof TEvents>(
     name: TEventName,
-    event: TEvents[TEventName],
+    details: TEvents[TEventName]['details'],
+    initialListener?: (
+      event: CustomEvent<TEvents[TEventName]['details']>,
+    ) => TEvents[TEventName]['result'],
   ) => boolean
 } {
   const all: Partial<Record<keyof TEvents, ((event: any) => void)[]>> = {}
   const off = <TEventName extends keyof TEvents>(
     name: TEventName,
-    listener?: (event: TEvents[TEventName]) => void,
+    listener?: (
+      event: CustomEvent<TEvents[TEventName]['details']>,
+    ) => TEvents[TEventName]['result'],
   ): void => {
     const listeners = all[name]
 
@@ -373,7 +397,9 @@ export function createEmitter<TEvents extends Record<string, any>>(): {
   }
   const on = <TEventName extends keyof TEvents>(
     name: TEventName,
-    listener: (event: TEvents[TEventName]) => void,
+    listener: (
+      event: CustomEvent<TEvents[TEventName]['details']>,
+    ) => TEvents[TEventName]['result'],
   ): (() => void) => {
     const listeners = all[name]
 
@@ -389,13 +415,28 @@ export function createEmitter<TEvents extends Record<string, any>>(): {
   }
   const emit = <TEventName extends keyof TEvents>(
     name: TEventName,
-    event: TEvents[TEventName],
+    details: TEvents[TEventName]['details'],
+    initialListener?: (
+      event: CustomEvent<TEvents[TEventName]['details']>,
+    ) => TEvents[TEventName]['result'],
   ): boolean => {
-    //Dispatches a synthetic event event to target and returns true if either event's cancelable attribute value is false or its preventDefault() method was not invoked, and false otherwise.
-    const listeners = all[name] ?? []
+    const event = new CustomEvent(String(name), {
+      ...events[name],
+      detail: details,
+    })
+
+    // Dispatches a synthetic event event to target and returns true if either event's cancelable attribute value is false or its preventDefault() method was not invoked, and false otherwise.
+    const listeners = [initialListener, ...(all[name] ?? [])]
 
     for (const listener of listeners) {
-      listener(event)
+      const result = listener?.(event as any)
+
+      const handle = events[name]?.handle
+      if (handle) {
+        if (!handle(result)) {
+          return false
+        }
+      }
 
       if (!event.cancelable) {
         continue

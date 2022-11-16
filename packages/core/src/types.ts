@@ -17,15 +17,15 @@ export type RouterOptions<TComponent> = {
     }
   >
   events?: {
-    onBefore?: EventListener<'before'>
-    onStart?: EventListener<'start'>
-    onProgress?: EventListener<'progress'>
-    onFinish?: EventListener<'finish'>
-    onCancel?: EventListener<'cancel'>
-    onSuccess?: EventListener<'success'>
-    onError?: EventListener<'error'>
-    onInvalid?: EventListener<'invalid'>
-    onException?: EventListener<'exception'>
+    onBefore?: RouterEventListener<'before'>
+    onStart?: RouterEventListener<'start'>
+    onProgress?: RouterEventListener<'progress'>
+    onFinish?: RouterEventListener<'finish'>
+    onCancel?: RouterEventListener<'cancel'>
+    onSuccess?: RouterEventListener<'success'>
+    onError?: RouterEventListener<'error'>
+    onInvalid?: RouterEventListener<'invalid'>
+    onException?: RouterEventListener<'exception'>
   }
 }
 
@@ -107,9 +107,8 @@ export interface Page {
 }
 
 // Events
-export type EventsMap = {
+export type RouterEvents = {
   before: {
-    parameters: [Visit]
     details: {
       visit: Visit
     }
@@ -125,7 +124,6 @@ export type EventsMap = {
   }
 
   progress: {
-    parameters: [Visit, VisitProgress | undefined]
     details: {
       visit: Visit
       progress: VisitProgress | undefined
@@ -134,7 +132,6 @@ export type EventsMap = {
   }
 
   finish: {
-    parameters: [Visit]
     details: {
       visit: Visit
     }
@@ -142,7 +139,6 @@ export type EventsMap = {
   }
 
   cancel: {
-    parameters: [Visit]
     details: {
       visit: Visit
     }
@@ -150,7 +146,6 @@ export type EventsMap = {
   }
 
   navigate: {
-    parameters: [Page, Page[], number, boolean]
     details: {
       visit: Visit
       page: Page
@@ -162,7 +157,6 @@ export type EventsMap = {
   }
 
   success: {
-    parameters: [Visit, Page]
     details: {
       visit: Visit
       page: Page
@@ -171,7 +165,6 @@ export type EventsMap = {
   }
 
   error: {
-    parameters: [Visit, PageErrors]
     details: {
       visit: Visit
       errors: PageErrors
@@ -180,7 +173,6 @@ export type EventsMap = {
   }
 
   invalid: {
-    parameters: [Visit, AxiosResponse]
     details: {
       visit: Visit
       response: AxiosResponse
@@ -189,45 +181,25 @@ export type EventsMap = {
   }
 
   exception: {
-    parameters: [Visit, Error]
     details: {
       visit: Visit
-      exception: Error
+      error: Error
     }
     result: boolean | void
   }
 }
 
-export type EventNames = keyof EventsMap
+export type RouterEventNames = keyof RouterEvents
 
-export type Events = {
-  [Name in EventNames]: Event<Name>
-}
+export type RouterEventDetails<TEventName extends RouterEventNames> =
+  RouterEvents[TEventName]['details']
 
-export type Event<TEventName extends EventNames> = CustomEvent<
-  Readonly<EventDetails<TEventName>>
->
+export type RouterEventResult<TEventName extends RouterEventNames> =
+  RouterEvents[TEventName]['result']
 
-export type EventListeners = {
-  [Name in EventNames]: EventListener<Name>[]
-}
-
-export type EventParameters<TEventName extends EventNames> =
-  EventsMap[TEventName]['parameters']
-
-export type EventResult<TEventName extends EventNames> =
-  EventsMap[TEventName]['result']
-
-export type EventDetails<TEventName extends EventNames> =
-  EventsMap[TEventName]['details']
-
-export type EventTrigger<TEventName extends EventNames> = (
-  ...params: EventParameters<TEventName>
-) => CustomEvent<EventDetails<TEventName>>
-
-export type EventListener<TEventName extends EventNames> = (
-  event: Event<TEventName>,
-) => void // EventResult<TEventName>
+export type RouterEventListener<TEventName extends RouterEventNames> = (
+  event: CustomEvent<RouterEventDetails<TEventName>>,
+) => RouterEventResult<TEventName>
 
 // Visits
 export type FormDataConvertible =
@@ -278,15 +250,15 @@ export type VisitOptions = Partial<{
   errorBag: string | null
   forceFormData: boolean
   queryStringArrayFormat: QueryStringArrayFormat
-  onBefore: EventListener<'before'>
-  onStart: EventListener<'start'>
-  onProgress: EventListener<'progress'>
-  onFinish: EventListener<'finish'>
-  onCancel: EventListener<'cancel'>
-  onSuccess: EventListener<'success'>
-  onError: EventListener<'error'>
-  onInvalid: EventListener<'invalid'>
-  onException: EventListener<'exception'>
+  onBefore: RouterEventListener<'before'>
+  onStart: RouterEventListener<'start'>
+  onProgress: RouterEventListener<'progress'>
+  onFinish: RouterEventListener<'finish'>
+  onCancel: RouterEventListener<'cancel'>
+  onSuccess: RouterEventListener<'success'>
+  onError: RouterEventListener<'error'>
+  onInvalid: RouterEventListener<'invalid'>
+  onException: RouterEventListener<'exception'>
 }>
 
 export type Visit = {
@@ -308,15 +280,15 @@ export type Visit = {
   cancelToken?: VisitCancelToken
   cancel?: () => void
   interrupt?: () => void
-  onBefore?: EventListener<'before'>
-  onStart?: EventListener<'start'>
-  onProgress?: EventListener<'progress'>
-  onFinish?: EventListener<'finish'>
-  onCancel?: EventListener<'cancel'>
-  onSuccess?: EventListener<'success'>
-  onError?: EventListener<'error'>
-  onInvalid?: EventListener<'invalid'>
-  onException?: EventListener<'exception'>
+  onBefore?: RouterEventListener<'before'>
+  onStart?: RouterEventListener<'start'>
+  onProgress?: RouterEventListener<'progress'>
+  onFinish?: RouterEventListener<'finish'>
+  onCancel?: RouterEventListener<'cancel'>
+  onSuccess?: RouterEventListener<'success'>
+  onError?: RouterEventListener<'error'>
+  onInvalid?: RouterEventListener<'invalid'>
+  onException?: RouterEventListener<'exception'>
 }
 
 export type VisitId = string

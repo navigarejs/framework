@@ -3,8 +3,8 @@ import type plugin from './plugin'
 import { PageFragmentContext } from './providePageFragmentContext'
 import {
   ComponentModuleResolver,
-  EventListener,
-  EventNames,
+  RouterEventListener,
+  RouterEventNames,
   Page,
   PageFragments,
   PartialRoute,
@@ -99,13 +99,13 @@ export type RouterControl = {
     comparableRoute: Routable | PartialRoute<RouteName>,
     route?: Route<RouteName>,
   ): boolean
-  on<TEventName extends EventNames>(
+  on<TEventName extends RouterEventNames>(
     name: TEventName,
-    listener: EventListener<TEventName>,
+    listener: RouterEventListener<TEventName>,
   ): () => void
-  off<TEventName extends EventNames>(
+  off<TEventName extends RouterEventNames>(
     name: TEventName,
-    listener: EventListener<TEventName>,
+    listener: RouterEventListener<TEventName>,
   ): void
   instance: Router<DefineComponent>
 }
@@ -125,6 +125,25 @@ export type FormTransformer<TData, TTransformedData extends VisitData> = (
 export interface FormErrors {
   [name: string]: string[]
 }
+
+export type FormEvents = {
+  reset: {
+    details: {}
+    result: void
+  }
+}
+
+export type FormEventNames = keyof FormEvents
+
+export type FormEventDetails<TEventName extends FormEventNames> =
+  FormEvents[TEventName]['details']
+
+export type FormEventResult<TEventName extends FormEventNames> =
+  FormEvents[TEventName]['result']
+
+export type FormEventListener<TEventName extends FormEventNames> = (
+  event: CustomEvent<FormEventDetails<TEventName>>,
+) => FormEventResult<TEventName>
 
 export interface FormSubmitOptions {
   trigger?: FormTrigger
