@@ -41,6 +41,7 @@ export type Options = {
   setup: Setup
   initialPage?: Page
   fragments?: RouterOptions<DefineComponent>['fragments']
+  events?: RouterOptions<DefineComponent>['events']
 }
 
 export type Setup = (options: {

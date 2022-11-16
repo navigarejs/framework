@@ -24,6 +24,7 @@ export default async function createApp({
       stacked: true,
     },
   },
+  events,
 }: Options): Promise<App> {
   // Determine initial page
   let initialPageWithFallback: Page | null = initialPage ?? null
@@ -48,6 +49,7 @@ export default async function createApp({
     resolveComponentModule,
     fragments,
     base,
+    events,
   }
   const router = new Router<DefineComponent>(options)
 

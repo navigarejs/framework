@@ -16,6 +16,17 @@ export type RouterOptions<TComponent> = {
       lazy?: boolean
     }
   >
+  events?: {
+    onBefore?: EventListener<'before'>
+    onStart?: EventListener<'start'>
+    onProgress?: EventListener<'progress'>
+    onFinish?: EventListener<'finish'>
+    onCancel?: EventListener<'cancel'>
+    onSuccess?: EventListener<'success'>
+    onError?: EventListener<'error'>
+    onInvalid?: EventListener<'invalid'>
+    onException?: EventListener<'exception'>
+  }
 }
 
 export type ComponentModuleResolver<TComponent> = (

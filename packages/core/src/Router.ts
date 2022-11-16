@@ -145,22 +145,33 @@ export default class Router<TComponentModule> {
           this.handleInitialPageVisit(this.page)
         }
 
-        // Listen to events
-        this.setupEventListeners()
+        // Listen to window events
+        this.setupWindowEventListeners()
       }, 0)
     }
 
-    // Listen to own exceptions
+    // Log exceptions by default
     this.on('exception', (event) => {
       console.error(event.detail.exception)
     })
+
+    // Attach listeners
+    this.on('before', options.events?.onBefore)
+    this.on('start', options.events?.onStart)
+    this.on('progress', options.events?.onProgress)
+    this.on('finish', options.events?.onFinish)
+    this.on('cancel', options.events?.onCancel)
+    this.on('success', options.events?.onSuccess)
+    this.on('error', options.events?.onError)
+    this.on('invalid', options.events?.onInvalid)
+    this.on('exception', options.events?.onException)
   }
 
   protected async handleInitialPageVisit(page: Page): Promise<void> {
     page.location.hash = window.location.hash
   }
 
-  protected setupEventListeners(): void {
+  protected setupWindowEventListeners(): void {
     window.addEventListener('popstate', this.handlePopstateEvent.bind(this))
 
     document.addEventListener(
@@ -1108,8 +1119,12 @@ export default class Router<TComponentModule> {
 
   public on<TEventName extends EventNames>(
     name: TEventName,
-    listener: EventListener<TEventName>,
+    listener?: EventListener<TEventName>,
   ): () => void {
+    if (!listener) {
+      return () => undefined
+    }
+
     return this.emitter.on(name, listener)
   }
 
