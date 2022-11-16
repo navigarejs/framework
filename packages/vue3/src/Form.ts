@@ -31,6 +31,10 @@ export default defineComponent({
         )
       }
 
+      if (!props.form.routable) {
+        return null
+      }
+
       return router.instance.resolveRoutable(
         props.form.routable,
         {},
@@ -48,8 +52,8 @@ export default defineComponent({
         'form',
         {
           ref: element,
-          method: target.value.method,
-          action: target.value.location.href,
+          method: target.value?.method ?? 'post',
+          action: target.value?.location.href ?? '#',
           onReset: (event: Event) => {
             event.preventDefault()
 

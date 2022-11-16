@@ -1,4 +1,10 @@
-import { FormControl, FormErrors, FormOptions, FormVisitOptions } from './types'
+import {
+  FormControl,
+  FormErrors,
+  FormOptions,
+  FormTrigger,
+  FormVisitOptions,
+} from './types'
 import useRouter from './useRouter'
 import {
   VisitData,
@@ -12,14 +18,7 @@ import cloneDeep from 'lodash.clonedeep'
 import isEqual from 'lodash.isequal'
 import isFunction from 'lodash.isfunction'
 import set from 'lodash.set'
-import {
-  ComponentInternalInstance,
-  computed,
-  markRaw,
-  reactive,
-  ref,
-  watch,
-} from 'vue'
+import { computed, markRaw, reactive, ref, watch } from 'vue'
 
 const globalDisabled = ref(false)
 
@@ -45,10 +44,28 @@ export default function createForm<
   const router = useRouter()
   const routable = computed(() => {
     if (isFunction(getRoutable)) {
-      return getRoutable()
+      const routable = getRoutable()
+
+      if (isFunction(routable)) {
+        return null
+      }
+
+      return routable
     }
 
     return getRoutable
+  })
+  const callback = computed(() => {
+    if (!isFunction(getRoutable)) {
+      return null
+    }
+
+    const routable = getRoutable()
+    if (!isFunction(routable)) {
+      return null
+    }
+
+    return routable
   })
   const initialValues = computed<TValues>(() => {
     const restoredValues = router.instance.restore(name.value)
@@ -69,7 +86,7 @@ export default function createForm<
   })
   const processing = ref(false)
   const progress = ref<VisitProgress | null>(null)
-  const trigger = ref<HTMLElement | ComponentInternalInstance | null>(null)
+  const trigger = ref<FormTrigger>(null)
   const blockers = ref<Record<string, boolean>>({})
   const blocked = computed(() => {
     return getKeys(blockers.value).some((key) => {
@@ -158,79 +175,83 @@ export default function createForm<
         const transform = options.transform || ((values) => values)
 
         // Submit via callback
-        if (isFunction(routable.value)) {
-          await routable.value(clonedValues)
+        if (callback.value) {
+          await callback.value(clonedValues)
 
           return undefined
         }
 
         // ... or submit via route
-        const visitOptions = options as FormVisitOptions<TValues>
-        const visit = await router.instance.visit(routable.value, {
-          data: transform(clonedValues),
+        if (routable.value) {
+          const visitOptions = options as FormVisitOptions<TValues>
+          const visit = await router.instance.visit(routable.value, {
+            data: transform(clonedValues),
 
-          onProgress(event) {
-            progress.value = event.detail.progress ?? null
+            onProgress(event) {
+              progress.value = event.detail.progress ?? null
 
-            visitOptions.onProgress?.(event)
-          },
+              visitOptions.onProgress?.(event)
+            },
 
-          onError(event) {
-            errors.value = event.detail.errors
+            onError(event) {
+              errors.value = event.detail.errors
 
-            visitOptions.onError?.(event)
-          },
+              visitOptions.onError?.(event)
+            },
 
-          onSuccess(event) {
-            // Reset errors
-            errors.value = {}
+            onSuccess(event) {
+              // Reset errors
+              errors.value = {}
 
-            // Reset values if requested
-            if (submitOptions.resetAfterSuccess) {
-              control.reset()
-            }
+              // Reset values if requested
+              if (submitOptions.resetAfterSuccess) {
+                control.reset()
+              }
 
-            visitOptions.onSuccess?.(event)
-          },
+              visitOptions.onSuccess?.(event)
+            },
 
-          onFinish(event) {
-            processing.value = false
-            globalDisabled.value = false
-            trigger.value = null
+            onFinish(event) {
+              processing.value = false
+              globalDisabled.value = false
+              trigger.value = null
 
-            visitOptions.onFinish?.(event)
-          },
+              visitOptions.onFinish?.(event)
+            },
 
-          onBefore(event) {
-            visitOptions.onBefore?.(event)
-          },
+            onBefore(event) {
+              visitOptions.onBefore?.(event)
+            },
 
-          onCancel(event) {
-            visitOptions.onCancel?.(event)
-          },
+            onCancel(event) {
+              visitOptions.onCancel?.(event)
+            },
 
-          onStart(event) {
-            visitOptions.onStart?.(event)
-          },
+            onStart(event) {
+              visitOptions.onStart?.(event)
+            },
 
-          onInvalid(event) {
-            processing.value = false
-            globalDisabled.value = false
-            trigger.value = null
+            onInvalid(event) {
+              processing.value = false
+              globalDisabled.value = false
+              trigger.value = null
 
-            visitOptions.onInvalid?.(event)
-          },
+              visitOptions.onInvalid?.(event)
+            },
 
-          onException(event) {
-            processing.value = false
-            globalDisabled.value = false
-            trigger.value = null
+            onException(event) {
+              processing.value = false
+              globalDisabled.value = false
+              trigger.value = null
 
-            visitOptions.onException?.(event)
-          },
-        })
+              visitOptions.onException?.(event)
+            },
+          })
 
-        return visit
+          return visit
+        }
+
+        return undefined
       },
     ),
 
@@ -241,7 +262,7 @@ export default function createForm<
       // Run one validation at a time for the given path
       validationRequests[name] = validationRequests[name] ?? {
         request: async () => {
-          if (isFunction(routable.value)) {
+          if (!routable.value) {
             return
           }
 

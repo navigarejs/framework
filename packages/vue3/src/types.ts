@@ -126,7 +126,7 @@ export interface FormErrors {
 }
 
 export interface FormSubmitOptions {
-  trigger?: HTMLElement | ComponentInternalInstance | null
+  trigger?: FormTrigger
   resetAfterSuccess?: boolean
 }
 
@@ -148,6 +148,12 @@ export type FormOptions<
 
 export type FormInputPath = string | number | (string | number)[]
 
+export type FormTrigger =
+  | Element
+  | HTMLElement
+  | ComponentInternalInstance
+  | null
+
 export interface FormControl<
   TValues extends VisitData = VisitData,
   // TTransformedValues extends VisitData = TValues,
@@ -156,7 +162,7 @@ export interface FormControl<
 
   values: TValues
 
-  routable: Routable
+  routable: Routable | null
 
   errors: FormErrors
 
@@ -172,7 +178,7 @@ export interface FormControl<
 
   progress: VisitProgress | null
 
-  trigger: HTMLElement | ComponentInternalInstance | null
+  trigger: FormTrigger | null
 
   submit(options?: FormSubmitOptions): Promise<Visit | undefined>
 
