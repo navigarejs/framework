@@ -122,16 +122,19 @@ export type FormTransformer<TData, TTransformedData extends VisitData> = (
   data: TData,
 ) => TTransformedData
 
+export type FormError = string | string[] | null | FormErrors
+
 export interface FormErrors {
-  [name: string]: string[]
+  [name: string]: FormError
 }
 
 export type FormEvents<TValues extends VisitData = VisitData> = {
   validate: {
     details: {
       values: TValues
+      errors: FormErrors
     }
-    result: boolean | void
+    result: void
   }
 
   reset: {
@@ -216,6 +219,8 @@ export interface FormControl<
 
   disabled: boolean
 
+  valid: boolean
+
   progress: VisitProgress | null
 
   trigger: FormTrigger | null
@@ -262,6 +267,12 @@ export interface FormControl<
     name: TEventName,
     listener: FormEventListener<TEventName>,
   ): void
+
+  setErrors(errors?: FormErrors | undefined): void
+
+  setError(name: string, error?: FormError): void
+
+  clearErrors(): void
 }
 
 // Helpers

@@ -376,7 +376,7 @@ export function createEmitter<
     initialListener?: (
       event: CustomEvent<TEvents[TEventName]['details']>,
     ) => TEvents[TEventName]['result'],
-  ) => boolean
+  ) => Promise<boolean>
 } {
   const all: Partial<Record<keyof TEvents, ((event: any) => void)[]>> = {}
   const off = <TEventName extends keyof TEvents>(
@@ -413,13 +413,13 @@ export function createEmitter<
       return off(name, listener)
     }
   }
-  const emit = <TEventName extends keyof TEvents>(
+  const emit = async <TEventName extends keyof TEvents>(
     name: TEventName,
     details: TEvents[TEventName]['details'],
     initialListener?: (
       event: CustomEvent<TEvents[TEventName]['details']>,
     ) => TEvents[TEventName]['result'],
-  ): boolean => {
+  ): Promise<boolean> => {
     const event = new CustomEvent(String(name), {
       ...events[name]?.options,
       detail: details,
@@ -429,7 +429,7 @@ export function createEmitter<
     const listeners = [initialListener, ...(all[name] ?? [])]
 
     for (const listener of listeners) {
-      const result = listener?.(event as any)
+      const result = await listener?.(event as any)
 
       const handle = events[name]?.handle
       if (handle) {

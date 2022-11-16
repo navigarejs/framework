@@ -2277,6 +2277,7 @@ __metadata:
     "@types/lodash.isobject": ^3.0.7
     "@types/lodash.isstring": ^4.0.7
     "@types/lodash.issymbol": ^4.0.7
+    "@types/lodash.mergewith": ^4.6.7
     "@types/lodash.set": ^4.3.7
     "@types/semantic-release": ^17.2.4
     "@vue/devtools-api": ^6.4.5
@@ -2294,6 +2295,7 @@ __metadata:
     lodash.isobject: ^3.0.2
     lodash.isstring: ^4.0.1
     lodash.issymbol: ^4.0.1
+    lodash.mergewith: ^4.6.2
     lodash.set: ^4.3.2
     microbundle: ^0.15.1
     prettier: ^2.7.1
@@ -3205,6 +3207,15 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: 94cd6fb8e606756a28f45d63c658aacfbce11a151f7fa322c4a3e87aa50d8bf26e0ae8cba0250070a7c5a6792fc51f79abf4c648bbb1850692be386cd76cd0ca
+  languageName: node
+  linkType: hard
+
+"@types/lodash.mergewith@npm:^4.6.7":
+  version: 4.6.7
+  resolution: "@types/lodash.mergewith@npm:4.6.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 71e86dfd3f6058213f102b5f11087976c042709003e9ef1d62bf29363b8c2608c130bb8804ec8d54b2bfd9f1fae8bcf5478db602b36884022550c6dcfd7d69ab
   languageName: node
   linkType: hard
 
@@ -8417,6 +8428,13 @@ __metadata:
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
   checksum: ad580b4bdbb7ca1f7abf7e1bce63a9a0b98e370cf40194b03380a46b4ed799c9573029599caebc1b14e3f24b111aef72b96674a56cfa105e0f5ac70546cdc005
+  languageName: node
+  linkType: hard
+
+"lodash.mergewith@npm:^4.6.2":
+  version: 4.6.2
+  resolution: "lodash.mergewith@npm:4.6.2"
+  checksum: a6db2a9339752411f21b956908c404ec1e088e783a65c8b29e30ae5b3b6384f82517662d6f425cc97c2070b546cc2c7daaa8d33f78db7b6e9be06cd834abdeb8
   languageName: node
   linkType: hard
 

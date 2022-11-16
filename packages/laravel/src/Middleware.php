@@ -4,6 +4,7 @@ namespace Navigare;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redirect;
 use Navigare\Response as NavigareResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -120,7 +121,7 @@ class Middleware
     Navigare::extend(function (Request $request, NavigareResponse $response) {
       $response->with([
         'errors' => function () use ($request) {
-          return $this->resolveValidationErrors($request);
+          return Arr::undot($this->resolveValidationErrors($request));
         },
       ]);
     });

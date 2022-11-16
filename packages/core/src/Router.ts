@@ -347,7 +347,10 @@ export default class Router<TComponentModule> {
     return true
   }
 
-  protected cancelVisit(visitId: VisitId, interrupt = false): void {
+  protected async cancelVisit(
+    visitId: VisitId,
+    interrupt = false,
+  ): Promise<void> {
     if (this.activeVisit?.id !== visitId) {
       return
     }
@@ -363,14 +366,14 @@ export default class Router<TComponentModule> {
     activeVisit.cancelled = true
     activeVisit.interrupted = interrupt ? true : false
 
-    this.emit(
+    await this.emit(
       'cancel',
       {
         visit: activeVisit,
       },
       activeVisit.events.cancel,
     )
-    this.emit(
+    await this.emit(
       'finish',
       {
         visit: activeVisit,
@@ -379,13 +382,13 @@ export default class Router<TComponentModule> {
     )
   }
 
-  protected finishVisit(visit: Visit): void {
+  protected async finishVisit(visit: Visit): Promise<void> {
     if (!visit.cancelled && !visit.interrupted) {
       visit.completed = true
       visit.cancelled = false
       visit.interrupted = false
 
-      this.emit(
+      await this.emit(
         'finish',
         {
           visit,
@@ -470,13 +473,13 @@ export default class Router<TComponentModule> {
     })
 
     if (
-      !this.emit(
+      !(await this.emit(
         'before',
         {
           visit,
         },
         events?.before,
-      )
+      ))
     ) {
       return this.activeVisit!
     }
@@ -500,7 +503,7 @@ export default class Router<TComponentModule> {
       },
     }
 
-    this.emit(
+    await this.emit(
       'start',
       {
         visit: this.activeVisit,
@@ -538,9 +541,9 @@ export default class Router<TComponentModule> {
             : {}),
         },
 
-        onUploadProgress: (progress) => {
+        onUploadProgress: async (progress) => {
           if (data instanceof FormData) {
-            this.emit(
+            await this.emit(
               'progress',
               {
                 visit: this.activeVisit!,
@@ -652,7 +655,7 @@ export default class Router<TComponentModule> {
           }),
         )
 
-        this.emit(
+        await this.emit(
           'error',
           {
             visit: this.activeVisit,
@@ -661,7 +664,7 @@ export default class Router<TComponentModule> {
           events?.error,
         )
       } else {
-        this.emit(
+        await this.emit(
           'success',
           {
             visit: this.activeVisit,
@@ -697,7 +700,7 @@ export default class Router<TComponentModule> {
 
           this.locationVisit(redirectLocation, preserveScroll === true)
         } else if (
-          this.emit(
+          await this.emit(
             'invalid',
             {
               visit: this.activeVisit,
@@ -710,7 +713,7 @@ export default class Router<TComponentModule> {
         }
       }
 
-      this.emit(
+      await this.emit(
         'exception',
         {
           visit: this.activeVisit,
@@ -782,7 +785,7 @@ export default class Router<TComponentModule> {
 
     // Inform listeners about new page
     if (!initialVisit) {
-      this.emitter.emit('navigate', {
+      await this.emit('navigate', {
         page: this.page,
         visit: this.page.visit,
         pages: this.internalPages,
@@ -919,7 +922,7 @@ export default class Router<TComponentModule> {
       this.restoreScrollPositions()
     }
 
-    this.emitter.emit('navigate', {
+    await this.emit('navigate', {
       visit: this.page.visit,
       page: this.page,
       pageIndex: this.pageIndex,
@@ -1172,11 +1175,11 @@ export default class Router<TComponentModule> {
     return this.emitter.off(name, listener)
   }
 
-  public emit<TEventName extends RouterEventNames>(
+  public async emit<TEventName extends RouterEventNames>(
     name: TEventName,
     details: RouterEventDetails<TEventName>,
     initialListener?: RouterEventListener<TEventName>,
-  ): boolean {
+  ): Promise<boolean> {
     return this.emitter.emit(name, details, initialListener)
   }
 

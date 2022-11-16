@@ -1,8 +1,7 @@
 import {
   FormControl,
+  FormError,
   FormErrors,
-  FormEventListener,
-  FormEventNames,
   FormEvents,
   FormOptions,
   FormTrigger,
@@ -19,8 +18,11 @@ import {
 } from '@navigare/core'
 import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
+import isArray from 'lodash.isarray'
 import isEqual from 'lodash.isequal'
 import isFunction from 'lodash.isfunction'
+import isString from 'lodash.isstring'
+import mergeWith from 'lodash.mergewith'
 import set from 'lodash.set'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
@@ -91,9 +93,28 @@ export default function createForm<
     return getInitialValues
   })
   const values = reactive(cloneDeep(initialValues.value))
-  const errors = ref<FormErrors>({})
+  const errors = reactive<FormErrors>({})
   const dirty = computed(() => {
     return isEqual(initialValues.value, values)
+  })
+  const valid = computed(() => {
+    const isValid = (errors: FormError): boolean => {
+      if (!errors) {
+        return true
+      }
+
+      if (isArray(errors)) {
+        return errors.length === 0
+      }
+
+      if (isString(errors)) {
+        return errors.length === 0
+      }
+
+      return Object.values(errors).every((error) => isValid(error))
+    }
+
+    return isValid(errors)
   })
   const processing = ref(false)
   const progress = ref<VisitProgress | null>(null)
@@ -161,6 +182,8 @@ export default function createForm<
 
     progress,
 
+    valid,
+
     trigger,
 
     submit: markRaw(
@@ -189,6 +212,7 @@ export default function createForm<
         if (
           !emitter.emit('validate', {
             values: clonedValues,
+            errors,
           })
         ) {
           return undefined
@@ -215,14 +239,15 @@ export default function createForm<
               },
 
               error(event) {
-                errors.value = event.detail.errors
+                control.clearErrors()
+                control.setErrors(event.detail.errors)
 
                 visitOptions.events?.error?.(event)
               },
 
               success(event) {
-                // Reset errors
-                errors.value = {}
+                // Clear errors
+                control.clearErrors()
 
                 // Reset values if requested
                 if (submitOptions.resetAfterSuccess) {
@@ -278,7 +303,6 @@ export default function createForm<
     ),
 
     validate: markRaw(async (path) => {
-      let validationErrors: FormErrors = {}
       const name = control.getInputName(path)
 
       // Run one validation at a time for the given path
@@ -338,9 +362,9 @@ export default function createForm<
 
             // Clear previous errors if this validation was successful
             if (name) {
-              set(errors.value, name, [])
+              control.setError(name, null)
             } else {
-              errors.value = {}
+              control.clearErrors()
             }
 
             // Clear request
@@ -352,12 +376,7 @@ export default function createForm<
               } else {
                 const { response } = error
 
-                validationErrors = response?.data.errors ?? {}
-                for (const [key, messages] of Object.entries(
-                  validationErrors,
-                )) {
-                  errors.value[key] = messages
-                }
+                control.setErrors(response?.data.errors ?? {})
               }
             } else {
               throw error
@@ -371,7 +390,7 @@ export default function createForm<
     }),
 
     reset: markRaw(() => {
-      errors.value = {}
+      control.clearErrors()
 
       control.set(initialValues.value)
 
@@ -459,27 +478,36 @@ export default function createForm<
       ).join('.')
     }),
 
-    on: markRaw(
-      <TEventName extends FormEventNames>(
-        name: TEventName,
-        listener?: FormEventListener<TEventName>,
-      ): (() => void) => {
-        if (!listener) {
-          return () => undefined
-        }
+    on: markRaw((name, listener) => {
+      if (!listener) {
+        return () => undefined
+      }
 
-        return this.emitter.on(name, listener)
-      },
-    ),
+      return this.emitter.on(name, listener)
+    }),
 
-    off: markRaw(
-      <TEventName extends FormEventNames>(
-        name: TEventName,
-        listener: FormEventListener<TEventName>,
-      ): void => {
-        return this.emitter.off(name, listener)
-      },
-    ),
+    off: markRaw((name, listener) => {
+      return this.emitter.off(name, listener)
+    }),
+
+    setErrors: markRaw((nextErrors) => {
+      if (!nextErrors) {
+        control.clearErrors()
+        return
+      }
+
+      mergeWith(errors, nextErrors)
+    }),
+
+    setError: markRaw((name, error) => {
+      set(errors, name, error)
+    }),
+
+    clearErrors: markRaw(() => {
+      for (const key of getKeys(errors)) {
+        delete errors[key]
+      }
+    }),
   })
 
   return control
