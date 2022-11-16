@@ -21,7 +21,12 @@ import {
   Visit,
 } from '@navigare/core'
 import { HeadClient } from '@vueuse/head'
-import { InjectionKey, App as VueApp, DefineComponent } from 'vue'
+import {
+  InjectionKey,
+  App as VueApp,
+  DefineComponent,
+  ComponentInternalInstance,
+} from 'vue'
 
 export type App = {
   root: VueApp
@@ -121,15 +126,25 @@ export interface FormErrors {
 }
 
 export interface FormSubmitOptions {
-  trigger?: HTMLElement | null
+  trigger?: HTMLElement | ComponentInternalInstance | null
   resetAfterSuccess?: boolean
 }
 
-export interface FormOptions extends VisitOptions {
+export type FormBaseOptions<TValues extends VisitData = VisitData> = {
   disabled?: () => boolean
-
   remember?: boolean
+  transform?: (values: TValues) => any
 }
+
+export type FormVisitOptions<TValues extends VisitData = VisitData> =
+  FormBaseOptions<TValues> & VisitOptions
+
+export type FormOptions<
+  TValues extends VisitData = VisitData,
+  TRoutable extends Routable = never,
+> = TRoutable extends never
+  ? FormVisitOptions<TValues>
+  : FormBaseOptions<TValues>
 
 export type FormInputPath = string | number | (string | number)[]
 
@@ -157,7 +172,7 @@ export interface FormControl<
 
   progress: VisitProgress | null
 
-  trigger: HTMLElement | null
+  trigger: HTMLElement | ComponentInternalInstance | null
 
   submit(options?: FormSubmitOptions): Promise<Visit | undefined>
 
