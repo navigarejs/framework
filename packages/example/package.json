@@ -15,7 +15,7 @@
     "tua-body-scroll-lock": "^1.2.1"
   },
   "devDependencies": {
-    "@navigare/core": "^1.0.37",
+    "@navigare/core": "^1.0.38",
     "@navigare/vite": "^1.0.30",
     "@navigare/vue3": "^1.0.46",
     "@prettier/plugin-php": "^0.19.1",
