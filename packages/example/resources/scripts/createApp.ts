@@ -9,11 +9,11 @@ export default function createApp(initialPage?: Page) {
   return createNavigareApp({
     initialPage,
 
-    setup({ NavigareRoot, props }) {
+    setup({ Root, props }) {
       // Create Vue app with Navigare component as root
       const app = createVueApp({
         render: () => {
-          return h(NavigareRoot, props, {
+          return h(Root, props, {
             default: ({}) => h(Layout, {}),
           })
         },

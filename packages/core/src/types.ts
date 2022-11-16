@@ -16,9 +16,9 @@ export type RouterOptions<TComponent> = {
       lazy?: boolean
     }
   >
-  events?: {
+  events?: Partial<{
     [TEventName in RouterEventNames]: RouterEventListener<TEventName>
-  }
+  }>
 }
 
 export type ComponentModuleResolver<TComponent> = (
