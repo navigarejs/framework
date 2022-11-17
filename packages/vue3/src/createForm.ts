@@ -94,9 +94,7 @@ export default function createForm<
   })
   const values = reactive(cloneDeep(initialValues.value))
   const errors = reactive<FormErrors>({})
-  const dirty = computed(() => {
-    return isEqual(initialValues.value, values)
-  })
+  const dirty = ref(false)
   const valid = computed(() => {
     const isValid = (errors: FormError): boolean => {
       if (!errors) {
@@ -158,6 +156,17 @@ export default function createForm<
       router.instance.remember(nextValues, name.value)
     },
     { deep: true },
+  )
+
+  // Watch values to determine dirty flag
+  watch(
+    () => initialValues.value,
+    (nextInitialValues) => {
+      dirty.value = !isEqual(cloneDeep(values), nextInitialValues)
+    },
+    {
+      deep: true,
+    },
   )
 
   // Expose control
