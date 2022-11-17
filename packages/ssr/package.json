@@ -37,7 +37,7 @@
   "main": "./build/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "prepare": "",
+    "prepare": "yarn build",
     "build": "yarn run clean && microbundle --no-compress --format modern,esm,cjs",
     "clean": "rm -rf types && rm -rf build",
     "develop": "yarn build watch",

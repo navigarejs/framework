@@ -23,8 +23,8 @@ use Navigare\View\DeferredProperty;
 use Navigare\View\LazyProperty;
 use Navigare\View\Location;
 use Navigare\View\Page;
-use Navigare\View\PageComponent;
-use Navigare\View\PageFragment;
+use Navigare\View\Component;
+use Navigare\View\Fragment;
 use ReflectionParameter;
 
 class Response implements Responsable
@@ -50,9 +50,9 @@ class Response implements Responsable
    * Return fragment from response.
    *
    * @param  string  $name
-   * @return PageFragment
+   * @return Fragment
    */
-  public function getFragment(string $name = 'default'): PageFragment
+  public function getFragment(string $name = 'default'): Fragment
   {
     $fragment = $this->fragments[$name];
 
@@ -103,9 +103,9 @@ class Response implements Responsable
     string $componentName,
     array|Arrayable $properties
   ): self {
-    $this->fragments[$fragmentName] = new PageFragment(
+    $this->fragments[$fragmentName] = new Fragment(
       name: $fragmentName,
-      component: PageComponent::fromName($componentName, $this->configuration),
+      component: Component::fromName($componentName, $this->configuration),
       properties: collect($properties)
     );
 
@@ -217,47 +217,35 @@ class Response implements Responsable
       ->map(function ($property) {
         return SelectedProperty::fromString($property);
       });
-    $selectedFragmentNames =
-      $selectedProperties->count() > 0
-        ? collect($selectedProperties)
-          ->map(function ($selectedProp) {
-            return $selectedProp->fragmentName;
-          })
-          ->unique()
-        : collect(array_keys($this->fragments));
 
     // Prepare fragments and their properties
-    $fragments = collect($this->fragments)
-      ->filter(function ($fragment) use ($selectedFragmentNames) {
-        return $selectedFragmentNames->contains($fragment->name);
-      })
-      ->map(function ($fragment) use (
-        $selectedProperties,
+    $fragments = collect($this->fragments)->map(function ($fragment) use (
+      $selectedProperties,
+      $request,
+      $location
+    ) {
+      $properties = collect(
+        $selectedProperties->count() > 0
+          ? $fragment->properties->only(
+            $selectedProperties
+              ->filter(function ($selectedProperty) use ($fragment) {
+                return $selectedProperty->fragmentName === $fragment->name;
+              })
+              ->map(function ($selectedProperty) {
+                return $selectedProperty->name;
+              })
+          )
+          : $fragment->properties
+      );
+
+      $fragment->properties = $this->resolvePropertyInstances(
         $request,
-        $location
-      ) {
-        $properties = collect(
-          $selectedProperties->count() > 0
-            ? $fragment->properties->only(
-              $selectedProperties
-                ->filter(function ($selectedProperty) use ($fragment) {
-                  return $selectedProperty->fragmentName === $fragment->name;
-                })
-                ->map(function ($selectedProperty) {
-                  return $selectedProperty->name;
-                })
-            )
-            : $fragment->properties
-        );
+        $properties
+      );
+      $fragment->location = $location;
 
-        $fragment->properties = $this->resolvePropertyInstances(
-          $request,
-          $properties
-        );
-        $fragment->location = $location;
-
-        return $fragment;
-      });
+      return $fragment;
+    });
 
     // Collect all information for page
     $page = new Page(

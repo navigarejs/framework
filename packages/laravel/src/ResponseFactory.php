@@ -186,17 +186,31 @@ class ResponseFactory
   }
 
   /**
-   * Render component with properties to fragment.
+   * Render component with properties to default fragment.
    *
    * @param  ?string  $componentName
    * @param  ?array|Arrayable  $properties
-   * @param  ?string  $fragmentName
    * @return Response
    */
   public function render(
     string $componentName = null,
-    array|Arrayable $properties = [],
-    string $fragmentName = 'default'
+    array|Arrayable $properties = []
+  ): Response {
+    return $this->withFragment('default', $componentName, $properties);
+  }
+
+  /**
+   * Render component with properties to fragment.
+   *
+   * @param  string  $fragmentName
+   * @param  ?string  $componentName
+   * @param  ?array|Arrayable  $properties
+   * @return Response
+   */
+  public function withFragment(
+    string $fragmentName,
+    string $componentName = null,
+    array|Arrayable $properties = []
   ): Response {
     $response = new Response(
       rootView: $this->rootView,
@@ -240,7 +254,7 @@ class ResponseFactory
   public function __call($method, $arguments)
   {
     if (isset($arguments[0]) && is_string($arguments[0])) {
-      return $this->render($arguments[0], $arguments[1] ?? [], $method);
+      return $this->withFragment($method, $arguments[0], $arguments[1] ?? []);
     }
 
     trigger_error(

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prepare": "php artisan migrate && php artisan db:seed",
+    "prepare": "php artisan migrate --force && php artisan db:seed",
     "start": "navigare serve",
     "develop": "vite",
     "build": "vite build && vite build --ssr"

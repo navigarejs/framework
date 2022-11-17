@@ -23,7 +23,7 @@ export type RouterOptions<TComponent> = {
 
 export type ComponentModuleResolver<TComponent> = (
   url: string,
-  component: PageComponent,
+  component: Component,
 ) => Promise<TComponent>
 
 export type RouterLocation = {
@@ -58,16 +58,17 @@ export interface PageProperties {
 
 export type PageRememberedState = Record<string, unknown> | undefined
 
-export type PageFragmentProperties = Record<string, any>
+export type FragmentProperties = Record<string, any>
 
-export type PageComponent = {
+export type Component = {
   id: string
   path: string
 }
 
-export type PageFragment = {
-  component: PageComponent
-  properties: PageFragmentProperties
+export type Fragment = {
+  name: string
+  component: Component
+  properties: FragmentProperties
   /*rawRoute: RawRoute
   location: RouterLocation
   defaults: PageDefaults
@@ -75,12 +76,12 @@ export type PageFragment = {
   page?: Page
 }
 
-export type PageFragments = Record<string, PageFragment | PageFragment[] | null>
+export type Fragments = Record<string, Fragment | Fragment[] | null>
 
 export interface Page {
   visit: Visit
   csrf: string | null
-  fragments: PageFragments
+  fragments: Fragments
   properties: PageProperties & {
     errors?: PageErrors & PageErrorBag
   }
@@ -277,8 +278,6 @@ export type Visit = {
 
 export type VisitId = string
 
-export type Component = unknown
-
 // Routes
 export type Routes = GeneratedRoutes & {}
 
@@ -353,7 +352,7 @@ export type RawRoute<TName extends RouteName = RouteName> = {
   bindings?: RouteBindings
   parameters?: RouteParameters<TName>
   wheres?: RouteWheres
-  components?: PageComponent[]
+  components?: Component[]
 }
 
 export type RawRoutes = Record<string, RawRoute>

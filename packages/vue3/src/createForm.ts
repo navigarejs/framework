@@ -1,3 +1,4 @@
+import useRouter from './compositions/useRouter'
 import {
   FormControl,
   FormError,
@@ -8,7 +9,6 @@ import {
   FormValues,
   FormVisitOptions,
 } from './types'
-import useRouter from './useRouter'
 import {
   Routable,
   VisitProgress,
@@ -23,6 +23,7 @@ import isArray from 'lodash.isarray'
 import isEqual from 'lodash.isequal'
 import isFunction from 'lodash.isfunction'
 import isString from 'lodash.isstring'
+import isSymbol from 'lodash.issymbol'
 import mergeWith from 'lodash.mergewith'
 import set from 'lodash.set'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
@@ -93,7 +94,13 @@ export default function createForm<
 
     return getInitialValues
   })
-  const values = reactive(cloneDeep(initialValues.value))
+  const values = reactive(initialValues.value)
+  const keys = computed(() => {
+    return getKeys(values).filter((key) => isSymbol(key)) as any as Exclude<
+      keyof TValues,
+      symbol
+    >[]
+  })
   const errors = reactive<FormErrors>({})
   const dirty = ref(false)
   const valid = computed(() => {
@@ -454,12 +461,17 @@ export default function createForm<
     }),
 
     partial: markRaw(
-      (getName, getRoutable, getInitialPartialValues, options) => {
+      (
+        getPartialName,
+        getPartialRoutable,
+        getInitialPartialValues,
+        options,
+      ) => {
         return createForm(
-          getName,
-          getRoutable,
+          getPartialName,
+          getPartialRoutable,
           () => {
-            return getInitialPartialValues(values as any)
+            return getInitialPartialValues(values)
           },
           options,
         )
@@ -495,19 +507,14 @@ export default function createForm<
         return () => undefined
       }
 
-      return this.emitter.on(name, listener)
+      return emitter.on(name, listener)
     }),
 
     off: markRaw((name, listener) => {
-      return this.emitter.off(name, listener)
+      return emitter.off(name, listener)
     }),
 
     setErrors: markRaw((nextErrors) => {
-      if (!nextErrors) {
-        control.clearErrors()
-        return
-      }
-
       mergeWith(errors, nextErrors)
     }),
 
@@ -516,12 +523,7 @@ export default function createForm<
     }),
 
     clearErrors: markRaw((paths) => {
-      if (!paths) {
-        control.setErrors()
-        return
-      }
-
-      for (const path of paths) {
+      for (const path of paths ?? keys.value) {
         control.setError(path, undefined)
       }
     }),

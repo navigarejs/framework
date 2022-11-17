@@ -79,7 +79,6 @@ class Middleware
    * It is used by Inertia but is not recommended for Navigare.
    *
    * @see https://navigarejs.github.io/framework/inertia
-   * @deprecated
    * @param  \Illuminate\Http\Request  $request
    * @return array
    */

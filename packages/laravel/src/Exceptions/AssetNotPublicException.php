@@ -2,7 +2,7 @@
 
 namespace Navigare\Exceptions;
 
-use Navigare\View\PageComponent;
+use Navigare\View\Component;
 use Navigare\Vite\Manifest;
 
 final class AssetNotPublicException extends Exception

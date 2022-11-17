@@ -18,7 +18,7 @@ import {
   RouterEventListener,
   RawRouteMethod,
   Visit,
-  PageComponent,
+  Component,
   RouterEventNames,
   RouterEventDetails,
 } from './types'
@@ -199,6 +199,10 @@ export default class Router<TComponentModule> {
   }
 
   protected saveScrollPositions(): void {
+    if (isSSR()) {
+      return
+    }
+
     this.replaceState({
       ...this.page,
       scrollRegions: Array.from(this.scrollRegions()).map((region) => {
@@ -418,20 +422,14 @@ export default class Router<TComponentModule> {
     if (this.pageIndex - 1 < 0) {
       if (fallback) {
         await this.visit(fallback)
+        return
       } else {
         history.back()
+        return
       }
-
-      return
     }
 
-    // Inform listeners about new page
     history.back()
-    /*this.pageIndex--
-    this.emitter.emit(
-      'navigate',
-      createNavigateEvent(this.page, this.internalPages, this.pageIndex, false),
-    )*/
   }
 
   public async visit(
@@ -796,7 +794,7 @@ export default class Router<TComponentModule> {
 
     // Load deferred properties in the background
     const deferredProperties = getDeferredPageProperties(this.page)
-    if (getKeys(deferredProperties).length > 0) {
+    if (!isSSR() && getKeys(deferredProperties).length > 0) {
       setTimeout(() => {
         this.reload({
           headers: {
@@ -829,12 +827,12 @@ export default class Router<TComponentModule> {
     }
   }
 
-  protected getComponentId(component: PageComponent): string {
+  protected getComponentId(component: Component): string {
     return component.id
   }
 
   public getComponentModule(
-    component: PageComponent,
+    component: Component,
   ): TComponentModule | Promise<TComponentModule> {
     const id = this.getComponentId(component)
 
@@ -854,7 +852,7 @@ export default class Router<TComponentModule> {
     })
   }
 
-  public async resolveComponentModule(component: PageComponent) {
+  public async resolveComponentModule(component: Component) {
     const resolveComponentModule =
       this.options.resolveComponentModule ||
       (async (url) => {
@@ -882,7 +880,7 @@ export default class Router<TComponentModule> {
             : [fragments.component]),
         ]
       },
-      [] as PageComponent[],
+      [] as Component[],
     )
 
     await Promise.all(
@@ -934,8 +932,9 @@ export default class Router<TComponentModule> {
   public async reload(
     options: Exclude<VisitOptions, 'preserveScroll' | 'preserveState'> = {},
   ): Promise<Visit> {
-    return await this.visit(window.location.href, {
+    return await this.visit(this.location.href, {
       ...options,
+      replace: true,
       preserveScroll: true,
       preserveState: true,
     })
@@ -1037,7 +1036,7 @@ export default class Router<TComponentModule> {
     method: RouteMethod
     location: RouterLocation
     data: VisitData
-    components: PageComponent[]
+    components: Component[]
   } {
     let finalHref =
       routable instanceof URL

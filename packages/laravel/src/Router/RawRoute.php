@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Route as FacadesRoute;
 use Illuminate\Support\Reflector;
 use Illuminate\Support\Str;
 use Navigare\Configuration;
-use Navigare\Exceptions\PageComponentNotFoundException;
+use Navigare\Exceptions\ComponentNotFoundException;
 use Navigare\Navigare;
-use Navigare\View\PageComponent;
+use Navigare\View\Component;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -153,8 +153,8 @@ class RawRoute implements Arrayable
       ->unique()
       ->map(function ($match) use ($configuration) {
         try {
-          return PageComponent::fromName($match, $configuration);
-        } catch (PageComponentNotFoundException $exception) {
+          return Component::fromName($match, $configuration);
+        } catch (ComponentNotFoundException $exception) {
           return null;
         }
       })

@@ -1,12 +1,12 @@
-import type Root from './Root'
+import type Root from './components/Root'
+import { FragmentContext } from './contexts/provideFragmentContext'
 import type plugin from './plugin'
-import { PageFragmentContext } from './providePageFragmentContext'
 import {
   ComponentModuleResolver,
   RouterEventListener,
   RouterEventNames,
   Page,
-  PageFragments,
+  Fragments,
   PartialRoute,
   Routable,
   Route,
@@ -27,6 +27,7 @@ import {
   App as VueApp,
   DefineComponent,
   ComponentInternalInstance,
+  UnwrapNestedRefs,
 } from 'vue'
 
 export type App = {
@@ -40,7 +41,6 @@ export type Options = {
   id?: string
   resolveComponentModule?: ComponentModuleResolver<DefineComponent>
   setup: Setup
-  initialPage?: Page
   fragments?: RouterOptions<DefineComponent>['fragments']
   events?: RouterOptions<DefineComponent>['events']
 }
@@ -63,9 +63,13 @@ export type RouterControl = {
   latestPage: Page
   pages: Page[]
   layout: string | null
-  fragment: ContextOf<typeof PageFragmentContext>
-  fragments: PageFragments
+  fragment: ContextOf<typeof FragmentContext>
+  fragments: Fragments
   processing: boolean
+  visit(
+    routable: Routable,
+    options?: Exclude<VisitOptions, 'method' | 'data'>,
+  ): Promise<Visit>
   get(
     routable: Routable,
     data?: VisitData,
@@ -94,8 +98,6 @@ export type RouterControl = {
     options?: Exclude<VisitOptions, 'preserveScroll' | 'preserveState'>,
   ): Promise<Visit>
   back(fallback?: Routable): Promise<void>
-  replace(routable: Routable): Promise<never>
-  push(routable: Routable): Promise<never>
   match(
     comparableRoute: Routable | PartialRoute<RouteName>,
     route?: Route<RouteName>,
@@ -191,7 +193,9 @@ export type FormOptions<
   ? FormVisitOptions<TValues>
   : FormBaseOptions<TValues>
 
-export type FormInputPath = string | number | (string | number)[]
+export type FormInputName = string | number
+
+export type FormInputPath = FormInputName | FormInputName[]
 
 export type FormTrigger =
   | Element
@@ -211,7 +215,7 @@ export interface FormControl<
 > {
   name: string
 
-  values: TValues
+  values: UnwrapNestedRefs<TValues>
 
   routable: Routable | null
 
@@ -259,8 +263,13 @@ export interface FormControl<
 
   partial<TPartialValues extends FormValues>(
     getName: string | (() => string),
-    getRoutable: Routable | (() => Routable),
-    getInitialPartialValues: (values: TValues) => TPartialValues,
+    getRoutable:
+      | Routable
+      | (() => Routable)
+      | (() => (values: TPartialValues) => any | Promise<any>),
+    getInitialPartialValues: (
+      values: UnwrapNestedRefs<TValues>,
+    ) => TPartialValues,
     options?: FormOptions,
   ): FormControl<TPartialValues>
 
@@ -278,7 +287,7 @@ export interface FormControl<
     listener: FormEventListener<TEventName>,
   ): void
 
-  setErrors(errors?: FormErrors | undefined): void
+  setErrors(errors: FormErrors): void
 
   setError(path: FormInputPath, error?: FormError): void
 

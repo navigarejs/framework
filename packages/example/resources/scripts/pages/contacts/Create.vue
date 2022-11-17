@@ -90,6 +90,26 @@
         </push-button>
       </div>
     </navigare-form>
+
+    <navigare-form
+      :form="contactForm"
+      class="space-y-2"
+    >
+      <div>
+        <label :for="form.getInputId('email')">Email</label>
+
+        <navigare-input
+          name="email"
+          type="email"
+        />
+      </div>
+
+      <div>
+        <label :for="form.getInputId('phone')">Phone</label>
+
+        <navigare-input name="phone" />
+      </div>
+    </navigare-form>
   </div>
 </template>
 
@@ -104,6 +124,7 @@ import {
   NavigareInput,
   useRouter,
 } from '@navigare/vue3'
+import { toRef } from '@vue/reactivity'
 
 defineProps({
   organizations: Object,
@@ -123,6 +144,17 @@ const form = createForm('contacts.create', route('contacts.store'), () => ({
   country: '',
   postal_code: '',
 }))
+
+const contactForm = form.partial(
+  'contacts.create.contact',
+  () => () => {},
+  (values) => {
+    return {
+      email: toRef(values, 'email'),
+      phone: toRef(values, 'phone'),
+    }
+  },
+)
 </script>
 
 first_name: this.user.first_name, last_name: this.user.last_name, email:

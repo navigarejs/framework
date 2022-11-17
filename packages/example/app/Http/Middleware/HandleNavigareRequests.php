@@ -12,7 +12,7 @@ class HandleNavigareRequests extends \Navigare\Middleware
   /**
    * Extend response, i.e. with shared fragments.
    *
-   * @see https://navigarejs.github.io/framework/extend-response
+   * @see https://navigarejs.github.io/framework/
    * @param  \Illuminate\Http\Request  $request
    * @param  \Navigare\Response  $response
    * @return void

@@ -1,11 +1,11 @@
 import { PageProperties } from '@navigare/core'
-import { usePageFragment } from '@navigare/vue3'
+import { useFragment } from '@navigare/vue3'
 import { computed, ComputedRef, reactive } from 'vue'
 
 export default function useBreadcrumbs() {
-  const pageFragment = usePageFragment()
+  const fragment = useFragment()
   const breadcrumbs = computed(() => {
-    return pageFragment.properties.breadcrumbs
+    return fragment.properties.breadcrumbs
   })
   const path = computed(() => {
     return [...breadcrumbs.value].slice(0, breadcrumbs.value.length - 1)

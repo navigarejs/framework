@@ -128,10 +128,10 @@
 <script lang="ts" setup>
 import Breadcrumbs from '../../components/Breadcrumbs.vue'
 import Card from '../../components/Card.vue'
-import Headline from '../../components/Headline.vue'
 import Icon from '../../components/Icon.vue'
 import PageTitle from '../../components/PageTitle.vue'
 import PushButton from '../../components/PushButton.vue'
+import { route } from '@navigare/core'
 import { NavigareLink } from '@navigare/vue3'
 
 defineProps({

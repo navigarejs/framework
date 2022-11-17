@@ -1,8 +1,8 @@
 import {
   DeferredValue,
   Page,
-  PageFragment,
-  PageFragments,
+  Fragment,
+  Fragments,
   PageProperties,
   RawRouteMethod,
   RouterOptions,
@@ -127,7 +127,7 @@ export function mergeDataIntoQueryString(
 
 export function getInitialFragments<TComponentModule>(
   options?: RouterOptions<TComponentModule>['fragments'],
-): PageFragments {
+): Fragments {
   return Object.fromEntries(
     Object.entries(options || {})
       .map(([name, { stacked }]) => {
@@ -138,22 +138,22 @@ export function getInitialFragments<TComponentModule>(
 }
 
 export function mergeFragments<TComponentModule>(
-  currentFragments: PageFragments,
-  nextFragments: PageFragments,
+  currentFragments: Fragments,
+  nextFragments: Fragments,
   options: RouterOptions<TComponentModule>['fragments'] = {},
-): PageFragments {
+): Fragments {
   return uniq([...getKeys(currentFragments), ...getKeys(nextFragments)]).reduce(
     (cumulatedFragments, name) => {
-      let mergedFragment: PageFragment | PageFragment[] | null =
+      let mergedFragment: Fragment | Fragment[] | null =
         cumulatedFragments[name] ?? null
       /*const currentFragment = currentFragments[name] as
-        | PageFragment
-        | PageFragment[]
+        | Fragment
+        | Fragment[]
         | null
         | undefined*/
       const nextFragment = nextFragments[name] as
-        | PageFragment
-        | PageFragment[]
+        | Fragment
+        | Fragment[]
         | null
         | undefined
 
@@ -169,7 +169,13 @@ export function mergeFragments<TComponentModule>(
               fragment.page &&
               lastFragment?.page?.location.href === fragment.page?.location.href
             ) {
-              mergedFragment.splice(mergedFragment.length - 1, 1, fragment)
+              mergedFragment.splice(mergedFragment.length - 1, 1, {
+                ...fragment,
+                properties: {
+                  ...lastFragment.properties,
+                  ...fragment.properties,
+                },
+              })
             } else {
               mergedFragment.push(fragment)
             }
@@ -521,12 +527,17 @@ export function isDeferred<TInput>(
 }
 
 export function getPageProperties(page: Page): PageProperties {
-  const allFragmentProperties = Object.entries(page.fragments).reduce(
-    (cumulatedProperties, [fragmentName, fragment]) => {
+  const allFragmentProperties = Object.values(page.fragments)
+    .flat()
+    .filter(isNotNull)
+    .filter((fragment) => {
+      return fragment.page?.location.href === page.location.href
+    })
+    .reduce((cumulatedProperties, fragment) => {
       const getPropertySelectors = (properties: Record<string, any>) => {
         return Object.fromEntries(
           Object.entries(properties).map(([propertyName, value]) => {
-            return [`${fragmentName}/${propertyName}`, value]
+            return [`${fragment.name}/${propertyName}`, value]
           }),
         )
       }
@@ -551,9 +562,7 @@ export function getPageProperties(page: Page): PageProperties {
         ...cumulatedProperties,
         ...getPropertySelectors(fragment.properties),
       }
-    },
-    {},
-  )
+    }, {})
 
   return {
     ...page.properties,

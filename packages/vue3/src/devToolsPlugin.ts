@@ -1,5 +1,5 @@
-import { PageFragmentContext } from './providePageFragmentContext'
-import { RouterContext } from './provideRouterContext'
+import { FragmentContext } from './contexts/provideFragmentContext'
+import { RouterContext } from './contexts/provideRouterContext'
 import { ContextOf } from './types'
 import { Router } from '@navigare/core'
 import { setupDevtoolsPlugin } from '@vue/devtools-api'
@@ -60,14 +60,14 @@ const plugin: Plugin = {
           }
 
           // Page fragment
-          if ((PageFragmentContext as any) in componentInstance.provides) {
+          if ((FragmentContext as any) in componentInstance.provides) {
             const context = componentInstance.provides[
-              PageFragmentContext as any
-            ] as ContextOf<typeof PageFragmentContext>
+              FragmentContext as any
+            ] as ContextOf<typeof FragmentContext>
 
             instanceData.state.push({
               type: label,
-              key: 'pageFragment',
+              key: 'fragment',
               value: context,
               editable: false,
             })

@@ -8,13 +8,13 @@
       <div
         class="fixed top-0 left-0 right-0 h-12 bg-gray-800 text-gray-300 px-4"
       >
-        <page-fragments name="header" />
+        <navigare-fragments name="header" />
       </div>
 
       <div class="mt-12 px-4 py-4 flex flex-col">
         <transition name="slide-fade">
           <div v-if="router.fragments.hero">
-            <page-fragments name="hero" />
+            <navigare-fragments name="hero" />
           </div>
         </transition>
 
@@ -24,12 +24,12 @@
               v-if="router.fragments.left"
               class="w-full max-w-[300px]"
             >
-              <page-fragments name="left" />
+              <navigare-fragments name="left" />
             </div>
           </transition>
 
           <div class="w-full">
-            <page-fragments name="default">
+            <navigare-fragments name="default">
               <template #fragment="{ component, properties }">
                 <transition
                   name="fade"
@@ -38,12 +38,12 @@
                   <component :is="component" />
                 </transition>
               </template>
-            </page-fragments>
+            </navigare-fragments>
           </div>
         </div>
       </div>
 
-      <page-fragments
+      <navigare-fragments
         name="modal"
         #default="{ fragments }"
       >
@@ -75,7 +75,7 @@
             </template>
           </transition-group>
         </div>
-      </page-fragments>
+      </navigare-fragments>
     </template>
 
     <div
@@ -102,7 +102,7 @@
 <script lang="ts" setup>
 import Modal from './components/Modal.vue'
 import Unauthenticated from './pages/Unauthenticated.vue'
-import { useRouter, PageFragments } from '@navigare/vue3'
+import { useRouter, NavigareFragments } from '@navigare/vue3'
 import { lock, unlock } from 'tua-body-scroll-lock'
 import { ref, watch } from 'vue'
 

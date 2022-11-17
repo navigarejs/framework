@@ -81,7 +81,7 @@ import {
   createForm,
   NavigareForm,
   NavigareInput,
-  usePageFragment,
+  useFragment,
   useRouter,
 } from '@navigare/vue3'
 

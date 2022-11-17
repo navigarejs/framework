@@ -18,7 +18,7 @@ class AuthenticatedSessionController extends Controller
    */
   public function create()
   {
-    return Navigare::setLayout('unauthenticated')->render();
+    return Navigare::layout('unauthenticated')->render();
   }
 
   /**

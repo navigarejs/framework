@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"@navigare('htmlAttrs')>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @navigare('htmlAttrs')>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

@@ -7,7 +7,7 @@ import {
   RawRouteParameters,
   RouteDefaults,
   Routable,
-  PageComponent,
+  Component,
   RouterLocation,
 } from './types'
 import { getKeys, isNotNull, mapRouteMethod, throwError } from './utilities'
@@ -46,7 +46,7 @@ export default class PartialRoute<TName extends RouteName = RouteName> {
     return this.rawRoute.name
   }
 
-  public get components(): PageComponent[] {
+  public get components(): Component[] {
     return this.rawRoute.components ?? []
   }
 

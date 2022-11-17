@@ -1,9 +1,4 @@
-import {
-  PageFragment,
-  PageFragmentProperties,
-  RawRoute,
-  RouterLocation,
-} from '../src'
+import { Fragment, FragmentProperties, RawRoute, RouterLocation } from '../src'
 import { Page } from '../src/types'
 import { getInitialFragments, mergeFragments } from '../src/utilities'
 import { describe, expect, it } from 'vitest'
@@ -80,9 +75,9 @@ describe('mergeFragments', () => {
   }
 
   const createFragment = (
-    properties: PageFragmentProperties = {},
+    properties: FragmentProperties = {},
     page: Page = createPage(),
-  ): PageFragment => {
+  ): Fragment => {
     return {
       component: {
         id: '',

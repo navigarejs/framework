@@ -30,7 +30,7 @@ class Page implements Arrayable
   /**
    * Merge fragments.
    *
-   * @param Collection<PageFragment> $fragments
+   * @param Collection<Fragment> $fragments
    * @return self
    */
   public function mergeFragments(Collection $fragments): self

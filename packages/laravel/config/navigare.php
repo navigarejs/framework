@@ -15,7 +15,7 @@ return [
     |
     */
   'ssr' => [
-    'enabled' => false,
+    'enabled' => true,
 
     'protocol' => 'http',
 

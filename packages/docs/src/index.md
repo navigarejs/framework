@@ -1,1 +1,1 @@
-Test2
+Open [Guide](./guide/)
