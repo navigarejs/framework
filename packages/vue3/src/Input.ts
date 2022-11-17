@@ -1,10 +1,12 @@
 import provideFormContext from './provideFormContext'
-import { FormControl } from './types'
+import { FormControl, FormError } from './types'
 import useForm from './useForm'
 import { ensureFunction } from './utilities'
 import { isDefined, throwError } from '@navigare/core'
 import debounce from 'lodash.debounce'
 import get from 'lodash.get'
+import isArray from 'lodash.isarray'
+import isString from 'lodash.isstring'
 import set from 'lodash.set'
 import {
   computed,
@@ -78,10 +80,18 @@ export default defineComponent({
       },
     })
     const errors = computed(() => {
-      return resolvedForm.value.errors[props.name]
+      return get(resolvedForm.value.errors, props.name)
     })
     const errorMessage = computed(() => {
-      return errors.value?.join('') ?? ''
+      if (isArray(errors.value)) {
+        return errors.value?.join('')
+      }
+
+      if (isString(errors.value)) {
+        return errors.value
+      }
+
+      return ''
     })
     const validating = ref(false)
     const validate = debounce(async () => {
@@ -107,7 +117,7 @@ export default defineComponent({
 
         element.value?.setCustomValidity(nextErrorMessage)
 
-        if (focused.value) {
+        if (nextErrorMessage && focused.value) {
           element.value?.reportValidity()
         }
       },
@@ -220,7 +230,7 @@ export default defineComponent({
           onInput: (event: Event) => void
           onChange: (event: Event) => void
         }
-        errors: string[]
+        errors: FormError
       } = {
         form: resolvedForm.value,
         value,
