@@ -18,6 +18,7 @@ import cloneDeep from 'lodash.clonedeep'
 import isArray from 'lodash.isarray'
 import isFunction from 'lodash.isfunction'
 import isObject from 'lodash.isobject'
+import isSymbol from 'lodash.issymbol'
 import merge from 'lodash.merge'
 import uniq from 'lodash.uniq'
 import { stringify, parse } from 'qs'
@@ -243,8 +244,10 @@ export function isNotNull<TValue>(value: TValue | null): value is TValue {
   return value !== null
 }
 
-export function getKeys<TValue extends {}>(value: TValue): (keyof TValue)[] {
-  return Object.keys(value) as unknown as (keyof TValue)[]
+export function getKeys<TValue extends {}>(value: TValue): keyof TValue {
+  return Object.keys(value).filter((key) => {
+    return !isSymbol(key)
+  }) as unknown as keyof TValue
 }
 
 export function objectToFormData(

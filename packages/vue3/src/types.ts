@@ -19,6 +19,7 @@ import {
   VisitOptions,
   VisitProgress,
   Visit,
+  FormDataConvertible,
 } from '@navigare/core'
 import { HeadClient } from '@vueuse/head'
 import {
@@ -118,7 +119,7 @@ export type FormRestore<TData> = {
 
 export type FormKey<TData> = keyof TData
 
-export type FormTransformer<TData, TTransformedData extends VisitData> = (
+export type FormTransformer<TData, TTransformedData extends FormValues> = (
   data: TData,
 ) => TTransformedData
 
@@ -128,7 +129,7 @@ export interface FormErrors {
   [name: string]: FormError
 }
 
-export type FormEvents<TValues extends VisitData = VisitData> = {
+export type FormEvents<TValues extends FormValues = FormValues> = {
   validate: {
     details: {
       values: TValues
@@ -164,7 +165,8 @@ export interface FormSubmitOptions {
   resetAfterSuccess?: boolean
 }
 
-export type FormBaseOptions<TValues extends VisitData = VisitData> = {
+export type FormBaseOptions<TValues extends FormValues = FormValues> = {
+  parent?: FormControl
   disabled?: () => boolean
   remember?: boolean
   transform?: (values: TValues) => any
@@ -173,7 +175,7 @@ export type FormBaseOptions<TValues extends VisitData = VisitData> = {
   }
 }
 
-export type FormVisitOptions<TValues extends VisitData = VisitData> =
+export type FormVisitOptions<TValues extends FormValues = FormValues> =
   FormBaseOptions<TValues> &
     Omit<VisitOptions, 'events'> &
     Partial<{
@@ -183,7 +185,7 @@ export type FormVisitOptions<TValues extends VisitData = VisitData> =
     }>
 
 export type FormOptions<
-  TValues extends VisitData = VisitData,
+  TValues extends FormValues = FormValues,
   TRoutable extends Routable = never,
 > = TRoutable extends never
   ? FormVisitOptions<TValues>
@@ -197,9 +199,15 @@ export type FormTrigger =
   | ComponentInternalInstance
   | null
 
+export type FormValue = FormDataConvertible | FormValues
+
+export interface FormValues {
+  [key: string]: FormValue
+}
+
 export interface FormControl<
-  TValues extends VisitData = VisitData,
-  // TTransformedValues extends VisitData = TValues,
+  TValues extends FormValues = FormValues,
+  // TTransformedValues extends FormValues = TValues,
 > {
   name: string
 
@@ -229,11 +237,13 @@ export interface FormControl<
 
   validate(path: FormInputPath | InputEvent): Promise<void>
 
-  reset(): void
+  reset(paths?: FormInputPath[]): void
 
-  clear(): void
+  clearValues(paths?: FormInputPath[]): void
 
-  set(values?: Partial<TValues>): void
+  setValue(path: FormInputPath, value: FormValue): void
+
+  setValues(values: Partial<TValues>): void
 
   block(path: FormInputPath): void
 
@@ -247,7 +257,7 @@ export interface FormControl<
 
   disable(): void
 
-  partial<TPartialValues extends VisitData>(
+  partial<TPartialValues extends FormValues>(
     getName: string | (() => string),
     getRoutable: Routable | (() => Routable),
     getInitialPartialValues: (values: TValues) => TPartialValues,
@@ -270,9 +280,9 @@ export interface FormControl<
 
   setErrors(errors?: FormErrors | undefined): void
 
-  setError(name: string, error?: FormError): void
+  setError(path: FormInputPath, error?: FormError): void
 
-  clearErrors(): void
+  clearErrors(paths?: FormInputPath[]): void
 }
 
 // Helpers

@@ -5,11 +5,11 @@ import {
   FormEvents,
   FormOptions,
   FormTrigger,
+  FormValues,
   FormVisitOptions,
 } from './types'
 import useRouter from './useRouter'
 import {
-  VisitData,
   Routable,
   VisitProgress,
   getKeys,
@@ -18,6 +18,7 @@ import {
 } from '@navigare/core'
 import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
+import get from 'lodash.get'
 import isArray from 'lodash.isarray'
 import isEqual from 'lodash.isequal'
 import isFunction from 'lodash.isfunction'
@@ -29,7 +30,7 @@ import { computed, markRaw, reactive, ref, watch } from 'vue'
 const globalDisabled = ref(false)
 
 export default function createForm<
-  TValues extends VisitData = VisitData,
+  TValues extends FormValues = FormValues,
   TRoutable extends Routable = never,
 >(
   getName: string | (() => string),
@@ -398,27 +399,29 @@ export default function createForm<
       await validationRequests[name]?.request()
     }),
 
-    reset: markRaw(() => {
-      control.clearErrors()
-
-      control.set(initialValues.value)
+    reset: markRaw((paths) => {
+      control.clearValues(paths)
+      control.clearErrors(paths)
 
       emitter.emit('reset', {})
     }),
 
-    clear: markRaw(() => {
-      control.set()
-    }),
-
-    set: markRaw((nextValues) => {
-      if (!nextValues) {
-        for (const key of getKeys(values)) {
-          delete values[key]
-        }
-
+    clearValues: markRaw((paths) => {
+      if (!paths) {
+        control.setValues(initialValues.value)
         return
       }
 
+      for (const path of paths) {
+        control.setValue(path, get(initialValues.value, path))
+      }
+    }),
+
+    setValue: markRaw((nextValues, nextValue) => {
+      set(values, nextValues, nextValue)
+    }),
+
+    setValues: markRaw((nextValues) => {
       for (const key of getKeys(nextValues)) {
         Object.assign(values, {
           [key]: cloneDeep(nextValues[key]),
@@ -512,9 +515,14 @@ export default function createForm<
       set(errors, name, error)
     }),
 
-    clearErrors: markRaw(() => {
-      for (const key of getKeys(errors)) {
-        delete errors[key]
+    clearErrors: markRaw((paths) => {
+      if (!paths) {
+        control.setErrors()
+        return
+      }
+
+      for (const path of paths) {
+        control.setError(path, undefined)
       }
     }),
   })
