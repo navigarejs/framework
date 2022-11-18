@@ -9,7 +9,7 @@
     "build": "vite build && vite build --ssr"
   },
   "dependencies": {
-    "@navigare/cli": "^1.0.7",
+    "@navigare/cli": "^1.0.8",
     "axios": "^1.1.3",
     "qs": "^6.11.0",
     "tua-body-scroll-lock": "^1.2.1"
