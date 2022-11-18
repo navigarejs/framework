@@ -214,6 +214,9 @@ export default function createForm<
           return
         }
 
+        // Run "before" hook
+        emitter.emit('before', {})
+
         // Indicate processing state
         processing.value = true
         globalDisabled.value = true
@@ -237,9 +240,11 @@ export default function createForm<
 
         // Submit via callback
         if (callback.value) {
-          await callback.value(clonedValues)
+          const response = await callback.value(clonedValues)
 
-          emitter.emit('success', {})
+          emitter.emit('success', {
+            response,
+          })
 
           return undefined
         }
@@ -271,7 +276,9 @@ export default function createForm<
 
                 emitter.emit(
                   'success',
-                  event.detail,
+                  {
+                    response: event.detail.page,
+                  },
                   visitOptions.events?.success,
                 )
               },

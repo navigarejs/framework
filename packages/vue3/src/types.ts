@@ -140,8 +140,15 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
     result: void
   }
 
-  success: {
+  before: {
     details: {}
+    result: void
+  }
+
+  success: {
+    details: {
+      response: any
+    }
     result: void
   }
 
