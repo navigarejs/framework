@@ -1,7 +1,7 @@
 import 'vue'
 
-declare module 'vue' {
-  interface ComponentCustomProperties {
+declare module '@vue/runtime-core' {
+  export interface ComponentCustomProperties {
     route: typeof import('@navigare/core').createRoute
   }
 }
