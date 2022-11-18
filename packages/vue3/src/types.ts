@@ -140,6 +140,11 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
     result: void
   }
 
+  success: {
+    details: {}
+    result: void
+  }
+
   reset: {
     details: {}
     result: void
@@ -178,13 +183,7 @@ export type FormBaseOptions<TValues extends FormValues = FormValues> = {
 }
 
 export type FormVisitOptions<TValues extends FormValues = FormValues> =
-  FormBaseOptions<TValues> &
-    Omit<VisitOptions, 'events'> &
-    Partial<{
-      events: VisitOptions['events'] & {
-        [TEventName in FormEventNames]: FormEventListener<TEventName>
-      }
-    }>
+  FormBaseOptions<TValues> & Omit<VisitOptions, 'events'>
 
 export type FormOptions<
   TValues extends FormValues = FormValues,

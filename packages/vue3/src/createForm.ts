@@ -239,6 +239,8 @@ export default function createForm<
         if (callback.value) {
           await callback.value(clonedValues)
 
+          emitter.emit('success', {})
+
           return undefined
         }
 
@@ -251,15 +253,11 @@ export default function createForm<
             events: {
               progress(event) {
                 progress.value = event.detail.progress ?? null
-
-                visitOptions.events?.progress?.(event)
               },
 
               error(event) {
                 control.clearErrors()
                 control.setErrors(event.detail.errors)
-
-                visitOptions.events?.error?.(event)
               },
 
               success(event) {
@@ -271,43 +269,35 @@ export default function createForm<
                   control.reset()
                 }
 
-                visitOptions.events?.success?.(event)
+                emitter.emit(
+                  'success',
+                  event.detail,
+                  visitOptions.events?.success,
+                )
               },
 
-              finish(event) {
+              finish(_event) {
                 processing.value = false
                 globalDisabled.value = false
                 trigger.value = null
-
-                visitOptions.events?.finish?.(event)
               },
 
-              before(event) {
-                visitOptions.events?.before?.(event)
-              },
+              before(_event) {},
 
-              cancel(event) {
-                visitOptions.events?.cancel?.(event)
-              },
+              cancel(_event) {},
 
-              start(event) {
-                visitOptions.events?.start?.(event)
-              },
+              start(_event) {},
 
-              invalid(event) {
+              invalid(_event) {
                 processing.value = false
                 globalDisabled.value = false
                 trigger.value = null
-
-                visitOptions.events?.invalid?.(event)
               },
 
-              exception(event) {
+              exception(_event) {
                 processing.value = false
                 globalDisabled.value = false
                 trigger.value = null
-
-                visitOptions.events?.exception?.(event)
               },
             },
           })
