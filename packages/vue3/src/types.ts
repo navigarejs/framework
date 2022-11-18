@@ -179,15 +179,15 @@ export interface FormSubmitOptions {
   resetAfterSuccess?: boolean
 }
 
-export type FormBaseOptions<TValues extends FormValues = FormValues> = {
-  parent?: FormControl
-  disabled?: () => boolean
-  remember?: boolean
-  transform?: (values: TValues) => any
-  events?: {
+export type FormBaseOptions<TValues extends FormValues = FormValues> = Partial<{
+  parent: FormControl
+  disabled: () => boolean
+  remember: boolean
+  transform: (values: TValues) => any
+  events: {
     [TEventName in FormEventNames]: FormEventListener<TEventName>
   }
-}
+}>
 
 export type FormVisitOptions<TValues extends FormValues = FormValues> =
   FormBaseOptions<TValues> & Omit<VisitOptions, 'events'>
