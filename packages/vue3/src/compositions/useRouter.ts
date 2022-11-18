@@ -1,7 +1,7 @@
 import { injectRouterContext } from './../contexts/injectRouterContext'
 import { RouterControl } from './../types'
 import useFragment from './useFragment'
-import { RouterEventListener, Route, throwError } from '@navigare/core'
+import { RouterEventListener, Route } from '@navigare/core'
 import { computed, markRaw, onMounted, onUnmounted, reactive, ref } from 'vue'
 
 export default function useRouter() {
