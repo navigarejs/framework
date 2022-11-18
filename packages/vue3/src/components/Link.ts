@@ -137,25 +137,30 @@ export default defineComponent({
             navigating: boolean
           }) => {
             const as =
-              props.as ||
+              props.as ??
               (method ? (method.toUpperCase() === 'GET' ? 'a' : 'button') : 'a')
+            const attributes: {
+              href?: string
+              rel?: string
+            } = {}
 
-            // Warn about issues with non-GET requests
-            if (
-              isString(as) &&
-              as.toLowerCase() === 'a' &&
-              method &&
-              method.toUpperCase() !== 'GET'
-            ) {
-              console.warn(
-                `Creating POST/PUT/PATCH/DELETE <a> links is discouraged as it causes "Open Link in New Tab/Window" accessibility issues.\n\nPlease specify a more appropriate element using the "as" attribute. For example:\n\n<Link route="${props.route}" method="${method}" as="button">...</Link>`,
-              )
+            if (isString(as) && as.toLowerCase() === 'a') {
+              attributes.href = location?.href
+              attributes.rel = foreign ? 'noopener noreferrer' : undefined
+
+              // Warn about issues with non-GET requests
+              if (method && method.toUpperCase() !== 'GET') {
+                console.warn(
+                  `Creating POST/PUT/PATCH/DELETE <a> links is discouraged as it causes "Open Link in New Tab/Window" accessibility issues.\n\nPlease specify a more appropriate element using the "as" attribute. For example:\n\n<Link route="${props.route}" method="${method}" as="button">...</Link>`,
+                )
+              }
             }
 
             return h(
               as as DefineComponent,
               {
                 ...attrs,
+                ...attributes,
                 'data-pending': pending,
                 'data-active': active,
                 class: normalizeClass([
@@ -165,13 +170,6 @@ export default defineComponent({
                     : props.inactiveClass,
                   pending ? props.pendingClass : undefined,
                 ]),
-                href: as.toLowerCase() === 'a' ? location?.href : undefined,
-                rel:
-                  as.toLowerCase() === 'a'
-                    ? foreign
-                      ? 'noopener noreferrer'
-                      : undefined
-                    : undefined,
                 onMouseenter() {
                   // Preload components whenever the user hovers a link so
                   // we don't lose time when the actual response comes in
