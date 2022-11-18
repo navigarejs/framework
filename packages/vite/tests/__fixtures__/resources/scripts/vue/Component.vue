@@ -1,12 +1,12 @@
 <template>
   <div>Hello World</div>
   <div>{{ rawRoute }}</div>
-  <div>{{ route('welcome') }}</div>
+  <div>{{ $route('welcome') }}</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
 import { route } from '@navigare/core'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {

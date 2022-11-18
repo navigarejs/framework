@@ -13,6 +13,6 @@ export default defineComponent({
   template: `
     <div>Hello World</div>
     <div>{{rawRoute}}</div>
-    <div>{{route('welcome')}}</div>
+    <div>{{$route('welcome')}}</div>
   `,
 })

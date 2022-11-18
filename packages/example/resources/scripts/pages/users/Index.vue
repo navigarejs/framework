@@ -9,7 +9,7 @@
 
       <push-button
         variant="primary"
-        :route="route('users.create')"
+        :route="$route('users.create')"
       >
         <span>Create</span>
         <span class="hidden md:inline">&nbsp;User</span>
@@ -41,7 +41,7 @@
               <navigare-link
                 class="flex items-center pl-6 focus:text-indigo-500"
                 :route="
-                  route('users.edit', {
+                  $route('users.edit', {
                     user,
                   })
                 "
@@ -58,7 +58,7 @@
               <navigare-link
                 class="flex items-center px-6 py-4 focus:text-indigo-500"
                 :route="
-                  route('users.edit', {
+                  $route('users.edit', {
                     user,
                   })
                 "
@@ -76,7 +76,7 @@
               <navigare-link
                 class="flex items-center px-6 py-4"
                 :route="
-                  route('users.edit', {
+                  $route('users.edit', {
                     user,
                   })
                 "
@@ -98,7 +98,7 @@
               <navigare-link
                 class="flex items-center px-4"
                 :route="
-                  route('users.edit', {
+                  $route('users.edit', {
                     user,
                   })
                 "

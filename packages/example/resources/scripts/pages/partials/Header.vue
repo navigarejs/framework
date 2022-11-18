@@ -43,7 +43,7 @@
       <div class="flex flex-row space-x-2">
         <navigare-link
           :route="
-            route('users.edit', {
+            $route('users.edit', {
               user: router.page.properties.user,
             })
           "
@@ -57,7 +57,7 @@
         </navigare-link>
 
         <navigare-link
-          :route="route('auth.logout')"
+          :route="$route('auth.logout')"
           class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
           active-class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
         >

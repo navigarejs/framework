@@ -11,7 +11,7 @@
         <push-button
           v-if="!user.deleted_at"
           :route="
-            route('users.destroy', {
+            $route('users.destroy', {
               user,
             })
           "

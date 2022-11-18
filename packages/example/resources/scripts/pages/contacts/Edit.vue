@@ -11,7 +11,7 @@
         <push-button
           v-if="!contact.deleted_at"
           :route="
-            route('contacts.destroy', {
+            $route('contacts.destroy', {
               contact,
             })
           "
@@ -46,7 +46,7 @@
         <template #action>
           <push-button
             :route="
-              route('contacts.restore', {
+              $route('contacts.restore', {
                 contact,
               })
             "
@@ -168,7 +168,7 @@ const props = defineProps({
 
 const form = createForm(
   'contacts.create',
-  route('contacts.update', {
+  $route('contacts.update', {
     contact: props.contact,
   }),
   () => ({

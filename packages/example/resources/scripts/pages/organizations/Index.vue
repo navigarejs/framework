@@ -9,7 +9,7 @@
 
       <push-button
         variant="primary"
-        :route="route('organizations.create')"
+        :route="$route('organizations.create')"
       >
         <span>Create</span>
         <span class="hidden md:inline">&nbsp;Organization</span>

@@ -1,6 +1,6 @@
 <template>
   <div>Hello World</div>
-  <div>{{ route('welcome') }}</div>
+  <div>{{ $route('welcome') }}</div>
   <div>{{ rawRoute }}</div>
 </template>
 

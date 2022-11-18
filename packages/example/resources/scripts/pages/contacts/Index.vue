@@ -9,7 +9,7 @@
 
       <push-button
         variant="primary"
-        :route="route('contacts.create')"
+        :route="$route('contacts.create')"
       >
         <span>Create</span>
         <span class="hidden md:inline">&nbsp;Contact</span>
@@ -41,7 +41,7 @@
               <navigare-link
                 class="flex items-center px-6 py-4 focus:text-indigo-500"
                 :route="
-                  route('contacts.edit', {
+                  $route('contacts.edit', {
                     contact,
                   })
                 "
@@ -59,7 +59,7 @@
               <navigare-link
                 class="flex items-center px-6 py-4"
                 :route="
-                  route('contacts.edit', {
+                  $route('contacts.edit', {
                     contact,
                   })
                 "
@@ -74,7 +74,7 @@
               <navigare-link
                 class="flex items-center px-6 py-4"
                 :route="
-                  route('contacts.edit', {
+                  $route('contacts.edit', {
                     contact,
                   })
                 "
@@ -87,7 +87,7 @@
               <navigare-link
                 class="flex items-center px-6 py-4"
                 :route="
-                  route('contacts.edit', {
+                  $route('contacts.edit', {
                     contact,
                   })
                 "
@@ -100,7 +100,7 @@
               <navigare-link
                 class="flex items-center px-4"
                 :route="
-                  route('contacts.edit', {
+                  $route('contacts.edit', {
                     contact,
                   })
                 "

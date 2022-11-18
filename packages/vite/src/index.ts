@@ -318,8 +318,8 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
       let updatedCode = code
       const usedRoutes: string[] = []
 
-      // Only replace routes when the source code contains "route" and is not a module from node_modules
-      if (code.includes('route') && !id.includes('node_modules')) {
+      // Only replace routes when it is not a module from node_modules
+      if (!id.includes('node_modules')) {
         let manipulated = false
 
         // Parse code
@@ -409,12 +409,12 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
             const program = path
 
             // Turn special cases into route(...) calls:
-            // - _ctx.route(...)
-            // - $setup.route(...)
-            // - __unref(route)(...)
+            // - _ctx.$route(...)
+            // - $setup.$route(...)
+            // - __unref($route)(...)
             const objectIdentifierNames = ['_ctx', '$setup']
             const calleeIdentifierNames = ['_unref']
-            const propertyIdentifierNames = ['route']
+            const propertyIdentifierNames = ['$route']
 
             traverse(ast, {
               CallExpression(path) {

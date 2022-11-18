@@ -11,7 +11,7 @@
         <push-button
           v-if="!organization.deleted_at"
           :route="
-            route('organizations.destroy', {
+            $route('organizations.destroy', {
               organization,
             })
           "

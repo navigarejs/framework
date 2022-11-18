@@ -1,6 +1,5 @@
-import { PageProperties } from '@navigare/core'
 import { useFragment } from '@navigare/vue3'
-import { computed, ComputedRef, reactive } from 'vue'
+import { computed, reactive } from 'vue'
 
 export default function useBreadcrumbs() {
   const fragment = useFragment()
