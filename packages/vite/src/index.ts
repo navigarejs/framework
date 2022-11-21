@@ -359,6 +359,8 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
             rawRoute.components = rawRoute.components?.map((component) => {
               return {
                 ...component,
+                buildId: resolvedOptions.buildId,
+                originalPath: component.path,
                 path: generateChunkName(
                   resolvedOptions.buildId,
                   component.path,
