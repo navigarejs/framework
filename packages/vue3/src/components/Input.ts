@@ -1,7 +1,7 @@
 import useInput from './../compositions/useInput'
 import {
   FormControl,
-  FormError,
+  FormErrors,
   FormInputName,
   FormValidationOptions,
   FormValue,
@@ -52,15 +52,15 @@ export default defineComponent({
 
     // Set validation message
     watch(
-      () => input.feedback,
-      (nextFeedback) => {
+      () => input.errorMessage,
+      (nextErrorMessage) => {
         if (!!slots.feedback) {
           return
         }
 
-        element.value?.setCustomValidity(nextFeedback)
+        element.value?.setCustomValidity(nextErrorMessage)
 
-        if (nextFeedback && input.focused) {
+        if (nextErrorMessage && input.focused) {
           element.value?.reportValidity()
         }
       },
@@ -135,14 +135,16 @@ export default defineComponent({
           disabled: boolean
         }
         events: typeof events
-        errors: FormError
+        errorMessage: string
+        nestedErrors: FormErrors
       } = {
         form: input.form,
         value: toRef(input, 'value'),
         ref,
         attributes,
         events,
-        errors: input.errors,
+        errorMessage: input.errorMessage,
+        nestedErrors: input.nestedErrors,
       }
 
       // Render slot if one was passed

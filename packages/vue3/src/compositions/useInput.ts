@@ -5,18 +5,22 @@ import provideInputContext, {
 import {
   ContextOf,
   FormControl,
+  FormError,
+  FormErrors,
   FormInputName,
   FormSubmitOptions,
   FormValidationOptions,
   FormValue,
 } from '../types'
 import useForm from './useForm'
-import { throwError, isDefined } from '@navigare/core'
+import { throwError, isDefined, isNotNull } from '@navigare/core'
 import castArray from 'lodash.castarray'
 import debounce from 'lodash.debounce'
 import get from 'lodash.get'
 import isArray from 'lodash.isarray'
+import isBoolean from 'lodash.isboolean'
 import isFunction from 'lodash.isfunction'
+import isObject from 'lodash.isobject'
 import isString from 'lodash.isstring'
 import mergeWith from 'lodash.mergewith'
 import set from 'lodash.set'
@@ -44,6 +48,7 @@ export default function useInput(
   getName: FormInputName | (() => FormInputName),
   options: {
     form?: FormControl
+    submitOnChange?: boolean | FormSubmitOptions
     validate?: FormValidationOptions
   } = {},
 ): ContextOf<typeof InputContext> {
@@ -87,10 +92,10 @@ export default function useInput(
       set(form.values, path.value, nextValue)
     },
   })
-  const errors = computed(() => {
-    return get(form.errors, path.value)
+  const errors = computed<FormError>(() => {
+    return get(form.errors, path.value) ?? {}
   })
-  const feedback = computed(() => {
+  const errorMessage = computed(() => {
     if (isArray(errors.value)) {
       return errors.value?.join('')
     }
@@ -99,7 +104,28 @@ export default function useInput(
       return errors.value
     }
 
+    if (isObject(errors.value)) {
+      return ''
+    }
+
     return ''
+  })
+  const nestedErrors = computed<FormErrors>(() => {
+    if (!isObject(errors.value) || isArray(errors.value)) {
+      return {}
+    }
+
+    return Object.fromEntries(
+      Object.entries(errors.value)
+        .map(([key, value]) => {
+          if (!key.startsWith(`${path.value}.`)) {
+            return null
+          }
+
+          return [key.substring(path.value.length + 1), value]
+        })
+        .filter(isNotNull),
+    )
   })
   const validating = ref(false)
   const focused = ref(false)
@@ -177,6 +203,13 @@ export default function useInput(
     ) {
       value.value = event.target.files?.[0] ?? null
     }
+
+    // Submit if requested
+    if (options.submitOnChange) {
+      submit(
+        isBoolean(options.submitOnChange) ? undefined : options.submitOnChange,
+      )
+    }
   }
 
   // Emit change event when value was changed
@@ -194,8 +227,8 @@ export default function useInput(
     name,
     path,
     value,
-    errors,
-    feedback,
+    errorMessage,
+    nestedErrors,
     validating,
     focused,
     touched,

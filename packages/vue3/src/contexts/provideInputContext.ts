@@ -1,7 +1,7 @@
 import {
   ContextOf,
   FormControl,
-  FormError,
+  FormErrors,
   FormInputName,
   FormInputPath,
   FormSubmitOptions,
@@ -15,8 +15,8 @@ export const InputContext: InjectionKey<{
   path: FormInputPath
   name: FormInputName
   value: FormValue
-  errors: FormError
-  feedback: string
+  errorMessage: string
+  nestedErrors: FormErrors
   validating: boolean
   focused: boolean
   touched: boolean
