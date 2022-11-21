@@ -2128,7 +2128,7 @@ __metadata:
   dependencies:
     "@navigare/cli": ^1.0.8
     "@navigare/core": ^1.0.46
-    "@navigare/ssr": "workspace:^"
+    "@navigare/ssr": ^1.0.23
     "@navigare/vite": ^1.0.32
     "@navigare/vue3": ^1.0.63
     "@prettier/plugin-php": ^0.19.1
@@ -2159,7 +2159,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/ssr@^1.0.23, @navigare/ssr@workspace:^, @navigare/ssr@workspace:packages/ssr":
+"@navigare/ssr@^1.0.23, @navigare/ssr@workspace:packages/ssr":
   version: 0.0.0-use.local
   resolution: "@navigare/ssr@workspace:packages/ssr"
   dependencies:
