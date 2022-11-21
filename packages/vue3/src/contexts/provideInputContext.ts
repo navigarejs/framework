@@ -4,6 +4,7 @@ import {
   FormError,
   FormInputName,
   FormInputPath,
+  FormSubmitOptions,
   FormValue,
 } from './../types'
 import type { DebouncedFunc } from 'lodash'
@@ -20,10 +21,13 @@ export const InputContext: InjectionKey<{
   focused: boolean
   touched: boolean
   validate: DebouncedFunc<() => Promise<void>>
+  block: () => void
+  unblock: () => void
+  focus: (id?: string) => void
+  blur: () => void
+  submit: (options?: FormSubmitOptions) => void
   handleInput: (event: Event) => void
   handleChange: (event: Event) => void
-  handleFocus: (event: Event) => void
-  handleBlur: (event: Event) => void
 }> = Symbol('InputContext')
 
 export default function provideInputContext(

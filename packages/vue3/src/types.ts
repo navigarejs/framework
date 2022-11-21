@@ -240,6 +240,8 @@ export interface FormControl<
 
   dirty: boolean
 
+  focused: boolean
+
   successful: boolean | undefined
 
   recentlySuccessful: boolean | undefined

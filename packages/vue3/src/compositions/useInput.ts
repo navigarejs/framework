@@ -6,6 +6,7 @@ import {
   ContextOf,
   FormControl,
   FormInputName,
+  FormSubmitOptions,
   FormValidationOptions,
   FormValue,
 } from '../types'
@@ -64,7 +65,7 @@ export default function useInput(
   })
   const path = computed(() => {
     if (!parent) {
-      return name.value
+      return [name.value]
     }
 
     return [...castArray(parent.path), name.value]
@@ -120,6 +121,8 @@ export default function useInput(
       )
     },
   )
+
+  // Create functions
   const validate = debounce(async () => {
     if (!resolvedValidation.value.on) {
       return
@@ -131,6 +134,28 @@ export default function useInput(
 
     validating.value = false
   }, resolvedValidation.value.debounce)
+  const block = () => {
+    form.block(path.value)
+  }
+  const unblock = () => {
+    form.unblock(path.value)
+  }
+  const submit = (options?: FormSubmitOptions) => {
+    form.submit(options)
+  }
+  const focus = (id?: string) => {
+    touched.value = true
+    focused.value = true
+
+    form.focus([
+      ...[...path.value].slice(0, -1),
+
+      [name.value, id].filter(isDefined).join('#'),
+    ])
+  }
+  const blur = () => {
+    focused.value = false
+  }
 
   // Create handlers
   const handleInput = (_event: Event = new Event('input')) => {
@@ -152,13 +177,6 @@ export default function useInput(
     ) {
       value.value = event.target.files?.[0] ?? null
     }
-  }
-  const handleFocus = () => {
-    touched.value = true
-    focused.value = true
-  }
-  const handleBlur = () => {
-    focused.value = false
   }
 
   // Emit change event when value was changed
@@ -182,10 +200,13 @@ export default function useInput(
     focused,
     touched,
     validate: markRaw(validate),
+    block: markRaw(block),
+    unblock: markRaw(unblock),
+    focus: markRaw(focus),
+    blur: markRaw(blur),
+    submit: markRaw(submit),
     handleInput: markRaw(handleInput),
     handleChange: markRaw(handleChange),
-    handleFocus: markRaw(handleFocus),
-    handleBlur: markRaw(handleBlur),
   })
   provideInputContext(context)
 

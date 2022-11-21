@@ -132,6 +132,9 @@ export default function createForm<
     })
   })
   const focus = ref<string | null>(null)
+  const focused = computed(() => {
+    return !!focus.value
+  })
   const manualDisabled = ref(false)
   const computedDisabled = computed(() => {
     if (isFunction(options.disabled)) {
@@ -224,6 +227,8 @@ export default function createForm<
     valid,
 
     trigger,
+
+    focused,
 
     successful,
 
