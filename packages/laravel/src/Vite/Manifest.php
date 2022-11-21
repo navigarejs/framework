@@ -11,7 +11,7 @@ abstract class Manifest
 {
   protected string $content;
 
-  protected Collection $assets;
+  public Collection $assets;
 
   /**
    * Creates a Manifest instance.

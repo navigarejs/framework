@@ -72,11 +72,7 @@ class Component implements Arrayable
       $path = $manifest->resolve($this->path);
 
       if (!$path) {
-        throw new ComponentNotFoundException(
-          $this->name,
-          $this->path,
-          $manifest
-        );
+        throw new ComponentNotFoundException($this->id, $this->path, $manifest);
       }
 
       $path = join(DIRECTORY_SEPARATOR, [$manifest->getBase(), $path]);
@@ -98,11 +94,7 @@ class Component implements Arrayable
       $path = $manifest->resolve($this->path);
 
       if (!$path) {
-        throw new ComponentNotFoundException(
-          $this->name,
-          $this->path,
-          $manifest
-        );
+        throw new ComponentNotFoundException($this->id, $this->path, $manifest);
       }
     }
 
