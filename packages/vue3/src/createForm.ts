@@ -525,15 +525,9 @@ export default function createForm<
     }),
 
     getInputId: markRaw((path) => {
-      if (!path) {
-        return ''
-      }
-
-      return castArray(
-        path instanceof Event
-          ? (path.target as HTMLInputElement | undefined)?.name
-          : path,
-      ).join('.')
+      return control
+        .getInputName(path)
+        .replace(/[^a-z0-9\-_:\.]|^[^a-z]+/gi, '')
     }),
 
     on: markRaw((name, listener) => {
@@ -552,8 +546,8 @@ export default function createForm<
       mergeWith(errors, nextErrors)
     }),
 
-    setError: markRaw((name, error) => {
-      set(errors, name, error)
+    setError: markRaw((path, error) => {
+      set(errors, path, error)
     }),
 
     clearErrors: markRaw((paths) => {

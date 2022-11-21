@@ -61,19 +61,20 @@ export default function useInput(
   }
 
   const parent = injectInputContext()
-  const name = computed(() => {
-    if (isFunction(getName)) {
-      return getName()
-    }
-
-    return getName
-  })
   const path = computed(() => {
+    const name = isFunction(getName) ? getName() : getName
+
     if (!parent) {
-      return [name.value]
+      return [name]
     }
 
-    return [...castArray(parent.path), name.value]
+    return [...castArray(parent.path), name]
+  })
+  const name = computed(() => {
+    return form.getInputName(path.value)
+  })
+  const id = computed(() => {
+    return form.getInputId(path.value)
   })
   const checkValue = () => {
     if (!isDefined(get(form.values, path.value))) {
@@ -224,6 +225,7 @@ export default function useInput(
   // Provide context
   const context = reactive({
     form: markRaw(form),
+    id,
     name,
     path,
     value,
