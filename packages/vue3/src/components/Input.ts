@@ -110,11 +110,11 @@ export default defineComponent({
       } = {
         onFocus: (event) => {
           emit('focus', event)
-          input.handleFocus(event)
+          input.focus()
         },
         onBlur: (event) => {
           emit('blur', event)
-          input.handleBlur(event)
+          input.blur()
         },
         onInput: (event: Event) => {
           emit('input', event)
