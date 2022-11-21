@@ -11,7 +11,7 @@ const debug = makeDebugger('navigare:laravel:utilities')
 export const generateChunkName = (buildId: string | number, name: string) => {
   const hash = crypto
     .createHash('md5')
-    .update(`${buildId}-${name}`)
+    .update(`${buildId}-${name.split('?')[0]}`)
     .digest('hex')
 
   return `${hash}.mjs`
