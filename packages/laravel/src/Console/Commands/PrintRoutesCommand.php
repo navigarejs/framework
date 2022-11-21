@@ -55,6 +55,8 @@ class PrintRoutesCommand extends Command
   public function getRoutesAsJSON()
   {
     $configuration = Configuration::read();
+    $configuration->useManifest = false;
+
     $rawRoutes = RawRoutes::getAll($configuration);
 
     return json_encode(
