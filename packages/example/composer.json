@@ -17,7 +17,7 @@
     "laravel/sanctum": "^3.0",
     "laravel/tinker": "^2.7",
     "league/glide-laravel": "^1.0",
-    "navigare/laravel": "dev-main"
+    "navigare/laravel": "^1.0.34"
   },
   "require-dev": {
     "laravel/pint": "^1.0",

@@ -13,8 +13,10 @@ ARG PHP_VERSION
 
 LABEL fly_launch_runtime="laravel"
 
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip rsync ca-certificates vim htop cron jq \
+    git curl zip unzip rsync ca-certificates vim htop cron jq nodejs sqlite3 \
     php${PHP_VERSION}-pgsql php${PHP_VERSION}-bcmath \
     php${PHP_VERSION}-swoole php${PHP_VERSION}-xml php${PHP_VERSION}-mbstring \
     && apt-get clean \
@@ -54,38 +56,23 @@ RUN if grep -Fq "laravel/octane" /var/www/html/composer.json; then \
         cp .fly/nginx-default /etc/nginx/sites-available/default; \
     fi
 
-# Prepare
+# Prepare database
 RUN php artisan migrate:refresh --force && php artisan db:seed --force
 
-# Multi-stage build: Build static assets
-# This allows us to not include Node within the final container
-FROM node:${NODE_VERSION} as node_modules_go_brrr
+# Build application
+RUN npm install --global yarn
+RUN yarn install --frozen-lockfile
+RUN yarn build
 
-RUN mkdir /app
-
-RUN mkdir -p  /app
-WORKDIR /app
-COPY . .
-COPY --from=base /var/www/html/vendor /app/vendor
-
-# Use yarn or npm depending on what type of
-# lock file we might find. Defaults to
-# NPM if no lock file is found.
-# Note: We run "production" for Mix and "build" for Vite
-RUN yarn install --frozen-lockfile && yarn build
+# Extend mime types
+RUN touch /etc/nginx/conf.d/custom-mime.conf && echo 'types { text/javascript mjs; }' > /etc/nginx/conf.d/custom-mime.conf;
 
 # From our base container created above, we
 # create our final image, adding in static
 # assets that we generated above
 FROM base
 
-# Packages like Laravel Nova may have added assets to the public directory
-# or maybe some custom assets were added manually! Either way, we merge
-# in the assets we generated above rather than overwrite them
-COPY --from=node_modules_go_brrr /app/public /var/www/html/public-npm
-RUN rsync -ar /var/www/html/public-npm/ /var/www/html/public/ \
-    && rm -rf /var/www/html/public-npm \
-    && chown -R webuser:webgroup /var/www/html/public
+RUN chown -R webuser:webgroup /var/www/html/public
 
 EXPOSE 8080
 
