@@ -7,8 +7,8 @@ Once you have your [server-side framework configured](/guide/installation/server
 If you use `npm`, you can install the client-side adapter using the following commands:
 
 ```sh
-npm install @navigare/cli axios qs
-npm install @navigare/core @navigare/vite @navigare/vue3 --dev
+npm install @navigare/cli
+npm install @navigare/core @navigare/ssr @navigare/vite @navigare/vue3 axios qs --dev
 ```
 
 ## Add Vite plugin
