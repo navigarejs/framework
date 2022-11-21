@@ -442,7 +442,7 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
                   return
                 }
 
-                // Call expressions like __unref(route)(...)
+                // Call expressions like __unref($route)(...)
                 if (isCallExpression(callee)) {
                   if (!isIdentifier(callee.callee)) {
                     return
