@@ -6,6 +6,8 @@ export default {
   listener: null,
 
   show(html: Record<string, unknown> | string): void {
+    this.hide()
+
     if (typeof html === 'object') {
       html = `All Navigare requests must receive a valid Navigare response, however a plain JSON response was received.<hr>${JSON.stringify(
         html,
@@ -52,6 +54,10 @@ export default {
   },
 
   hide(): void {
+    if (!this.modal) {
+      return
+    }
+
     this.modal.outerHTML = ''
     this.modal = null
 
