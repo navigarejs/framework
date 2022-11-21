@@ -37,7 +37,7 @@ export default defineComponent({
       default: () => 'text',
     },
 
-    validation: {
+    validate: {
       type: [Boolean, Object] as PropType<FormValidationOptions>,
       default: () => undefined,
     },
@@ -46,7 +46,7 @@ export default defineComponent({
   setup(props, { slots, attrs, emit }) {
     const input = useInput(() => props.name, {
       form: props.form,
-      validation: props.validation,
+      validate: props.validate,
     })
     const element = ref<HTMLObjectElement | null>()
 
