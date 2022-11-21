@@ -14,7 +14,7 @@ class OrganizationsController extends Controller
 {
   public function index()
   {
-    return Navigare::render('Organizations/Index', [
+    return Navigare::render('organizations/Index', [
       'filters' => Request::all('search', 'trashed'),
       'organizations' => Navigare::deferred(
         fn() => Auth::user()
@@ -38,7 +38,7 @@ class OrganizationsController extends Controller
 
   public function create()
   {
-    return Navigare::withModal('Organizations/Create')->extends(
+    return Navigare::withModal('organizations/Create')->extends(
       route('organizations.index')
     );
   }
@@ -57,7 +57,7 @@ class OrganizationsController extends Controller
 
   public function edit(Organization $organization)
   {
-    return Navigare::render('Organizations/Edit', [
+    return Navigare::render('organizations/Edit', [
       'organization' => [
         'id' => $organization->id,
         'name' => $organization->name,

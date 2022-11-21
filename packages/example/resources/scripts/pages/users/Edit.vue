@@ -166,7 +166,7 @@ const form = createForm(
     photo: props.user.photo,
   }),
   {
-    validation: true,
+    validate: true,
 
     events: {
       success: () => {

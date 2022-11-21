@@ -135,7 +135,7 @@ const form = createForm(
     remember: true,
   },
   {
-    validation: true,
+    validate: true,
   },
 )
 </script>

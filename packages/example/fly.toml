@@ -1,0 +1,46 @@
+# fly.toml file generated for navigare on 2022-11-21T10:35:37+01:00
+
+app = "navigare"
+
+[build]
+  [build.args]
+    NODE_VERSION = "14"
+    PHP_VERSION = "8.0"
+
+[env]
+  APP_URL = "https://navigare.fly.dev/"
+  APP_ENV = "production"
+  LOG_CHANNEL = "stderr"
+  LOG_LEVEL = "info"
+  LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
+
+[[services]]
+internal_port = 8080
+protocol = "tcp"
+
+[services.concurrency]
+hard_limit = 50
+soft_limit = 25
+
+[[services.http_checks]]
+grace_period = "2s"
+interval = 5000
+method = "get"
+path = "/"
+protocol = "http"
+restart_limit = 5
+timeout = 2000
+tls_skip_verify = true
+
+[[services.ports]]
+handlers = ["tls", "http"]
+port = 443
+
+[[services.ports]]
+handlers = ["http"]
+port = 80
+
+[[services.tcp_checks]]
+grace_period = "2s"
+interval = 5000
+timeout = 2000

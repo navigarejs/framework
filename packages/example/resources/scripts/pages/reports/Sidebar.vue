@@ -4,7 +4,7 @@
       v-for="(item, index) in items"
       :key="index"
       :route="
-        route('reports.show', {
+        $route('reports.show', {
           name: item.label,
         })
       "

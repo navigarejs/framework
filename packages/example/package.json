@@ -3,29 +3,30 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prepare": "php artisan migrate --force && php artisan db:seed",
+    "setup": "php artisan key:generate --ansi && php artisan migrate:refresh --force && php artisan db:seed",
     "start": "navigare serve",
     "develop": "vite",
     "build": "vite build && vite build --ssr"
   },
   "dependencies": {
-    "@navigare/cli": "^1.0.8",
-    "axios": "^1.1.3",
-    "qs": "^6.11.0",
-    "tua-body-scroll-lock": "^1.2.1"
+    "@navigare/cli": "^1.0.8"
   },
   "devDependencies": {
     "@navigare/core": "^1.0.46",
+    "@navigare/ssr": "^1.0.23",
     "@navigare/vite": "^1.0.32",
     "@navigare/vue3": "^1.0.63",
     "@prettier/plugin-php": "^0.19.1",
     "@vitejs/plugin-vue": "^3.2.0",
     "autoprefixer": "^10.4.12",
+    "axios": "^1.1.3",
     "laravel-vite-plugin": "^0.7.0",
     "lodash": "^4.17.21",
     "postcss": "^8.4.18",
     "prettier": "^2.7.1",
+    "qs": "^6.11.0",
     "tailwindcss": "^3.2.1",
+    "tua-body-scroll-lock": "^1.2.1",
     "vite": "^3.2.0",
     "vue": "^3.2.41"
   }
