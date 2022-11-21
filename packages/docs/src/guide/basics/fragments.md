@@ -4,7 +4,7 @@ A [Page](/guide/basics/pages) like we mentioned it before is technically just a 
 
 ## Responses
 
-If you want to render a component to a different fragment, you have two possibilities. Either you use `withFragment` and pass the name of the fragment as the first parameter, or you use the dynamic approach where the name of the method is the name of the fragment. As a second parameter you can pass the properties that are relevant for the fragment only. If you want to share properties across all fragments, you can use the `with` method like below.
+If you want to render a component to a different fragment, you have two possibilities. Either you use `withFragment` and pass the name of the fragment as the first parameter, or you use the dynamic approach where you can call `with{NameOfFragment}`, e.g. `withModal`. And then you can pass the properties as the next parameter that are relevant for the fragment only. If you want to share properties across all fragments, you can use the `with` method like below.
 
 ```php
 use Navigare\Navigare;
@@ -18,7 +18,7 @@ class EventsController extends Controller
     $response = Navigare::render('Event/Show', [
       'attachments' => $event->attachments->only('id', 'title'),
     ])
-      ->sidebar('Event/Sidebar', [
+      ->withSidebar('Event/Sidebar', [
         'participants' => $event->participants->only('id', 'name'),
       ])
       ->with([
@@ -59,7 +59,7 @@ class HandleNavigareRequests extends \Navigare\Middleware
 {
   public function extend(Request $request, NavigareResponse $response): void
   {
-    $response->header('partials/Header', [
+    $response->withHeader('partials/Header', [
       'time' => Carbon::now(),
     ]);
   }

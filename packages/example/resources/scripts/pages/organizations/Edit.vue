@@ -133,7 +133,7 @@
         <template #actions>
           <push-button
             :route="
-              route('contacts.create', {
+              $route('contacts.create', {
                 organization_id: organization.id,
               })
             "
@@ -167,7 +167,7 @@
                 <navigare-link
                   class="flex items-center px-6 py-4 focus:text-indigo-500"
                   :route="
-                    route('contacts.edit', {
+                    $route('contacts.edit', {
                       contact,
                     })
                   "
@@ -185,7 +185,7 @@
                 <navigare-link
                   class="flex items-center px-6 py-4"
                   :route="
-                    route('contacts.edit', {
+                    $route('contacts.edit', {
                       contact,
                     })
                   "
@@ -198,7 +198,7 @@
                 <navigare-link
                   class="flex items-center px-6 py-4"
                   :route="
-                    route('contacts.edit', {
+                    $route('contacts.edit', {
                       contact,
                     })
                   "
@@ -211,7 +211,7 @@
                 <navigare-link
                   class="flex items-center px-4"
                   :route="
-                    route('contacts.edit', {
+                    $route('contacts.edit', {
                       contact,
                     })
                   "
@@ -277,5 +277,8 @@ const form = createForm(
     country: props.organization.country,
     postal_code: props.organization.postal_code,
   }),
+  {
+    validation: true,
+  },
 )
 </script>

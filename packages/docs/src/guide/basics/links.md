@@ -8,7 +8,7 @@ To create an Navigare link, use the Navigare `<navigare-link>` component. Pass a
 
 ```vue
 <template>
-  <navigare-link :route="route('contacts.create')">Contacts</navigare-link>
+  <navigare-link :route="$route('contacts.create')">Contacts</navigare-link>
 </template>
 
 <script lang="ts" setup>
@@ -21,7 +21,7 @@ By default Navigare renders links as anchor `<a>` elements. However, you can cha
 ```vue
 <template>
   <navigare-link
-    :route="route('auth.logout')"
+    :route="$route('auth.logout')"
     as="button"
     type="button"
     >Logout</navigare-link
@@ -46,7 +46,7 @@ The `headers` option allows you to add custom headers to an Navigare link. Do no
 ```vue
 <template>
   <navigare-link
-    :route="route('contacts.create')"
+    :route="$route('contacts.create')"
     as="button"
     type="button"
     :headers="{ foo: 'bar' }"
@@ -66,7 +66,7 @@ You can specify the browser history behaviour. By default page visits push (new)
 ```vue
 <template>
   <navigare-link
-    :route="route('home.index')"
+    :route="$route('home.index')"
     replace
     >Home</navigare-link
   >
@@ -88,7 +88,7 @@ You can preserve a page component's local state using the `preserve-state` attri
     type="text"
   />
   <navigare-link
-    :route="route('contacts.search')"
+    :route="$route('contacts.search')"
     :data="{ query }"
     preserve-state
     >Search</navigare-link
@@ -107,7 +107,7 @@ You can use the `preserve-scroll` attribute to prevent Navigare from automatical
 ```vue
 <template>
   <navigare-link
-    :route="route('home.index')"
+    :route="$route('home.index')"
     preserve-scroll
     >Home</navigare-link
   >
@@ -126,7 +126,7 @@ The `properties` option allows you to request a subset of the properties from th
 <template>
   <navigare-link
     :route="
-      route('users.index', {
+      $route('users.index', {
         active: true,
       })
     "
@@ -147,7 +147,7 @@ It's often desireable to set an active state for navigation links based on the c
 ```vue
 <template>
   <navigare-link
-    :route="route('users.index')"
+    :route="$route('users.index')"
     active-class="big"
     inactive-class="small"
   >
@@ -166,15 +166,15 @@ In some scenarios, it is also required to indicate the link as active when a sub
 <template>
   <navigare-link
     :route="[
-      route('users.index'),
+      $route('users.index'),
       // Pattern
       'users.*',
       // Specific route
-      route('users.details', ({ Wildcard }) => ({
+      $route('users.details', ({ Wildcard }) => ({
         id: 1,
       })),
       // Wildcard route
-      route('users.details', ({ Wildcard }) => ({
+      $route('users.details', ({ Wildcard }) => ({
         id: Wildcard,
       })),
     ]"

@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response as BaseResponse;
+use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use Navigare\View\DeferredProperty;
 use Navigare\View\LazyProperty;
@@ -253,8 +254,16 @@ class ResponseFactory
    */
   public function __call($method, $arguments)
   {
-    if (isset($arguments[0]) && is_string($arguments[0])) {
-      return $this->withFragment($method, $arguments[0], $arguments[1] ?? []);
+    if (
+      Str::startsWith($method, 'with') &&
+      isset($arguments[0]) &&
+      is_string($arguments[0])
+    ) {
+      return $this->withFragment(
+        Str::camel(Str::after($method, 'with')),
+        $arguments[0],
+        $arguments[1] ?? []
+      );
     }
 
     trigger_error(

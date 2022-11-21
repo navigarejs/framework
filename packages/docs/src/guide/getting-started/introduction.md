@@ -1,8 +1,8 @@
 # Introduction
 
-Navigare is an alternative to [Navigare](https://inertiajs.com/) which allows you to create a modern SPA with a traditional back-end. If you already know how Navigare works you will easily learn how to use Navigare as well. If not, simply build controllers and page views like you've always done!
+Navigare is an alternative to [Inertia](https://inertiajs.com/) which allows you to create a modern SPA with a traditional back-end. If you already know how Inertia works you will easily learn how to use Navigare as well. If not, simply build controllers and page views like you've always done!
 
-In comparison to Navigare, Navigare comes with a lot of innovative features:
+In comparison to Inertia, Navigare comes with a lot of innovative features:
 
 - Vite integration
 - Complex layouts (including modals and transitions)
@@ -15,4 +15,4 @@ Right now, `Vue` and `Laravel` are the only supported frameworks but the modular
 
 ## Acknowledgment
 
-Thanks a lot to the maintainers of [Navigare](https://inertiajs.com/) and [Ziggy](https://github.com/tighten/ziggy) for the work they have done. Both of the libraries serve as an huge inspiration for this library and in fact a lot of their work found their space in this framework. Unfortunately, they did not fit all the use cases that I was looking for and hence I decided to start this project.
+Thanks a lot to the maintainers of [Inertia](https://inertiajs.com/) and [Ziggy](https://github.com/tighten/ziggy) for the work they have done. Both of the libraries serve as an huge inspiration for this library and in fact a lot of their work found their space in this framework. Unfortunately, they did not fit all the use cases that I was looking for and hence I decided to start this project.

@@ -126,9 +126,16 @@ import PushButton from '../components/PushButton.vue'
 import { RawRouteParameters, route } from '@navigare/core'
 import { NavigareInput, NavigareForm, createForm } from '@navigare/vue3'
 
-const form = createForm('login', route('auth.login.store'), {
-  email: 'johndoe@example.com',
-  password: '',
-  remember: true,
-})
+const form = createForm(
+  'login',
+  route('auth.login.store'),
+  {
+    email: 'johndoe@example.com',
+    password: '',
+    remember: true,
+  },
+  {
+    validation: true,
+  },
+)
 </script>

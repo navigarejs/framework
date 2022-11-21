@@ -95,7 +95,7 @@ export default createNavigareApp({
 })
 ```
 
-Just to make the picture complete the `ssr.ts`:
+Just to make the picture complete, you also need a separate entrypoint for the server-side rendered version. This will be in `ssr.ts`:
 
 ```typescript
 import createApp from './createApp'

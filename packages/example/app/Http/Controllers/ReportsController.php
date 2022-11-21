@@ -8,11 +8,11 @@ class ReportsController extends Controller
 {
   public function index()
   {
-    return Navigare::render('reports/Index')->left('reports/Sidebar');
+    return Navigare::render('reports/Index')->withLeft('reports/Sidebar');
   }
 
   public function show(string $name)
   {
-    return Navigare::render('reports/Show')->left('reports/Sidebar');
+    return Navigare::render('reports/Show')->withLeft('reports/Sidebar');
   }
 }

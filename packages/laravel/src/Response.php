@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Response as ResponseFactory;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use Navigare\Router\RawRoute;
 use Navigare\Support\SelectedProperty;
@@ -295,8 +296,16 @@ class Response implements Responsable
    */
   public function __call($method, $arguments): self
   {
-    if (isset($arguments[0]) && is_string($arguments[0])) {
-      $this->withFragment($method, $arguments[0], $arguments[1] ?? []);
+    if (
+      Str::startsWith($method, 'with') &&
+      isset($arguments[0]) &&
+      is_string($arguments[0])
+    ) {
+      $this->withFragment(
+        Str::camel(Str::after($method, 'with')),
+        $arguments[0],
+        $arguments[1] ?? []
+      );
 
       return $this;
     }

@@ -41,7 +41,7 @@ class ContactsController extends Controller
 
   public function create()
   {
-    return Navigare::modal('contacts/Create', [
+    return Navigare::withModal('contacts/Create', [
       'organizations' => Auth::user()
         ->account->organizations()
         ->orderBy('name')

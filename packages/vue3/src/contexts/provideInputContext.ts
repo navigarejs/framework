@@ -18,6 +18,7 @@ export const InputContext: InjectionKey<{
   feedback: string
   validating: boolean
   focused: boolean
+  touched: boolean
   validate: DebouncedFunc<() => Promise<void>>
   handleInput: (event: Event) => void
   handleChange: (event: Event) => void

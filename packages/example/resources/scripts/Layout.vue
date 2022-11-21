@@ -6,7 +6,7 @@
 
     <template v-else>
       <div
-        class="fixed top-0 left-0 right-0 h-12 bg-gray-800 text-gray-300 px-4"
+        class="fixed z-50 top-0 left-0 right-0 h-12 bg-gray-800 text-gray-300 px-4"
       >
         <navigare-fragments name="header" />
       </div>
@@ -83,16 +83,16 @@
     >
       <div class="grid items-center justify-end gap-2">
         <output
-          v-for="toast in toasts"
-          :key="toast.id"
+          v-for="message in messages"
+          :key="message.id"
           role="status"
-          class="toast p-2 rounded"
+          class="message p-2 rounded"
           :class="{
-            'bg-red-200': toast.type === 'error',
-            'bg-indigo-200': toast.type === 'success',
+            'bg-red-200': message.type === 'error',
+            'bg-indigo-200': message.type === 'success',
           }"
         >
-          {{ toast.message }}
+          {{ message.text }}
         </output>
       </div>
     </div>
@@ -102,15 +102,16 @@
 <script lang="ts" setup>
 import Modal from './components/Modal.vue'
 import Unauthenticated from './pages/Unauthenticated.vue'
-import { useRouter, NavigareFragments } from '@navigare/vue3'
+import { useRouter, usePage, NavigareFragments } from '@navigare/vue3'
 import { lock, unlock } from 'tua-body-scroll-lock'
 import { ref, watch } from 'vue'
 
-const props = defineProps({
+defineProps({
   layout: String,
 })
 
 const router = useRouter()
+const page = usePage()
 
 // Toggle body scroll when modals are open
 watch(
@@ -134,29 +135,29 @@ watch(
 )
 
 // Watch flash messages
-const toasts = ref<
+const messages = ref<
   {
     id: string
     type: 'success' | 'error'
-    message: string
+    text: string
   }[]
 >([])
 watch(
-  () => router.page.properties.flash,
+  () => page.properties.flash,
   ({ success: nextSuccess, error: nextError }) => {
     if (nextSuccess) {
-      toasts.value.push({
+      messages.value.push({
         id: Math.random().toString(),
         type: 'success',
-        message: nextSuccess,
+        text: nextSuccess,
       })
     }
 
     if (nextError) {
-      toasts.value.push({
+      messages.value.push({
         id: Math.random().toString(),
         type: 'error',
-        message: nextError,
+        text: nextError,
       })
     }
   },
@@ -164,7 +165,7 @@ watch(
 </script>
 
 <style>
-.toast {
+.message {
   --duration: 2s;
   --travel-distance: 0;
 
@@ -175,7 +176,7 @@ watch(
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .toast {
+  .message {
     --travel-distance: 5vh;
   }
 }

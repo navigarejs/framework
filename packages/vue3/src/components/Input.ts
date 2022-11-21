@@ -1,5 +1,11 @@
 import useInput from './../compositions/useInput'
-import { FormControl, FormError, FormInputName, FormValue } from './../types'
+import {
+  FormControl,
+  FormError,
+  FormInputName,
+  FormValidationOptions,
+  FormValue,
+} from './../types'
 import {
   PropType,
   Ref,
@@ -32,11 +38,8 @@ export default defineComponent({
     },
 
     validation: {
-      type: Object as PropType<{
-        on?: 'input' | 'change' | false
-        debounce?: number
-      }>,
-      default: () => ({}),
+      type: [Boolean, Object] as PropType<FormValidationOptions>,
+      default: () => undefined,
     },
   },
 

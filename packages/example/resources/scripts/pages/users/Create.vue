@@ -77,17 +77,20 @@ import SelectInput from '../../components/SelectInput.vue'
 import { route } from '@navigare/core'
 import { createForm, NavigareForm, NavigareInput } from '@navigare/vue3'
 
-const form = createForm('users.create', route('users.store'), () => ({
-  first_name: '',
-  last_name: '',
-  email: '',
-  password: '',
-  address: '',
-  owner: false,
-  photo: null,
-}))
-
-const form2 = createForm('test', () => async () => console.log('hello'), {
-  test: true,
-})
+const form = createForm(
+  'users.create',
+  route('users.store'),
+  () => ({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    address: '',
+    owner: false,
+    photo: null,
+  }),
+  {
+    validation: true,
+  },
+)
 </script>

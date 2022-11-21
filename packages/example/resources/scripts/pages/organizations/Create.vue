@@ -85,14 +85,21 @@ import {
   useRouter,
 } from '@navigare/vue3'
 
-const form = createForm('organizations.create', route('organizations.store'), {
-  name: '',
-  email: '',
-  phone: '',
-  address: '',
-  city: '',
-  region: '',
-  country: '',
-  postal_code: '',
-})
+const form = createForm(
+  'organizations.create',
+  route('organizations.store'),
+  {
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    region: '',
+    country: '',
+    postal_code: '',
+  },
+  {
+    validation: true,
+  },
+)
 </script>

@@ -47,7 +47,7 @@
                 <navigare-link
                   class="flex items-center px-6 py-4 focus:text-indigo-500"
                   :route="
-                    route('organizations.edit', {
+                    $route('organizations.edit', {
                       organization,
                     })
                   "
@@ -65,7 +65,7 @@
                 <navigare-link
                   class="flex items-center px-6 py-4"
                   :route="
-                    route('organizations.edit', {
+                    $route('organizations.edit', {
                       organization,
                     })
                   "
@@ -78,7 +78,7 @@
                 <navigare-link
                   class="flex items-center px-6 py-4"
                   :route="
-                    route('organizations.edit', {
+                    $route('organizations.edit', {
                       organization,
                     })
                   "
@@ -91,7 +91,7 @@
                 <navigare-link
                   class="flex items-center px-4"
                   :route="
-                    route('organizations.edit', {
+                    $route('organizations.edit', {
                       organization,
                     })
                   "

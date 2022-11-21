@@ -19,7 +19,7 @@ class HandleNavigareRequests extends \Navigare\Middleware
    */
   public function extend(Request $request, NavigareResponse $response): void
   {
-    $response->header('partials/Header', [
+    $response->withHeader('partials/Header', [
       'time' => Carbon::now(),
     ]);
 
@@ -28,12 +28,12 @@ class HandleNavigareRequests extends \Navigare\Middleware
 
       'breadcrumbs' => \Diglactic\Breadcrumbs\Breadcrumbs::generate(),
 
-      'flash' => rescue(function () use ($request) {
+      'flash' => function () use ($request) {
         return [
           'success' => $request->session()->get('success'),
           'error' => $request->session()->get('error'),
         ];
-      }, []),
+      },
     ]);
   }
 }

@@ -42,7 +42,7 @@ If you're using one of our official server-side adapters, redirects will automat
 
 ## External redirects
 
-Sometimes it's necessary to redirect to an external website, or even another non-Inertia endpoint in your app, within an Inertia request. This is possible using a server-side initiated `window.location` visit.
+Sometimes it's necessary to redirect to an external website, or even another non-Navigare endpoint in your app, within an Navigare request. This is possible using a server-side initiated `window.location` visit.
 
 ```php
 return Navigare::location($url);

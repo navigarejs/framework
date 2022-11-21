@@ -152,6 +152,8 @@ export default function createForm<
       request: () => void
     }
   > = {}
+  const successful = ref<boolean | undefined>(undefined)
+  const recentlySuccessful = ref<boolean | undefined>(undefined)
 
   // Remember values
   watch(
@@ -177,9 +179,29 @@ export default function createForm<
     },
   )
 
+  // Temporary set recentlySuccessful
+  watch(
+    () => successful.value,
+    (nextSuccesful) => {
+      if (!nextSuccesful) {
+        return
+      }
+
+      recentlySuccessful.value = true
+
+      setTimeout(() => {
+        recentlySuccessful.value = false
+      }, 2000)
+    },
+  )
+
   // Expose control
   const control: FormControl<TValues> = reactive({
     name,
+
+    options: {
+      validate: options.validate ?? false,
+    },
 
     values: values as any,
 
@@ -203,11 +225,14 @@ export default function createForm<
 
     trigger,
 
+    successful,
+
+    recentlySuccessful,
+
     submit: markRaw(
       async (
         submitOptions = {
           trigger: null,
-          resetAfterSuccess: true,
         },
       ) => {
         if (disabled.value || blocked.value) {
@@ -242,6 +267,8 @@ export default function createForm<
         if (callback.value) {
           const response = await callback.value(clonedValues)
 
+          successful.value = true
+
           emitter.emit('success', {
             response,
           })
@@ -253,7 +280,7 @@ export default function createForm<
         if (routable.value) {
           const visitOptions = options as FormVisitOptions<TValues>
           const visit = await router.instance.visit(routable.value, {
-            data: transform(clonedValues),
+            data: await transform(clonedValues),
 
             events: {
               progress(event) {
@@ -261,19 +288,24 @@ export default function createForm<
               },
 
               error(event) {
+                successful.value = false
+
                 control.clearErrors()
                 control.setErrors(event.detail.errors)
               },
 
               success(event) {
+                successful.value = true
+
                 // Clear errors
                 control.clearErrors()
 
-                // Reset values if requested
-                if (submitOptions.resetAfterSuccess) {
+                // Reset values
+                if (!isDefined(options.reset) || !!options.reset) {
                   control.reset()
                 }
 
+                // Emit event
                 emitter.emit(
                   'success',
                   {

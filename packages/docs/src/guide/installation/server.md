@@ -7,7 +7,7 @@ The first step when installing Navigare is to configure your server-side framewo
 Install the Navigare server-side adapters using the preferred package manager for that language or framework.
 
 ```sh
-composer require inertiajs/inertia-laravel
+composer require navigare/laravel
 ```
 
 ## Root template

@@ -38,7 +38,7 @@ class OrganizationsController extends Controller
 
   public function create()
   {
-    return Navigare::modal('Organizations/Create')->extends(
+    return Navigare::withModal('Organizations/Create')->extends(
       route('organizations.index')
     );
   }

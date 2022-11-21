@@ -46,7 +46,7 @@ class UsersController extends Controller
 
   public function create()
   {
-    return Navigare::modal('users/Create')->extends(route('users.index'));
+    return Navigare::withModal('users/Create')->extends(route('users.index'));
   }
 
   public function store(StoreRequest $request)

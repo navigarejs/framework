@@ -25,4 +25,18 @@ const name = 'users.create'
 route(name) // NOT possible
 ```
 
+For simplicity, there is also a `$route` helper that you can use in Vue templates without the need to import anything else.
+
+```vue
+<template>
+  <div>
+    <navigare-link :route="$route('users.create')"> Create user </navigare-link>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { NavigareLink } from '@navigare/vue3'
+</script>
+```
+
 There is no need to use [Ziggy](https://github.com/tightenco/ziggy) or similar tools.

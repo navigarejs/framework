@@ -132,18 +132,25 @@ defineProps({
 
 const router = useRouter()
 
-const form = createForm('contacts.create', route('contacts.store'), () => ({
-  first_name: '',
-  last_name: '',
-  organization_id: router.page.parameters.organization_id ?? '',
-  email: '',
-  phone: '',
-  address: '',
-  city: '',
-  region: '',
-  country: '',
-  postal_code: '',
-}))
+const form = createForm(
+  'contacts.create',
+  route('contacts.store'),
+  () => ({
+    first_name: '',
+    last_name: '',
+    organization_id: router.page.parameters.organization_id ?? '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    region: '',
+    country: '',
+    postal_code: '',
+  }),
+  {
+    validation: true,
+  },
+)
 
 const contactForm = form.partial(
   'contacts.create.contact',
@@ -156,6 +163,3 @@ const contactForm = form.partial(
   },
 )
 </script>
-
-first_name: this.user.first_name, last_name: this.user.last_name, email:
-this.user.email, password: '', owner: this.user.owner, photo: null,

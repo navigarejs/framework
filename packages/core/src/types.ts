@@ -222,6 +222,7 @@ export type VisitPreserveStateOption =
   | ((page: Page) => boolean)
 
 export type VisitProgress = {
+  percentage?: number
   loaded: number
   total?: number
   progress?: number

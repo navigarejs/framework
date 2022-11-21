@@ -168,7 +168,7 @@ const props = defineProps({
 
 const form = createForm(
   'contacts.create',
-  $route('contacts.update', {
+  route('contacts.update', {
     contact: props.contact,
   }),
   () => ({
@@ -183,5 +183,8 @@ const form = createForm(
     country: props.contact.country,
     postal_code: props.contact.postal_code,
   }),
+  {
+    validation: true,
+  },
 )
 </script>

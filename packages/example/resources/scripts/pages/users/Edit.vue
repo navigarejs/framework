@@ -166,8 +166,12 @@ const form = createForm(
     photo: props.user.photo,
   }),
   {
-    onSuccess: () => {
-      form.reset()
+    validation: true,
+
+    events: {
+      success: () => {
+        form.reset()
+      },
     },
   },
 )

@@ -119,6 +119,10 @@ export default async function () {
                 link: '/guide/basics/shared-properties',
               },
               { text: 'Configuration', link: '/guide/basics/configuration' },
+              {
+                text: 'Server Side Rendering',
+                link: '/guide/basics/server-side-rendering',
+              },
             ],
           },
         ],

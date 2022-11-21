@@ -174,19 +174,26 @@ export type FormEventListener<TEventName extends FormEventNames> = (
   event: FormEvent<TEventName>,
 ) => FormEventResult<TEventName>
 
-export interface FormSubmitOptions {
-  trigger?: FormTrigger
-  resetAfterSuccess?: boolean
-}
+export type FormValidationOptions =
+  | boolean
+  | {
+      on?: 'input' | 'change' | false
+      debounce?: number
+    }
+
+export type FormSubmitOptions = Partial<{
+  trigger: FormTrigger
+}>
 
 export type FormBaseOptions<TValues extends FormValues = FormValues> = Partial<{
-  parent: FormControl
-  disabled: () => boolean
+  disabled: boolean | (() => boolean)
   remember: boolean
-  transform: (values: TValues) => any
-  events: {
+  reset: boolean
+  transform: (values: TValues) => any | Promise<any>
+  events: Partial<{
     [TEventName in FormEventNames]: FormEventListener<TEventName>
-  }
+  }>
+  validate: FormValidationOptions
 }>
 
 export type FormVisitOptions<TValues extends FormValues = FormValues> =
@@ -221,6 +228,10 @@ export interface FormControl<
 > {
   name: string
 
+  options: {
+    validate: FormValidationOptions
+  }
+
   values: UnwrapNestedRefs<TValues>
 
   routable: Routable | null
@@ -228,6 +239,10 @@ export interface FormControl<
   errors: FormErrors
 
   dirty: boolean
+
+  successful: boolean | undefined
+
+  recentlySuccessful: boolean | undefined
 
   blocked: boolean
 

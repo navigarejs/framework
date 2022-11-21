@@ -2,7 +2,13 @@ import { injectInputContext } from '../contexts/injectInputContext'
 import provideInputContext, {
   InputContext,
 } from '../contexts/provideInputContext'
-import { ContextOf, FormControl, FormInputName, FormValue } from '../types'
+import {
+  ContextOf,
+  FormControl,
+  FormInputName,
+  FormValidationOptions,
+  FormValue,
+} from '../types'
 import useForm from './useForm'
 import { throwError, isDefined } from '@navigare/core'
 import castArray from 'lodash.castarray'
@@ -11,20 +17,36 @@ import get from 'lodash.get'
 import isArray from 'lodash.isarray'
 import isFunction from 'lodash.isfunction'
 import isString from 'lodash.isstring'
+import mergeWith from 'lodash.mergewith'
 import set from 'lodash.set'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
+
+const resolveValidation = (
+  validation?: FormValidationOptions,
+): Partial<{
+  on: 'input' | 'change' | false
+  debounce: number
+}> => {
+  const on: 'input' | 'change' | false | undefined =
+    validation === false
+      ? false
+      : validation === true
+      ? undefined
+      : validation?.on ?? undefined
+
+  return {
+    on,
+  }
+}
 
 export default function useInput(
   getName: FormInputName | (() => FormInputName),
   options: {
     form?: FormControl
-    validation?: {
-      on?: 'input' | 'change' | false
-      debounce?: number
-    }
+    validate?: FormValidationOptions
   } = {},
 ): ContextOf<typeof InputContext> {
-  const { form = useForm()!, validation = {} } = options
+  const { form = useForm()! } = options
 
   if (!form) {
     throwError(
@@ -80,28 +102,46 @@ export default function useInput(
   })
   const validating = ref(false)
   const focused = ref(false)
+  const touched = ref(false)
+  const resolvedValidation = computed(
+    (): {
+      on: 'input' | 'change' | false
+      debounce: number
+    } => {
+      const defaults = {
+        on: 'input',
+        debounce: 300,
+      } as const
+
+      return mergeWith(
+        defaults,
+        resolveValidation(form.options.validate),
+        resolveValidation(options.validate),
+      )
+    },
+  )
   const validate = debounce(async () => {
-    console.log('validate')
+    if (!resolvedValidation.value.on) {
+      return
+    }
+
     validating.value = true
 
     await form.validate(path.value)
 
     validating.value = false
-  }, validation.debounce ?? 300)
+  }, resolvedValidation.value.debounce)
 
   // Create handlers
   const handleInput = (_event: Event = new Event('input')) => {
     // Validate when `on` is not explicitly set to `false` and `on` is undefined/`on` is `input`
-    if (
-      validation.on !== false &&
-      (!isDefined(validation.on) || validation.on === 'input')
-    ) {
+    if (resolvedValidation.value.on === 'input') {
       validate()
     }
   }
   const handleChange = (event: Event = new Event('change')) => {
     // Only validate when `on` is `change`
-    if (validation.on === 'change') {
+    if (resolvedValidation.value.on === 'change') {
       validate()
     }
 
@@ -114,6 +154,7 @@ export default function useInput(
     }
   }
   const handleFocus = () => {
+    touched.value = true
     focused.value = true
   }
   const handleBlur = () => {
@@ -125,6 +166,7 @@ export default function useInput(
     () => value.value,
     () => {
       handleChange()
+      validate()
     },
   )
 
@@ -138,6 +180,7 @@ export default function useInput(
     feedback,
     validating,
     focused,
+    touched,
     validate: markRaw(validate),
     handleInput: markRaw(handleInput),
     handleChange: markRaw(handleChange),

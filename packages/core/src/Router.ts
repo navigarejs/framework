@@ -540,16 +540,23 @@ export default class Router<TComponentModule> {
         },
 
         onUploadProgress: async (progress) => {
-          if (data instanceof FormData) {
-            await this.emit(
-              'progress',
-              {
-                visit: this.activeVisit!,
-                progress,
-              },
-              events?.progress,
-            )
+          if (!(data instanceof FormData)) {
+            return
           }
+
+          await this.emit(
+            'progress',
+            {
+              visit: this.activeVisit!,
+              progress: {
+                ...progress,
+                percentage: progress.total
+                  ? Math.round((100 * progress.loaded) / progress.total)
+                  : undefined,
+              },
+            },
+            events?.progress,
+          )
         },
       })
 
