@@ -208,7 +208,7 @@ export type FormOptions<
 
 export type FormInputName = string | number
 
-export type FormInputPath = FormInputName | FormInputName[]
+export type FormInputPath = FormInputName[]
 
 export type FormTrigger =
   | Element
@@ -264,7 +264,7 @@ export interface FormControl<
 
   submit(options?: FormSubmitOptions): Promise<Visit | undefined>
 
-  validate(path: FormInputPath | InputEvent): Promise<void>
+  validate(path: FormInputName | FormInputPath | InputEvent): Promise<void>
 
   reset(paths?: FormInputPath[]): void
 
@@ -274,13 +274,13 @@ export interface FormControl<
 
   setValues(values: Partial<TValues>): void
 
-  block(path: FormInputPath): void
+  block(path: FormInputName | FormInputPath): void
 
-  unblock(path: FormInputPath): void
+  unblock(path: FormInputName | FormInputPath): void
 
-  focus(path: FormInputPath): void
+  focus(path: FormInputName | FormInputPath): void
 
-  blur(path: FormInputPath): void
+  blur(path: FormInputName | FormInputPath): void
 
   enable(): void
 
@@ -298,9 +298,9 @@ export interface FormControl<
     options?: FormOptions,
   ): FormControl<TPartialValues>
 
-  getInputId(path: FormInputPath | InputEvent): string
+  getInputId(path: FormInputName | FormInputPath | InputEvent): string
 
-  getInputName(path: FormInputPath | InputEvent): string
+  getInputName(path: FormInputName | FormInputPath | InputEvent): string
 
   on<TEventName extends FormEventNames>(
     name: TEventName,
@@ -314,7 +314,7 @@ export interface FormControl<
 
   setErrors(errors: FormErrors): void
 
-  setError(path: FormInputPath, error?: FormError): void
+  setError(path: FormInputName | FormInputPath, error?: FormError): void
 
   clearErrors(paths?: FormInputPath[]): void
 }
