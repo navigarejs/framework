@@ -232,7 +232,9 @@ export interface FormControl<
     validate: FormValidationOptions
   }
 
-  values: UnwrapNestedRefs<TValues>
+  values: TValues
+
+  initialValues: TValues
 
   routable: Routable | null
 

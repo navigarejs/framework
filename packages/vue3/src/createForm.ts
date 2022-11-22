@@ -94,7 +94,7 @@ export default function createForm<
 
     return getInitialValues
   })
-  const values = reactive(initialValues.value)
+  const values = reactive(cloneDeep(initialValues.value))
   const keys = computed(() => {
     return getKeys(values).filter((key) => isSymbol(key)) as any as Exclude<
       keyof TValues,
@@ -173,9 +173,9 @@ export default function createForm<
 
   // Watch values to determine dirty flag
   watch(
-    () => initialValues.value,
-    (nextInitialValues) => {
-      dirty.value = !isEqual(cloneDeep(values), nextInitialValues)
+    [() => values, () => initialValues.value],
+    ([nextValues, nextInitialValues]) => {
+      dirty.value = !isEqual(nextValues, nextInitialValues)
     },
     {
       deep: true,
@@ -207,6 +207,8 @@ export default function createForm<
     },
 
     values: values as any,
+
+    initialValues,
 
     routable,
 
