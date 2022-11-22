@@ -21,6 +21,7 @@ import {
   Component,
   RouterEventNames,
   RouterEventDetails,
+  ResolvedRoutable,
 } from './types'
 import {
   isSSR,
@@ -1039,12 +1040,7 @@ export default class Router<TComponentModule> {
     } = {
       queryStringArrayFormat: QueryStringArrayFormat.Brackets,
     },
-  ): {
-    method: RouteMethod
-    location: RouterLocation
-    data: VisitData
-    components: Component[]
-  } {
+  ): ResolvedRoutable {
     let finalHref =
       routable instanceof URL
         ? routable.href

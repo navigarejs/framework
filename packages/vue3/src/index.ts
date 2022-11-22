@@ -32,11 +32,6 @@ export { default as renderNavigareApp, default as renderApp } from './renderApp'
 export { default as NavigareRoot, default as Root } from './components/Root'
 
 export {
-  default as NavigareRoutable,
-  default as Routable,
-} from './components/Routable'
-
-export {
   default as NavigareFragments,
   default as Fragments,
 } from './components/Fragments'
@@ -72,6 +67,11 @@ export {
   default as useNavigareRouter,
   default as useRouter,
 } from './compositions/useRouter'
+
+export {
+  default as useNavigareRoutable,
+  default as useRoutable,
+} from './compositions/useRoutable'
 
 export * from './types'
 

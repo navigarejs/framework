@@ -2,6 +2,10 @@
   <div
     class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
   >
+    <navigare-head>
+      <title>{{ breadcrumbs.title }}</title>
+    </navigare-head>
+
     <div class="w-full max-w-md space-y-8">
       <div>
         <img
@@ -123,8 +127,16 @@
 <script lang="ts" setup>
 import Icon from '../components/Icon.vue'
 import PushButton from '../components/PushButton.vue'
+import useBreadcrumbs from '../compositions/useBreadcrumbs'
 import { RawRouteParameters, route } from '@navigare/core'
-import { NavigareInput, NavigareForm, createForm } from '@navigare/vue3'
+import {
+  NavigareHead,
+  NavigareInput,
+  NavigareForm,
+  createForm,
+} from '@navigare/vue3'
+
+const breadcrumbs = useBreadcrumbs()
 
 const form = createForm(
   'login',

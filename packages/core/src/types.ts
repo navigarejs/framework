@@ -363,6 +363,13 @@ export enum QueryStringArrayFormat {
   Brackets = 'brackets',
 }
 
+export type ResolvedRoutable = {
+  method: RouteMethod
+  location: RouterLocation
+  data: VisitData
+  components: Component[]
+}
+
 // Rendered
 export interface RenderedApp {
   id: string
