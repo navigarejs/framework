@@ -19,6 +19,8 @@ export type RouterOptions<TComponent> = {
   events?: Partial<{
     [TEventName in RouterEventNames]: RouterEventListener<TEventName>
   }>
+  transformClientProperty?: (key: PropertyKey) => PropertyKey
+  transformServerProperty?: (key: PropertyKey) => PropertyKey
 }
 
 export type ComponentModuleResolver<TComponent> = (
@@ -52,13 +54,7 @@ export type PageErrors = Record<string, string[]>
 
 export type PageErrorBag = Record<string, PageErrors>
 
-export interface PageProperties {
-  [key: string]: unknown
-}
-
 export type PageRememberedState = Record<string, unknown> | undefined
-
-export type FragmentProperties = Record<string, any>
 
 export type Component = {
   id: string
@@ -68,7 +64,7 @@ export type Component = {
 export type Fragment = {
   name: string
   component: Component
-  properties: FragmentProperties
+  properties: Properties
   /*rawRoute: RawRoute
   location: RouterLocation
   defaults: PageDefaults
@@ -82,7 +78,7 @@ export interface Page {
   visit: Visit
   csrf: string | null
   fragments: Fragments
-  properties: PageProperties & {
+  properties: Properties & {
     errors?: PageErrors & PageErrorBag
   }
   rawRoute: RawRoute
@@ -97,6 +93,22 @@ export interface Page {
   obsolete: boolean
   scrollRegions: Array<{ top: number; left: number }>
   rememberedState: PageRememberedState
+}
+
+export type PropertyKey = string | number
+
+export type PropertyValue =
+  | string
+  | number
+  | boolean
+  | any[]
+  | null
+  | Properties
+  | Blob
+  | Date
+
+export interface Properties {
+  [key: PropertyKey]: PropertyValue
 }
 
 // Events

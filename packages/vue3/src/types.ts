@@ -43,6 +43,8 @@ export type Options = {
   setup: Setup
   fragments?: RouterOptions<DefineComponent>['fragments']
   events?: RouterOptions<DefineComponent>['events']
+  transformServerProperty?: RouterOptions<DefineComponent>['transformServerProperty']
+  transformClientProperty?: RouterOptions<DefineComponent>['transformClientProperty']
 }
 
 export type Setup = (options: {

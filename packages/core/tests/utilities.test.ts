@@ -1,5 +1,5 @@
-import { Fragment, FragmentProperties, RawRoute, RouterLocation } from '../src'
-import { Page } from '../src/types'
+import { Fragment, RawRoute, RouterLocation } from '../src'
+import { Page, Properties } from '../src/types'
 import { getInitialFragments, mergeFragments } from '../src/utilities'
 import { describe, expect, it } from 'vitest'
 
@@ -75,10 +75,11 @@ describe('mergeFragments', () => {
   }
 
   const createFragment = (
-    properties: FragmentProperties = {},
+    properties: Properties = {},
     page: Page = createPage(),
   ): Fragment => {
     return {
+      name: '',
       component: {
         id: '',
         path: '',
@@ -245,8 +246,10 @@ describe('mergeFragments', () => {
           },
           {},
           {
-            default: {
-              lazy: false,
+            fragments: {
+              default: {
+                lazy: false,
+              },
             },
           },
         ),
@@ -265,8 +268,10 @@ describe('mergeFragments', () => {
           },
           {},
           {
-            left: {
-              lazy: true,
+            fragments: {
+              left: {
+                lazy: true,
+              },
             },
           },
         ),

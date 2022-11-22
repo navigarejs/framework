@@ -28,4 +28,9 @@ export default createNavigareApp({
       stacked: true,
     },
   },
+
+  transformServerProperty: (value) => {
+    console.log(value)
+    return value
+  },
 })

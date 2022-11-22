@@ -36,6 +36,8 @@ import {
   serialize,
   getKeys,
   getDeferredPageProperties,
+  transformPageProperties,
+  transformProperties,
 } from './utilities'
 import {
   default as Axios,
@@ -768,7 +770,14 @@ export default class Router<TComponentModule> {
       this.options.fragments,
       initialVisit,
     )
-    const nextPage = mergePages(this.page, pageWithBase, this.options.fragments)
+    const nextPage = mergePages(
+      this.page,
+      transformPageProperties(
+        pageWithBase,
+        this.transformServerProperty.bind(this),
+      ),
+      this.options.fragments,
+    )
 
     // Reuse or initialize scroll regions and state
     nextPage.scrollRegions = nextPage.scrollRegions || []
@@ -806,7 +815,9 @@ export default class Router<TComponentModule> {
       setTimeout(() => {
         this.reload({
           headers: {
-            'X-Navigare-Properties': getKeys(deferredProperties).join(','),
+            'X-Navigare-Properties': getKeys(deferredProperties)
+              .map((property) => this.transformClientProperty(property))
+              .join(','),
           },
         })
       }, 1)
@@ -1097,7 +1108,10 @@ export default class Router<TComponentModule> {
       )
 
       finalHref = merged.href
-      finalData = merged.data
+      finalData = transformProperties(
+        merged.data,
+        this.transformClientProperty.bind(this),
+      )
     }
 
     return {
@@ -1189,5 +1203,21 @@ export default class Router<TComponentModule> {
     return (
       routable instanceof Route || routable instanceof URL || isString(routable)
     )
+  }
+
+  public transformClientProperty(property: string | number): string | number {
+    if (!this.options.transformClientProperty) {
+      return property
+    }
+
+    return this.options.transformClientProperty(property)
+  }
+
+  public transformServerProperty(property: string | number): string | number {
+    if (!this.options.transformServerProperty) {
+      return property
+    }
+
+    return this.options.transformServerProperty(property)
   }
 }

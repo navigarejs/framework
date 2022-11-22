@@ -24,6 +24,8 @@ export default function createApp({
     },
   },
   events,
+  transformClientProperty,
+  transformServerProperty,
 }: Options): (initialPage?: Page) => Promise<App> {
   return async (initialPage) => {
     // Determine initial page
@@ -50,6 +52,8 @@ export default function createApp({
       fragments,
       base,
       events,
+      transformClientProperty,
+      transformServerProperty,
     }
     const router = new Router<DefineComponent>(options)
 

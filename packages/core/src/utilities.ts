@@ -3,10 +3,11 @@ import {
   Page,
   Fragment,
   Fragments,
-  PageProperties,
   RawRouteMethod,
   RouterOptions,
   VisitData,
+  Properties,
+  PropertyKey,
 } from './types'
 import {
   FormDataConvertible,
@@ -526,7 +527,7 @@ export function isDeferred<TInput>(
   return input.__deferred === true
 }
 
-export function getPageProperties(page: Page): PageProperties {
+export function getPageProperties(page: Page): Properties {
   const allFragmentProperties = Object.values(page.fragments)
     .flat()
     .filter(isNotNull)
@@ -570,10 +571,54 @@ export function getPageProperties(page: Page): PageProperties {
   }
 }
 
-export function getDeferredPageProperties(page: Page): Partial<PageProperties> {
+export function getDeferredPageProperties(page: Page): Partial<Properties> {
   return Object.fromEntries(
     Object.entries(getPageProperties(page)).filter(([, property]) => {
       return isDeferred(property)
     }),
   )
+}
+
+export function transformProperties(
+  properties: Properties,
+  transform: (value: PropertyKey) => PropertyKey = (value) => value,
+): Properties {
+  return Object.fromEntries(
+    Object.entries(properties).map(([key, value]) => {
+      return [
+        transform(key),
+        isObject(value) && !isArray(value)
+          ? transformProperties(value, transform)
+          : value,
+      ]
+    }),
+  )
+}
+
+export function transformPageProperties(
+  page: Page,
+  transform: (key: PropertyKey) => PropertyKey = (key) => key,
+): Page {
+  page.properties = transformProperties(page.properties, transform)
+  page.fragments = Object.fromEntries(
+    Object.entries(page.fragments).map(([name, fragments]) => {
+      if (isArray(fragments)) {
+        for (const fragment of fragments) {
+          fragment.properties = transformProperties(
+            fragment.properties,
+            transform,
+          )
+        }
+      } else if (fragments) {
+        fragments.properties = transformProperties(
+          fragments.properties,
+          transform,
+        )
+      }
+
+      return [name, fragments]
+    }),
+  )
+
+  return page
 }
