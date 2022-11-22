@@ -26,21 +26,23 @@ import mergeWith from 'lodash.mergewith'
 import set from 'lodash.set'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
-const resolveValidation = (
-  validation?: FormValidationOptions,
+const resolveValidate = (
+  validate?: FormValidationOptions,
+  defaults?: Partial<{
+    on?: false | 'input' | 'change'
+    debounce?: number
+  }>,
 ): Partial<{
   on: 'input' | 'change' | false
   debounce: number
 }> => {
-  const on: 'input' | 'change' | false | undefined =
-    validation === false
-      ? false
-      : validation === true
-      ? undefined
-      : validation?.on ?? undefined
-
   return {
-    on,
+    on:
+      validate === false
+        ? false
+        : validate === true
+        ? defaults?.on
+        : validate?.on,
   }
 }
 
@@ -143,8 +145,8 @@ export default function useInput(
 
       return mergeWith(
         defaults,
-        resolveValidation(form.options.validate),
-        resolveValidation(options.validate),
+        resolveValidate(form.options.validate, defaults),
+        resolveValidate(options.validate, defaults),
       )
     },
   )
