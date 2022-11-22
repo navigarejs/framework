@@ -81,7 +81,7 @@ export default defineComponent({
       type: [String, Array, Object],
     },
 
-    navigatingClass: {
+    pendingClass: {
       type: [String, Array, Object],
     },
   },
@@ -139,14 +139,14 @@ export default defineComponent({
         {
           ...attrs,
           ...attributes,
-          'data-navigating': routable.navigating,
+          'data-pending': routable.pending,
           'data-active': routable.active,
           class: normalizeClass([
             attrs.class,
             routable.active || props.active
               ? props.activeClass
               : props.inactiveClass,
-            routable.navigating ? props.navigatingClass : undefined,
+            routable.pending ? props.pendingClass : undefined,
           ]),
           onMouseenter() {
             // Preload components whenever the user hovers a link so

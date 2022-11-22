@@ -32,7 +32,7 @@ export default function useRoutable(
   location: RouterLocation | undefined
   preload: () => Promise<void>
   visit: (options?: VisitOptions) => Promise<void>
-  navigating: boolean
+  pending: boolean
 } {
   const router = useRouter()
   const route = computed(() => {
@@ -91,7 +91,7 @@ export default function useRoutable(
         return matches
       })
   })
-  const navigating = ref(false)
+  const pending = ref(false)
 
   // Create handlers
   const preload = async () => {
@@ -108,15 +108,19 @@ export default function useRoutable(
       return
     }
 
-    navigating.value = true
-
     await router.instance.visit(routable.value, {
       ...options,
       data: data.value,
       method: resolvedRoutable.value?.method,
+      events: {
+        start: () => {
+          pending.value = true
+        },
+        finish: () => {
+          pending.value = false
+        },
+      },
     })
-
-    navigating.value = false
   }
 
   return reactive({
@@ -128,6 +132,6 @@ export default function useRoutable(
     location: resolvedRoutable.value?.location,
     preload: markRaw(preload),
     visit: markRaw(visit),
-    navigating: navigating.value,
+    pending: pending.value,
   })
 }
