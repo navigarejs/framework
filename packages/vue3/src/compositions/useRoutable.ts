@@ -24,7 +24,7 @@ export default function useRoutable(
     method?: RawRouteMethod | (() => RawRouteMethod)
   } = {},
 ): {
-  routable: ResolvedRoutable | undefined
+  href?: string
   active: boolean
   foreign: boolean
   method: RouteMethod | undefined
@@ -124,7 +124,7 @@ export default function useRoutable(
   }
 
   return reactive({
-    routable: resolvedRoutable.value,
+    href: resolvedRoutable.value?.location.href,
     active: active.value,
     foreign: foreign.value,
     method: resolvedRoutable.value?.method,
