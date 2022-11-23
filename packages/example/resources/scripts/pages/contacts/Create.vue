@@ -6,6 +6,7 @@
       :form="form"
       class="space-y-2"
     >
+      {{ form.dirty }}
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label :for="form.getInputId('first_name')">First Name</label>
@@ -91,6 +92,7 @@
       </div>
     </navigare-form>
 
+    {{ contactForm.dirty }}
     <navigare-form
       :form="contactForm"
       class="space-y-2"
@@ -125,6 +127,7 @@ import {
   useRouter,
 } from '@navigare/vue3'
 import { toRef } from '@vue/reactivity'
+import { reactive } from 'vue'
 
 defineProps({
   organizations: Object,
@@ -156,10 +159,10 @@ const contactForm = form.partial(
   'contacts.create.contact',
   () => () => {},
   (values) => {
-    return {
+    return reactive({
       email: toRef(values, 'email'),
       phone: toRef(values, 'phone'),
-    }
+    })
   },
 )
 </script>

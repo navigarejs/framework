@@ -15,4 +15,4 @@ Right now, `Vue` and `Laravel` are the only supported frameworks but the modular
 
 ## Acknowledgment
 
-Thanks a lot to the maintainers of [Inertia](https://inertiajs.com/) and [Ziggy](https://github.com/tighten/ziggy) for the work they have done. Both of the libraries serve as an huge inspiration for this library and in fact a lot of their work found their space in this framework. Unfortunately, they did not fit all the use cases that I was looking for and hence I decided to start this project.
+Thanks a lot to the maintainers of [Inertia](https://inertiajs.com/) and [Ziggy](https://github.com/tighten/ziggy) for the work they have done. Both of the libraries serve as an huge inspiration for this library and in fact a lot of their work found their space in this framework. For example, this documentation is almost a copy of Inertia's documentation but of course it is adapted to Navigare. Unfortunately, both of the libraries did not offer a solution to all the use cases that I was looking for and hence I decided to start this project.

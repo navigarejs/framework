@@ -16,7 +16,7 @@ use Navigare\View\LazyProperty;
  * @method static self setVersion(Closure|string|null $version)
  * @method static self version(Closure|string|null $version)
  * @method static string getVersion($version)
- * @method static self extend(Closure $callback)
+ * @method static self share(Closure|array $callback)
  * @method static LazyProperty lazy(Closure $callback)
  * @method static DeferredProperty deferred(Closure $callback)
  * @method static Response render($component, array|Arrayable $props = [])

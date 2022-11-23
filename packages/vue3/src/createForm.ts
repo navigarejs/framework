@@ -80,7 +80,7 @@ export default function createForm<
 
     return routable
   })
-  const initialValues = computed<TValues>(() => {
+  const getInitialOrRestoredValues = (): TValues => {
     const restoredValues = router.instance.restore(name.value)
     if (options.remember && restoredValues) {
       return restoredValues as TValues
@@ -91,8 +91,9 @@ export default function createForm<
     }
 
     return getInitialValues
-  })
-  const values = reactive(cloneDeep(initialValues.value))
+  }
+  const initialValues = ref<TValues>(cloneDeep(getInitialOrRestoredValues()))
+  const values = reactive(getInitialOrRestoredValues())
   const keys = computed(() => {
     return getKeys(values).filter((key) => isSymbol(key)) as any as Exclude<
       keyof TValues,
@@ -200,7 +201,7 @@ export default function createForm<
 
     values: values as any,
 
-    initialValues,
+    initialValues: initialValues as any,
 
     routable,
 
@@ -437,6 +438,8 @@ export default function createForm<
     reset: markRaw((paths) => {
       control.clearValues(paths)
       control.clearErrors(paths)
+
+      initialValues.value = cloneDeep(getInitialOrRestoredValues())
 
       emitter.emit('reset', {})
     }),

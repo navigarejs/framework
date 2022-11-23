@@ -14,8 +14,6 @@ class Middleware
   /**
    * The root template that's loaded on the first page visit.
    *
-   * @see https://navigarejs.github.io/framework/server-side-setup#root-template
-   *
    * @var string
    */
   protected $rootView = 'app';
@@ -23,9 +21,6 @@ class Middleware
   /**
    * Sets the root template that's loaded on the first page visit.
    *
-   * @see https://inertiajs.com/server-side-setup#root-template
-   *
-   * @deprecated
    * @param  Request  $request
    * @return string
    */
@@ -36,8 +31,6 @@ class Middleware
 
   /**
    * Sets the root template that's loaded on the first page visit.
-   *
-   * @see https://inertiajs.com/server-side-setup#root-template
    *
    * @param  Request  $request
    * @return string
@@ -52,7 +45,6 @@ class Middleware
    *
    * @see https://navigarejs.github.io/framework/asset-versioning
    *
-   * @deprecated
    * @param  \Illuminate\Http\Request  $request
    * @return string|null
    */
@@ -75,28 +67,16 @@ class Middleware
   }
 
   /**
-   * Defines the props that are shared by default.
-   * It is used by Inertia but is not recommended for Navigare.
-   *
-   * @see https://navigarejs.github.io/framework/inertia
-   * @param  \Illuminate\Http\Request  $request
-   * @return array
-   */
-  public function share(Request $request)
-  {
-    return [];
-  }
-
-  /**
    * Extend response, i.e. with shared fragments.
    *
-   * @see https://navigarejs.github.io/framework/extend-response
+   * @see https://navigarejs.github.io/framework/
    * @param  \Illuminate\Http\Request  $request
    * @param  \Navigare\Response  $response
-   * @return void
+   * @return array|void
    */
-  public function extend(Request $request, NavigareResponse $response): void
+  public function share(Request $request, \Navigare\Response $response)
   {
+    return [];
   }
 
   /**
@@ -117,7 +97,7 @@ class Middleware
     });
 
     // Expose validation errors by default
-    Navigare::extend(function (Request $request, NavigareResponse $response) {
+    Navigare::share(function (Request $request, NavigareResponse $response) {
       $response->with([
         'errors' => function () use ($request) {
           return Arr::undot($this->resolveValidationErrors($request));
@@ -126,13 +106,8 @@ class Middleware
     });
 
     // Expose shared props
-    Navigare::extend(function (Request $request, NavigareResponse $response) {
-      $response->with($this->share($request));
-    });
-
-    // Call extend of the middleware
-    Navigare::extend(function (Request $request, NavigareResponse $response) {
-      $this->extend($request, $response);
+    Navigare::share(function (Request $request, NavigareResponse $response) {
+      return $this->share($request, $response);
     });
 
     // Retrieve response by calling the middleware stack

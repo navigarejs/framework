@@ -15,9 +15,9 @@ class HandleNavigareRequests extends \Navigare\Middleware
    * @see https://navigarejs.github.io/framework/
    * @param  \Illuminate\Http\Request  $request
    * @param  \Navigare\Response  $response
-   * @return void
+   * @return array|void
    */
-  public function extend(Request $request, NavigareResponse $response): void
+  public function share(Request $request, NavigareResponse $response): void
   {
     $response->withHeader('partials/Header', [
       'time' => Carbon::now(),

@@ -25,7 +25,7 @@ class ResponseFactory
 
   protected ?string $baseURL = null;
 
-  protected array $extensions = [];
+  protected array $shares = [];
 
   /** @var Closure|string|null */
   protected $version;
@@ -154,14 +154,14 @@ class ResponseFactory
   }
 
   /**
-   * Add extension to Inertia response which allows customizations before
+   * Add extension to Navigare response which allows customizations before
    * it is turned into a Laravel response.
    *
-   * @param  Closure  $extension
+   * @param  Closure|array  $share
    */
-  public function extend(Closure $extension): void
+  public function share(Closure|array $share): void
   {
-    array_push($this->extensions, $extension);
+    array_push($this->shares, $share);
   }
 
   /**
@@ -218,7 +218,7 @@ class ResponseFactory
       configuration: $this->getConfiguration(),
       baseURL: $this->baseURL,
       version: $this->getVersion(),
-      extensions: $this->extensions,
+      shares: $this->shares,
       layout: $this->layout
     );
 

@@ -6,9 +6,9 @@ Navigare supports SSR out of the box and it's enabled by default. You can turn i
 
 ## How it works
 
-When Inertia detects that it's running in a Node.js environment, it will automatically render the provided page object to HTML and return it.
+When Navigare detects that it's running in a Node.js environment, it will automatically render the provided page object to HTML and return it.
 
-However, because most Inertia applications are built in languages such as PHP or Ruby, we'll need to hand the request over to a separate Node.js service so that it can render the page for us, and return the rendered HTML back to the browser when it's done.
+However, because most Navigare applications are built in languages such as PHP or Ruby, we'll need to hand the request over to a separate Node.js service so that it can render the page for us, and return the rendered HTML back to the browser when it's done.
 
 ## Setting up server side rendering
 

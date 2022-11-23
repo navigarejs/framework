@@ -35,7 +35,7 @@ class Response implements Responsable
   public function __construct(
     protected Configuration $configuration,
     protected string $version = '',
-    protected array $extensions = [],
+    protected array $shares = [],
     protected ?Collection $properties = null,
     protected string $rootView = 'app',
     protected ?string $baseURL = null,
@@ -183,8 +183,14 @@ class Response implements Responsable
   public function toResponse($request)
   {
     // Call extensions
-    foreach ($this->extensions as $extension) {
-      $extension($request, $this);
+    foreach ($this->shares as $share) {
+      $sharedProperties = is_callable($share)
+        ? $share($request, $this)
+        : $share;
+
+      if (!empty($sharedProperties)) {
+        $this->with($sharedProperties);
+      }
     }
 
     // Prepare page
