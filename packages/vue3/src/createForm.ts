@@ -15,6 +15,7 @@ import {
   isDefined,
   createEmitter,
 } from '@navigare/core'
+import { isUndefined } from 'lodash'
 import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
 import get from 'lodash.get'
@@ -382,9 +383,16 @@ export default function createForm<
             )
 
             // Stop unnecessary requests early
+            if (!getKeys(sanitizedValues).length) {
+              return
+            }
             if (
-              !getKeys(sanitizedValues).length ||
-              !(name in sanitizedValues)
+              isUndefined(
+                get(
+                  sanitizedValues,
+                  router.instance.transformClientPropertyKey(name).split('.'),
+                ),
+              )
             ) {
               return
             }

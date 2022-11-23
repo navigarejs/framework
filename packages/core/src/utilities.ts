@@ -545,7 +545,7 @@ export function getDeferredPageProperties(page: Page): Partial<Properties> {
 export function transformPropertyKey(
   property: PropertyKey,
   transform: (value: PropertyKey) => PropertyKey = (value) => value,
-): PropertyKey {
+): string {
   if (isString(property) && property.includes('.')) {
     return property
       .split('.')
@@ -553,7 +553,7 @@ export function transformPropertyKey(
       .join('.')
   }
 
-  return transform(property)
+  return String(transform(property))
 }
 
 export function transformPropertyKeys(

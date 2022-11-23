@@ -1202,14 +1202,14 @@ export default class Router<TComponentModule> {
     )
   }
 
-  public transformClientPropertyKey(key: PropertyKey): PropertyKey {
+  public transformClientPropertyKey(key: PropertyKey): string {
     return transformPropertyKey(
       key,
       this.options.transformClientPropertyKey?.bind(this),
     )
   }
 
-  public transformServerPropertyKey(key: PropertyKey): PropertyKey {
+  public transformServerPropertyKey(key: PropertyKey): string {
     return transformPropertyKey(
       key,
       this.options.transformServerPropertyKey?.bind(this),
