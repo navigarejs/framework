@@ -22,19 +22,19 @@ export default defineComponent({
     },
 
     layout: {
-      type: [String, null] as PropType<string | null>,
+      type: [String, null, undefined] as PropType<string | null | undefined>,
       required: true,
     },
   },
 
   setup(props, { slots }) {
-    const layout = ref<string | null>(props.layout)
+    const layout = ref<string | undefined>(props.layout ?? undefined)
 
     // Handle navigate event to update layout
     // NOTE: for some reason the `onMounted` hook registered
     // the event listener too late so got rid of it
     const handleNavigate: RouterEventListener<'navigate'> = (event) => {
-      layout.value = event.detail.page.layout
+      layout.value = event.detail.page.layout ?? undefined
     }
     props.router.on('navigate', handleNavigate)
     onUnmounted(() => {
