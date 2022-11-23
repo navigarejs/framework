@@ -72,7 +72,7 @@ export type Fragment = {
   page?: Page
 }
 
-export type Fragments = Record<string, Fragment | Fragment[] | null>
+export type Fragments = Record<string, Fragment[] | null>
 
 export interface Page {
   visit: Visit
@@ -230,7 +230,7 @@ export type VisitCancelToken = {
 
 export type VisitPreserveStateOption =
   | boolean
-  | string
+  | 'errors'
   | ((page: Page) => boolean)
 
 export type VisitProgress = {

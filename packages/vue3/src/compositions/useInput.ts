@@ -96,7 +96,7 @@ export default function useInput(
     },
   })
   const errors = computed<FormError>(() => {
-    return get(form.errors, path.value) ?? {}
+    return get(form.errors, path.value.join('.')) ?? null
   })
   const errorMessage = computed(() => {
     if (isArray(errors.value)) {

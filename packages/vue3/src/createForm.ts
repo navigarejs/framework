@@ -1,7 +1,6 @@
 import useRouter from './compositions/useRouter'
 import {
   FormControl,
-  FormError,
   FormErrors,
   FormEvents,
   FormOptions,
@@ -22,7 +21,6 @@ import get from 'lodash.get'
 import isArray from 'lodash.isarray'
 import isEqual from 'lodash.isequal'
 import isFunction from 'lodash.isfunction'
-import isString from 'lodash.isstring'
 import isSymbol from 'lodash.issymbol'
 import mergeWith from 'lodash.mergewith'
 import set from 'lodash.set'
@@ -104,23 +102,17 @@ export default function createForm<
   const errors = reactive<FormErrors>({})
   const dirty = ref(false)
   const valid = computed(() => {
-    const isValid = (errors: FormError): boolean => {
-      if (!errors) {
+    return Object.values(errors).every((error) => {
+      if (!error) {
         return true
       }
 
-      if (isArray(errors)) {
-        return errors.length === 0
+      if (isArray(error)) {
+        return error.length === 0
       }
 
-      if (isString(errors)) {
-        return errors.length === 0
-      }
-
-      return Object.values(errors).every((error) => isValid(error))
-    }
-
-    return isValid(errors)
+      return error.length === 0
+    })
   })
   const processing = ref(false)
   const progress = ref<VisitProgress | null>(null)
@@ -549,12 +541,12 @@ export default function createForm<
     }),
 
     setError: markRaw((path, error) => {
-      set(errors, path, error)
+      set(errors, isArray(path) ? path.join('.') : path, error)
     }),
 
     clearErrors: markRaw((paths) => {
       for (const path of paths ?? keys.value) {
-        control.setError(path, undefined)
+        control.setError(isArray(path) ? path.join('.') : path, undefined)
       }
     }),
   })

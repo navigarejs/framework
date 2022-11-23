@@ -1,8 +1,5 @@
 import useRouter from '../compositions/useRouter'
-import provideFragmentContext, {
-  FragmentContext,
-} from './../contexts/provideFragmentContext'
-import { ContextOf } from './../types'
+import provideFragmentContext from './../contexts/provideFragmentContext'
 import { Fragment, safe } from '@navigare/core'
 import {
   computed,
@@ -76,13 +73,16 @@ export default defineComponent({
     })
 
     // Provide context to children
-    const context: ContextOf<typeof FragmentContext> = reactive({
+    const context = reactive({
       name: props.name,
       rawRoute,
       parameters,
       defaults,
       location,
       properties,
+    })
+    Object.assign(window, {
+      [props.name]: context,
     })
     provideFragmentContext(context)
 

@@ -75,7 +75,7 @@
 import ActivityIndicator from '../../components/ActivityIndicator.vue'
 import Icon from '../../components/Icon.vue'
 import { PartialRoute, Routable, route } from '@navigare/core'
-import { NavigareLink, useRouter } from '@navigare/vue3'
+import { NavigareLink, useFragment, useRouter } from '@navigare/vue3'
 import { ref } from 'vue'
 
 defineProps({
@@ -83,6 +83,7 @@ defineProps({
 })
 
 const router = useRouter()
+const fragment = useFragment()
 
 const slow = ref(false)
 

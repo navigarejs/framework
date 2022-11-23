@@ -56,7 +56,7 @@ class Page implements Arrayable
         $ssr,
         $configuration
       ) {
-        return $fragment->toArray($ssr, $configuration);
+        return [$fragment->toArray($ssr, $configuration)];
       }),
       'properties' => (object) $this->properties->toArray(),
       'defaults' => (object) $this->defaults->toArray(),

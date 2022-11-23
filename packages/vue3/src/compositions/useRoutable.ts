@@ -1,4 +1,5 @@
 import useRouter from '../compositions/useRouter'
+import useFragment from './useFragment'
 import {
   isDefined,
   PartialRoute,
@@ -9,16 +10,17 @@ import {
   VisitData,
   VisitOptions,
   ResolvedRoutable,
+  Route,
 } from '@navigare/core'
 import castArray from 'lodash.castarray'
 import isArray from 'lodash.isarray'
 import isFunction from 'lodash.isfunction'
 import { Component, computed, markRaw, reactive, ref } from 'vue'
 
-type Route = (Routable | PartialRoute) | (Routable | PartialRoute)[]
+type MatchingRoute = (Routable | PartialRoute) | (Routable | PartialRoute)[]
 
 export default function useRoutable(
-  getRoute: Route | undefined | (() => Route | undefined),
+  getRoute: MatchingRoute | undefined | (() => MatchingRoute | undefined),
   options: {
     data?: VisitData | (() => VisitData)
     method?: RawRouteMethod | (() => RawRouteMethod)
@@ -35,6 +37,7 @@ export default function useRoutable(
   pending: boolean
 } {
   const router = useRouter()
+  const fragment = useFragment()
   const route = computed(() => {
     if (isFunction(getRoute)) {
       return getRoute()
@@ -86,12 +89,27 @@ export default function useRoutable(
     return castArray(route.value)
       .filter(isDefined)
       .some((route) => {
-        const matches = router.match(route)
+        const matches = router.match(
+          route,
+          new Route(fragment.rawRoute, fragment.parameters, true),
+        )
 
         return matches
       })
   })
   const pending = ref(false)
+  const resolvedHref = computed(() => {
+    return resolvedRoutable.value?.location.href
+  })
+  const resolvedMethod = computed(() => {
+    return resolvedRoutable.value?.method
+  })
+  const components = computed(() => {
+    return resolvedRoutable.value?.components
+  })
+  const location = computed(() => {
+    return resolvedRoutable.value?.location
+  })
 
   // Create handlers
   const preload = async () => {
@@ -111,7 +129,7 @@ export default function useRoutable(
     await router.instance.visit(routable.value, {
       ...options,
       data: data.value,
-      method: resolvedRoutable.value?.method,
+      method: resolvedMethod.value,
       events: {
         start: () => {
           pending.value = true
@@ -124,14 +142,15 @@ export default function useRoutable(
   }
 
   return reactive({
-    href: resolvedRoutable.value?.location.href,
-    active: active.value,
-    foreign: foreign.value,
-    method: resolvedRoutable.value?.method,
-    components: resolvedRoutable.value?.components,
-    location: resolvedRoutable.value?.location,
+    href: resolvedHref,
+    active: active,
+    foreign: foreign,
+    method: resolvedMethod,
+    components,
+    location,
     preload: markRaw(preload),
     visit: markRaw(visit),
-    pending: pending.value,
+    pending: pending,
+    fragment,
   })
 }

@@ -11,9 +11,14 @@ export const FragmentContext: InjectionKey<{
   location: Page['location']
 }> = Symbol('FragmentContext')
 
-export default function provideFragmentContext(
-  context: ContextOf<typeof FragmentContext>,
-): ContextOf<typeof FragmentContext> {
+export default function provideFragmentContext(context: {
+  name: string | null
+  properties: Page['properties'] & Record<string, any>
+  rawRoute: Page['rawRoute']
+  parameters: Page['parameters']
+  defaults: Page['defaults']
+  location: Page['location']
+}): ContextOf<typeof FragmentContext> {
   // Provide context
   provide(FragmentContext, context)
 

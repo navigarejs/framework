@@ -22,6 +22,7 @@ import {
   RouterEventNames,
   RouterEventDetails,
   ResolvedRoutable,
+  PropertyKey,
 } from './types'
 import {
   isSSR,
@@ -38,6 +39,7 @@ import {
   getDeferredPageProperties,
   transformPageProperties,
   transformProperties,
+  transformProperty,
 } from './utilities'
 import {
   default as Axios,
@@ -49,10 +51,8 @@ import {
 import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
 import debounce from 'lodash.debounce'
-import isArray from 'lodash.isarray'
 import isObject from 'lodash.isobject'
 import isString from 'lodash.isstring'
-import uniq from 'lodash.uniq'
 import { SetRequired } from 'type-fest'
 
 export default class Router<TComponentModule> {
@@ -408,7 +408,7 @@ export default class Router<TComponentModule> {
   protected resolvePreserveOption(
     value: VisitPreserveStateOption,
     page: Page,
-  ): boolean | string {
+  ): boolean {
     if (typeof value === 'function') {
       return value(page)
     }
@@ -574,7 +574,7 @@ export default class Router<TComponentModule> {
       }
 
       // Merge properties of fragments
-      if (properties.length) {
+      /*if (properties.length) {
         const selectedProperties = properties.map((property) => {
           if (property.includes('/')) {
             const [fragmentName, name] = property.split('/')
@@ -625,7 +625,7 @@ export default class Router<TComponentModule> {
           ...this.page.properties,
           ...nextPage.properties,
         }
-      }
+      }*/
 
       // Check if we need to manually preserve the scroll area
       preserveScroll = this.resolvePreserveOption(preserveScroll, nextPage)
@@ -659,7 +659,7 @@ export default class Router<TComponentModule> {
           Object.entries(
             errorBag ? (errors[errorBag] ? errors[errorBag] : {}) : errors,
           ).map(([name, message]) => {
-            return [name, castArray(message)]
+            return [this.transformServerProperty(name), castArray(message)]
           }),
         )
 
@@ -768,7 +768,6 @@ export default class Router<TComponentModule> {
         base: undefined,
       },
       this.options.fragments,
-      initialVisit,
     )
     const nextPage = mergePages(
       this.page,
@@ -894,9 +893,7 @@ export default class Router<TComponentModule> {
 
         return [
           ...cumulatedComponents,
-          ...(isArray(fragments)
-            ? fragments.map((fragment) => fragment.component)
-            : [fragments.component]),
+          ...fragments?.map((fragment) => fragment.component),
         ]
       },
       [] as Component[],
@@ -1205,19 +1202,17 @@ export default class Router<TComponentModule> {
     )
   }
 
-  public transformClientProperty(property: string | number): string | number {
-    if (!this.options.transformClientProperty) {
-      return property
-    }
-
-    return this.options.transformClientProperty(property)
+  public transformClientProperty(property: PropertyKey): PropertyKey {
+    return transformProperty(
+      property,
+      this.options.transformClientProperty?.bind(this),
+    )
   }
 
-  public transformServerProperty(property: string | number): string | number {
-    if (!this.options.transformServerProperty) {
-      return property
-    }
-
-    return this.options.transformServerProperty(property)
+  public transformServerProperty(property: PropertyKey): PropertyKey {
+    return transformProperty(
+      property,
+      this.options.transformServerProperty?.bind(this),
+    )
   }
 }

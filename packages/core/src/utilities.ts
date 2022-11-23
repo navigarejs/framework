@@ -19,6 +19,7 @@ import cloneDeep from 'lodash.clonedeep'
 import isArray from 'lodash.isarray'
 import isFunction from 'lodash.isfunction'
 import isObject from 'lodash.isobject'
+import isString from 'lodash.isstring'
 import merge from 'lodash.merge'
 import uniq from 'lodash.uniq'
 import { stringify, parse } from 'qs'
@@ -126,18 +127,6 @@ export function mergeDataIntoQueryString(
   }
 }
 
-export function getInitialFragments<TComponentModule>(
-  options?: RouterOptions<TComponentModule>['fragments'],
-): Fragments {
-  return Object.fromEntries(
-    Object.entries(options || {})
-      .map(([name, { stacked }]) => {
-        return [name, stacked ? [] : null]
-      })
-      .filter(isNotNull),
-  )
-}
-
 export function mergeFragments<TComponentModule>(
   currentFragments: Fragments,
   nextFragments: Fragments,
@@ -145,30 +134,21 @@ export function mergeFragments<TComponentModule>(
 ): Fragments {
   return uniq([...getKeys(currentFragments), ...getKeys(nextFragments)]).reduce(
     (cumulatedFragments, name) => {
-      let mergedFragment: Fragment | Fragment[] | null =
-        cumulatedFragments[name] ?? null
-      /*const currentFragment = currentFragments[name] as
-        | Fragment
-        | Fragment[]
-        | null
-        | undefined*/
-      const nextFragment = nextFragments[name] as
-        | Fragment
-        | Fragment[]
-        | null
-        | undefined
+      let mergedFragment: Fragment[] | null = cumulatedFragments[name] ?? null
+      const nextFragment = nextFragments[name] as Fragment[] | null | undefined
 
-      // Keep accumulating stacked fragments as long as the next one is not empty
-      if (isArray(mergedFragment)) {
-        if (nextFragment) {
+      if (nextFragment) {
+        if (mergedFragment) {
           const lastFragment = mergedFragment[mergedFragment.length - 1]
 
           // In case the last modal points to the same URL, we will replace it
           for (const fragment of castArray(nextFragment)) {
             if (
-              lastFragment?.page &&
-              fragment.page &&
-              lastFragment?.page?.location.href === fragment.page?.location.href
+              !options[name]?.stacked ||
+              (lastFragment?.page &&
+                fragment.page &&
+                lastFragment?.page?.location.href ===
+                  fragment.page?.location.href)
             ) {
               mergedFragment.splice(mergedFragment.length - 1, 1, {
                 ...fragment,
@@ -182,10 +162,8 @@ export function mergeFragments<TComponentModule>(
             }
           }
         } else {
-          mergedFragment = []
+          mergedFragment = [...nextFragment]
         }
-      } else if (nextFragment) {
-        mergedFragment = nextFragment
       } else if (nextFragment === null) {
         mergedFragment = null
       } else if (
@@ -222,10 +200,7 @@ export function mergePages<TComponentModule>(
   page: Page | undefined,
   nextPage: Page,
   options: RouterOptions<TComponentModule>['fragments'] = {},
-  initialVisit: boolean = false,
 ): Page {
-  const initialFragments = initialVisit ? getInitialFragments(options) : {}
-
   // Assign pages to fragments
   if (page) {
     assignPageToFragments(page)
@@ -234,7 +209,7 @@ export function mergePages<TComponentModule>(
 
   // Merge fragments
   nextPage.fragments = mergeFragments(
-    mergeFragments(initialFragments, page?.fragments || {}, options),
+    page?.fragments || {},
     nextPage.fragments,
     options,
   )
@@ -547,18 +522,6 @@ export function getPageProperties(page: Page): Properties {
         return cumulatedProperties
       }
 
-      if (isArray(fragment)) {
-        return {
-          ...cumulatedProperties,
-          ...fragment.reduce((cumulatedNestedProperties, nestedFragment) => {
-            return {
-              ...cumulatedNestedProperties,
-              ...getPropertySelectors(nestedFragment.properties),
-            }
-          }, {}),
-        }
-      }
-
       return {
         ...cumulatedProperties,
         ...getPropertySelectors(fragment.properties),
@@ -579,6 +542,20 @@ export function getDeferredPageProperties(page: Page): Partial<Properties> {
   )
 }
 
+export function transformProperty(
+  property: PropertyKey,
+  transform: (value: PropertyKey) => PropertyKey = (value) => value,
+): PropertyKey {
+  if (isString(property) && property.includes('.')) {
+    return property
+      .split('.')
+      .map((part) => transform(part))
+      .join('.')
+  }
+
+  return transform(property)
+}
+
 export function transformProperties(
   properties: Properties,
   transform: (value: PropertyKey) => PropertyKey = (value) => value,
@@ -587,7 +564,10 @@ export function transformProperties(
     Object.entries(properties).map(([key, value]) => {
       return [
         transform(key),
-        isObject(value) && !isArray(value)
+        isObject(value) &&
+        !isArray(value) &&
+        !(value instanceof Blob) &&
+        !(value instanceof Date)
           ? transformProperties(value, transform)
           : value,
       ]
@@ -602,18 +582,13 @@ export function transformPageProperties(
   page.properties = transformProperties(page.properties, transform)
   page.fragments = Object.fromEntries(
     Object.entries(page.fragments).map(([name, fragments]) => {
-      if (isArray(fragments)) {
+      if (fragments) {
         for (const fragment of fragments) {
           fragment.properties = transformProperties(
             fragment.properties,
             transform,
           )
         }
-      } else if (fragments) {
-        fragments.properties = transformProperties(
-          fragments.properties,
-          transform,
-        )
       }
 
       return [name, fragments]

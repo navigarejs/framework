@@ -127,7 +127,7 @@ export type FormTransformer<TData, TTransformedData extends FormValues> = (
   data: TData,
 ) => TTransformedData
 
-export type FormError = string | string[] | null | FormErrors
+export type FormError = string | string[] | null
 
 export interface FormErrors {
   [name: string]: FormError
@@ -318,7 +318,7 @@ export interface FormControl<
 
   setError(path: FormInputName | FormInputPath, error?: FormError): void
 
-  clearErrors(paths?: FormInputPath[]): void
+  clearErrors(paths?: (FormInputName | FormInputPath)[]): void
 }
 
 // Helpers
