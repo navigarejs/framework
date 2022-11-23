@@ -130,7 +130,7 @@ export default class Router<TComponentModule> {
   public axios: AxiosStatic
 
   public constructor(options: RouterOptions<TComponentModule>) {
-    const { initialPage } = options
+    const { initialPage, axios = Axios } = options
     this.options = options
     this.activeVisit = this.createVisit({
       location: initialPage.location,
@@ -139,7 +139,7 @@ export default class Router<TComponentModule> {
       ...initialPage,
       visit: this.activeVisit,
     })
-    this.axios = Axios
+    this.axios = axios
 
     // Handle initial page
     if (!isSSR()) {

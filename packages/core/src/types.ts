@@ -1,7 +1,7 @@
 import Route from './Route'
 import { GeneratedRoutes } from './routes'
 import { Default, Wildcard } from './symbols'
-import { AxiosResponse, Canceler, CancelToken } from 'axios'
+import { AxiosResponse, AxiosStatic, Canceler, CancelToken } from 'axios'
 import { IsEmptyObject } from 'type-fest'
 
 // Router
@@ -21,6 +21,7 @@ export type RouterOptions<TComponent> = {
   }>
   transformClientPropertyKey?: (key: PropertyKey) => PropertyKey
   transformServerPropertyKey?: (key: PropertyKey) => PropertyKey
+  axios?: AxiosStatic
 }
 
 export type ComponentModuleResolver<TComponent> = (
