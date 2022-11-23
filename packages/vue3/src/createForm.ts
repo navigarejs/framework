@@ -424,7 +424,13 @@ export default function createForm<
               } else {
                 const { response } = error
 
-                control.setErrors(response?.data.errors ?? {})
+                control.setError(
+                  name,
+                  get(
+                    response?.data.errors,
+                    router.instance.transformServerPropertyKey(name),
+                  ),
+                )
               }
             } else {
               throw error
