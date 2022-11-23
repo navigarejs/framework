@@ -16,7 +16,6 @@ import {
   isDefined,
   createEmitter,
 } from '@navigare/core'
-import { isUndefined } from 'lodash'
 import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
 import get from 'lodash.get'
@@ -384,7 +383,7 @@ export default function createForm<
             if (!getKeys(sanitizedValues).length) {
               return
             }
-            if (isUndefined(get(sanitizedValues, name.split('.')))) {
+            if (!isDefined(get(sanitizedValues, name.split('.')))) {
               return
             }
 

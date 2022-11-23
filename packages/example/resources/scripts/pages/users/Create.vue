@@ -78,7 +78,7 @@ import { route } from '@navigare/core'
 import { createForm, NavigareForm, NavigareInput } from '@navigare/vue3'
 
 const form = createForm(
-  'users.create',
+  'users.store',
   route('users.store'),
   () => ({
     first_name: '',
@@ -90,7 +90,7 @@ const form = createForm(
     photo: null,
   }),
   {
-    validation: true,
+    validate: true,
   },
 )
 </script>

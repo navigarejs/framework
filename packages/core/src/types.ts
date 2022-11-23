@@ -295,7 +295,7 @@ export type Visit = {
 export type VisitId = string
 
 // Routes
-export type Routes = GeneratedRoutes & {}
+export interface Routes extends GeneratedRoutes {}
 
 export enum RouteMethod {
   GET = 'GET',
