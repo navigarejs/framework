@@ -39,7 +39,7 @@ export type App = {
 export type Options = {
   id?: string
   setup: Setup
-} & Omit<RouterOptions<DefineComponent>, 'initialPage'>
+} & Omit<RouterOptions<DefineComponent>, 'base' | 'initialPage'>
 
 export type Setup = (options: {
   Root: typeof Root

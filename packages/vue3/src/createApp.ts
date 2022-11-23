@@ -48,6 +48,7 @@ export default function createApp({
       initialPage: initialPageWithFallback,
       resolveComponentModule,
       fragments,
+      base,
       ...restOptions,
     }
     const router = new Router<DefineComponent>(options)
