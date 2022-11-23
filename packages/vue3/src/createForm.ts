@@ -368,12 +368,15 @@ export default function createForm<
             // Remove files from values
             const sanitizedValues = Object.fromEntries(
               Object.entries(cloneDeep(values))
-                .map(([name, value]) => {
+                .map(([key, value]) => {
                   if (value instanceof Blob) {
                     return undefined
                   }
 
-                  return [name, value]
+                  return [
+                    router.instance.transformClientPropertyKey(key),
+                    value,
+                  ]
                 })
                 .filter(isDefined),
             )
