@@ -78,7 +78,7 @@ export interface Page {
   visit: Visit
   csrf: string | null
   fragments: Fragments
-  properties: Properties & {
+  properties: PageProperties & {
     errors?: PageErrors & PageErrorBag
   }
   rawRoute: RawRoute
@@ -94,6 +94,8 @@ export interface Page {
   scrollRegions: Array<{ top: number; left: number }>
   rememberedState: PageRememberedState
 }
+
+export interface PageProperties extends Properties {}
 
 export type PropertyKey = string | number
 
