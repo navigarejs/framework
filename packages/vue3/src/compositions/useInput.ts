@@ -131,7 +131,13 @@ export default function useInput(
     )
   })
   const validating = ref(false)
-  const focused = ref(false)
+  const focused = computed(() => {
+    if (!form.focused) {
+      return false
+    }
+
+    return form.focused === name.value
+  })
   const touched = ref(false)
   const resolvedValidation = computed(
     (): {
@@ -174,7 +180,6 @@ export default function useInput(
   }
   const focus = (id?: string) => {
     touched.value = true
-    focused.value = true
 
     form.focus([
       ...[...path.value].slice(0, -1),
@@ -182,9 +187,7 @@ export default function useInput(
       [name.value, id].filter(isDefined).join('#'),
     ])
   }
-  const blur = () => {
-    focused.value = false
-  }
+  const blur = () => {}
 
   // Create handlers
   const handleInput = (_event: Event = new Event('input')) => {

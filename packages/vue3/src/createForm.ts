@@ -4,7 +4,7 @@ import {
   FormError,
   FormErrors,
   FormEvents,
-  FormInputPath,
+  FormInputName,
   FormOptions,
   FormTrigger,
   FormValues,
@@ -23,6 +23,7 @@ import get from 'lodash.get'
 import isArray from 'lodash.isarray'
 import isEqual from 'lodash.isequal'
 import isFunction from 'lodash.isfunction'
+import isString from 'lodash.isstring'
 import isSymbol from 'lodash.issymbol'
 import mergeWith from 'lodash.mergewith'
 import set from 'lodash.set'
@@ -126,7 +127,7 @@ export default function createForm<
       return !!blockers.value[key]
     })
   })
-  const focused = ref<FormInputPath | null>(null)
+  const focused = ref<FormInputName | null>(null)
   const manualDisabled = ref(false)
   const computedDisabled = computed(() => {
     if (isFunction(options.disabled)) {
@@ -529,7 +530,15 @@ export default function createForm<
         path instanceof Event
           ? (path.target as HTMLInputElement | undefined)?.name
           : path,
-      ).join('.')
+      )
+        .map((name) => {
+          if (isString(name) && name.includes('#')) {
+            return name.split('#')[0]
+          }
+
+          return name
+        })
+        .join('.')
     }),
 
     getInputId: markRaw((path) => {

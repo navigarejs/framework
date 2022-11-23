@@ -238,7 +238,7 @@ export interface FormControl<
 
   dirty: boolean
 
-  focused: boolean
+  focused: FormInputName | null
 
   successful: boolean | undefined
 
