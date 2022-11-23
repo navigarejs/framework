@@ -530,15 +530,7 @@ export default function createForm<
         path instanceof Event
           ? (path.target as HTMLInputElement | undefined)?.name
           : path,
-      )
-        .map((name) => {
-          if (isString(name) && name.includes('#')) {
-            return name.split('#')[0]
-          }
-
-          return name
-        })
-        .join('.')
+      ).join('.')
     }),
 
     getInputId: markRaw((path) => {
