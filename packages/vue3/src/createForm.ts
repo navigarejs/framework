@@ -4,6 +4,7 @@ import {
   FormError,
   FormErrors,
   FormEvents,
+  FormInputPath,
   FormOptions,
   FormTrigger,
   FormValues,
@@ -125,10 +126,7 @@ export default function createForm<
       return !!blockers.value[key]
     })
   })
-  const focus = ref<string | null>(null)
-  const focused = computed(() => {
-    return !!focus.value
-  })
+  const focused = ref<FormInputPath | null>(null)
   const manualDisabled = ref(false)
   const computedDisabled = computed(() => {
     if (isFunction(options.disabled)) {
@@ -489,11 +487,11 @@ export default function createForm<
     }),
 
     focus: markRaw((path) => {
-      focus.value = control.getInputName(path)
+      focused.value = control.getInputName(path)
     }),
 
     blur: markRaw(() => {
-      focus.value = null
+      focused.value = null
     }),
 
     enable: markRaw(() => {
