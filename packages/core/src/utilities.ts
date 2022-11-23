@@ -542,7 +542,7 @@ export function getDeferredPageProperties(page: Page): Partial<Properties> {
   )
 }
 
-export function transformProperty(
+export function transformPropertyKey(
   property: PropertyKey,
   transform: (value: PropertyKey) => PropertyKey = (value) => value,
 ): PropertyKey {
@@ -556,7 +556,7 @@ export function transformProperty(
   return transform(property)
 }
 
-export function transformProperties(
+export function transformPropertyKeys(
   properties: Properties,
   transform: (value: PropertyKey) => PropertyKey = (value) => value,
 ): Properties {
@@ -568,23 +568,23 @@ export function transformProperties(
         !isArray(value) &&
         !(value instanceof Blob) &&
         !(value instanceof Date)
-          ? transformProperties(value, transform)
+          ? transformPropertyKeys(value, transform)
           : value,
       ]
     }),
   )
 }
 
-export function transformPageProperties(
+export function transformPagePropertyKeys(
   page: Page,
   transform: (key: PropertyKey) => PropertyKey = (key) => key,
 ): Page {
-  page.properties = transformProperties(page.properties, transform)
+  page.properties = transformPropertyKeys(page.properties, transform)
   page.fragments = Object.fromEntries(
     Object.entries(page.fragments).map(([name, fragments]) => {
       if (fragments) {
         for (const fragment of fragments) {
-          fragment.properties = transformProperties(
+          fragment.properties = transformPropertyKeys(
             fragment.properties,
             transform,
           )

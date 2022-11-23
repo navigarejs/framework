@@ -37,9 +37,9 @@ import {
   serialize,
   getKeys,
   getDeferredPageProperties,
-  transformPageProperties,
-  transformProperties,
-  transformProperty,
+  transformPagePropertyKeys,
+  transformPropertyKeys,
+  transformPropertyKey,
 } from './utilities'
 import {
   default as Axios,
@@ -659,7 +659,7 @@ export default class Router<TComponentModule> {
           Object.entries(
             errorBag ? (errors[errorBag] ? errors[errorBag] : {}) : errors,
           ).map(([name, message]) => {
-            return [this.transformServerProperty(name), castArray(message)]
+            return [this.transformServerPropertyKey(name), castArray(message)]
           }),
         )
 
@@ -771,9 +771,9 @@ export default class Router<TComponentModule> {
     )
     const nextPage = mergePages(
       this.page,
-      transformPageProperties(
+      transformPagePropertyKeys(
         pageWithBase,
-        this.transformServerProperty.bind(this),
+        this.transformServerPropertyKey.bind(this),
       ),
       this.options.fragments,
     )
@@ -815,7 +815,7 @@ export default class Router<TComponentModule> {
         this.reload({
           headers: {
             'X-Navigare-Properties': getKeys(deferredProperties)
-              .map((property) => this.transformClientProperty(property))
+              .map((property) => this.transformClientPropertyKey(property))
               .join(','),
           },
         })
@@ -1105,9 +1105,9 @@ export default class Router<TComponentModule> {
       )
 
       finalHref = merged.href
-      finalData = transformProperties(
+      finalData = transformPropertyKeys(
         merged.data,
-        this.transformClientProperty.bind(this),
+        this.transformClientPropertyKey.bind(this),
       )
     }
 
@@ -1202,17 +1202,17 @@ export default class Router<TComponentModule> {
     )
   }
 
-  public transformClientProperty(property: PropertyKey): PropertyKey {
-    return transformProperty(
-      property,
-      this.options.transformClientProperty?.bind(this),
+  public transformClientPropertyKey(key: PropertyKey): PropertyKey {
+    return transformPropertyKey(
+      key,
+      this.options.transformClientPropertyKey?.bind(this),
     )
   }
 
-  public transformServerProperty(property: PropertyKey): PropertyKey {
-    return transformProperty(
-      property,
-      this.options.transformServerProperty?.bind(this),
+  public transformServerPropertyKey(key: PropertyKey): PropertyKey {
+    return transformPropertyKey(
+      key,
+      this.options.transformServerPropertyKey?.bind(this),
     )
   }
 }

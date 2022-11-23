@@ -2,7 +2,6 @@ import type Root from './components/Root'
 import { FragmentContext } from './contexts/provideFragmentContext'
 import type plugin from './plugin'
 import {
-  ComponentModuleResolver,
   RouterEventListener,
   RouterEventNames,
   Page,
@@ -39,13 +38,8 @@ export type App = {
 
 export type Options = {
   id?: string
-  resolveComponentModule?: ComponentModuleResolver<DefineComponent>
   setup: Setup
-  fragments?: RouterOptions<DefineComponent>['fragments']
-  events?: RouterOptions<DefineComponent>['events']
-  transformServerProperty?: RouterOptions<DefineComponent>['transformServerProperty']
-  transformClientProperty?: RouterOptions<DefineComponent>['transformClientProperty']
-}
+} & Omit<RouterOptions<DefineComponent>, 'initialPage'>
 
 export type Setup = (options: {
   Root: typeof Root

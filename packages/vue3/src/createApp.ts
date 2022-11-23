@@ -23,9 +23,7 @@ export default function createApp({
       stacked: true,
     },
   },
-  events,
-  transformClientProperty,
-  transformServerProperty,
+  ...restOptions
 }: Options): (initialPage?: Page) => Promise<App> {
   return async (initialPage) => {
     // Determine initial page
@@ -50,10 +48,7 @@ export default function createApp({
       initialPage: initialPageWithFallback,
       resolveComponentModule,
       fragments,
-      base,
-      events,
-      transformClientProperty,
-      transformServerProperty,
+      ...restOptions,
     }
     const router = new Router<DefineComponent>(options)
 

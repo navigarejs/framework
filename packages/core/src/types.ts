@@ -19,8 +19,8 @@ export type RouterOptions<TComponent> = {
   events?: Partial<{
     [TEventName in RouterEventNames]: RouterEventListener<TEventName>
   }>
-  transformClientProperty?: (key: PropertyKey) => PropertyKey
-  transformServerProperty?: (key: PropertyKey) => PropertyKey
+  transformClientPropertyKey?: (key: PropertyKey) => PropertyKey
+  transformServerPropertyKey?: (key: PropertyKey) => PropertyKey
 }
 
 export type ComponentModuleResolver<TComponent> = (
