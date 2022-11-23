@@ -374,10 +374,7 @@ export default function createForm<
                     return undefined
                   }
 
-                  return [
-                    router.instance.transformClientPropertyKey(key),
-                    value,
-                  ]
+                  return [key, value]
                 })
                 .filter(isDefined),
             )
@@ -386,14 +383,7 @@ export default function createForm<
             if (!getKeys(sanitizedValues).length) {
               return
             }
-            if (
-              isUndefined(
-                get(
-                  sanitizedValues,
-                  router.instance.transformClientPropertyKey(name).split('.'),
-                ),
-              )
-            ) {
+            if (isUndefined(get(sanitizedValues, name.split('.')))) {
               return
             }
 
@@ -412,7 +402,8 @@ export default function createForm<
               url: location.href,
               headers: {
                 Precognition: true,
-                'Precognition-Validate-Only': name,
+                'Precognition-Validate-Only':
+                  router.instance.transformClientPropertyKey(name),
               },
               signal: abortController.signal,
             })
@@ -555,12 +546,12 @@ export default function createForm<
     }),
 
     setError: markRaw((path, error) => {
-      set(errors, isArray(path) ? path.join('.') : path, error)
+      set(errors, castArray(path).join('.'), error)
     }),
 
     clearErrors: markRaw((paths) => {
       for (const path of paths ?? keys.value) {
-        control.setError(isArray(path) ? path.join('.') : path, undefined)
+        control.setError(castArray(path).join('.'), undefined)
       }
     }),
   })
