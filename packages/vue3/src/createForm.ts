@@ -1,6 +1,7 @@
 import useRouter from './compositions/useRouter'
 import {
   FormControl,
+  FormError,
   FormErrors,
   FormEvents,
   FormOptions,
@@ -424,11 +425,16 @@ export default function createForm<
               } else {
                 const { response } = error
 
-                control.setError(
-                  name,
-                  get(
-                    response?.data.errors,
-                    router.instance.transformServerPropertyKey(name),
+                control.setErrors(
+                  Object.fromEntries(
+                    Object.entries(response?.data.errors).map(
+                      ([key, value]) => {
+                        return [
+                          router.instance.transformServerPropertyKey(key),
+                          value as FormError,
+                        ]
+                      },
+                    ),
                   ),
                 )
               }
