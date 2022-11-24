@@ -53,7 +53,7 @@ export default async function () {
         copyright:
           'Made by <a class="underline" href="https://twitter.com/jaulz">Julian Hundeloh</a>',
         message:
-          'Released under the [MIT License](https://navigarejs.github.com/framework/blob/main/LICENSE)</a>.',
+          'Released under the <a class="underline" href="https://navigarejs.github.com/framework/blob/main/LICENSE">MIT License</a>.',
       },
 
       editLink: {
