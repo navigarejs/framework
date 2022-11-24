@@ -60,7 +60,7 @@
     "@types/babel__traverse": "^7.18.2",
     "@types/debug": "^4.1.7",
     "@types/lodash.clonedeep": "^4.5.7",
-    "@types/lodash.get": "^4.0.7",
+    "@types/lodash.get": "^4.4.7",
     "@types/lodash.isarray": "^4.0.7",
     "@types/lodash.isobject": "^3.0.7",
     "@types/lodash.isstring": "^4.0.7",

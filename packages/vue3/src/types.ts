@@ -1,5 +1,4 @@
 import type Root from './components/Root'
-import { FragmentContext } from './contexts/provideFragmentContext'
 import type plugin from './plugin'
 import {
   RouterEventListener,
@@ -59,7 +58,7 @@ export type RouterControl = {
   latestPage: Page
   pages: Page[]
   layout: string | null
-  fragment: ContextOf<typeof FragmentContext>
+  fragment: FragmentControl
   fragments: Fragments
   processing: boolean
   visit(
@@ -107,6 +106,18 @@ export type RouterControl = {
     listener: RouterEventListener<TEventName>,
   ): void
   instance: Router<DefineComponent>
+}
+
+// Fragments
+export type FragmentControl = {
+  properties: Page['properties'] & Record<string, any>
+  rawRoute: Page['rawRoute']
+  parameters: Page['parameters']
+  defaults: Page['defaults']
+  location: Page['location']
+  visit: Page['visit']
+  exposed: Record<string, any>
+  key: string | null
 }
 
 // Forms

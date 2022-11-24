@@ -21,7 +21,7 @@ export default createNavigareApp({
     default: {},
 
     left: {
-      lazy: false,
+      lazy: true,
     },
 
     modal: {

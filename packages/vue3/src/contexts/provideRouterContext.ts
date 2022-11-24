@@ -1,10 +1,12 @@
 import { ContextOf } from './../types'
+import { FragmentContext } from './provideFragmentContext'
 import { Router } from '@navigare/core'
 import { throwError } from '@navigare/core'
 import { DefineComponent, InjectionKey, markRaw, provide, reactive } from 'vue'
 
 export const RouterContext: InjectionKey<{
   router: Router<DefineComponent>
+  fragments: Record<string, ContextOf<typeof FragmentContext>>
 }> = Symbol('RouterContext')
 
 export default function provideRouterContext(
@@ -18,6 +20,7 @@ export default function provideRouterContext(
 
   const context: ContextOf<typeof RouterContext> = reactive({
     router: markRaw(router),
+    fragments: {},
   })
 
   // Provide context

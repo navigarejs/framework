@@ -6,7 +6,7 @@ const isCI = !!process.env.CI
 
 const color = '#FC5C7D'
 
-const github = 'jaulz/navigare'
+const github = 'navigare/framework'
 
 const twitter = 'jaulz'
 

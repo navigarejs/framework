@@ -22,6 +22,16 @@ protocol = "tcp"
 hard_limit = 50
 soft_limit = 25
 
+[[services.http_checks]]
+grace_period = "2s"
+interval = 5000
+method = "get"
+path = "/"
+protocol = "http"
+restart_limit = 5
+timeout = 2000
+tls_skip_verify = true
+
 [[services.ports]]
 handlers = ["tls", "http"]
 port = 443

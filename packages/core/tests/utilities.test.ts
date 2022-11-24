@@ -1,6 +1,6 @@
 import { Fragment, RawRoute, RouterLocation } from '../src'
 import { Page, Properties } from '../src/types'
-import { getInitialFragments, mergeFragments } from '../src/utilities'
+import { mergeFragments } from '../src/utilities'
 import { describe, expect, it } from 'vitest'
 
 const createLocation = (options: { pathname: string }): RouterLocation => {
@@ -20,50 +20,8 @@ const createLocation = (options: { pathname: string }): RouterLocation => {
   }
 }
 
-describe('getInitialFragments', () => {
-  it('returns an empty object if no explicit fragments are defined', () => {
-    expect(getInitialFragments()).toEqual({})
-  })
-
-  it('returns initially null for explicit fragments', () => {
-    expect(
-      getInitialFragments({
-        default: {},
-      }),
-    ).toEqual({
-      default: null,
-    })
-  })
-
-  it('returns an array for explicit fragments that can be stacked', () => {
-    expect(
-      getInitialFragments({
-        modal: {
-          stacked: true,
-        },
-      }),
-    ).toEqual({
-      modal: [],
-    })
-  })
-
-  it('returns merged fragments', () => {
-    expect(
-      getInitialFragments({
-        default: {},
-        modal: {
-          stacked: true,
-        },
-      }),
-    ).toEqual({
-      default: null,
-      modal: [],
-    })
-  })
-})
-
 describe('mergeFragments', () => {
-  const createPage = (pathname: string = ''): Page => {
+  const createPage = (pathname: string = '', visitId: string = ''): Page => {
     return {
       location: createLocation({
         pathname,
@@ -71,6 +29,9 @@ describe('mergeFragments', () => {
       defaults: {},
       parameters: {},
       rawRoute: null as unknown as RawRoute,
+      visit: {
+        id: visitId,
+      },
     } as Page
   }
 
@@ -98,11 +59,11 @@ describe('mergeFragments', () => {
           default: null,
         },
         {
-          default: nextDefaultFragment,
+          default: [nextDefaultFragment],
         },
       ),
     ).toEqual({
-      default: nextDefaultFragment,
+      default: [nextDefaultFragment],
     })
   })
 
@@ -112,12 +73,12 @@ describe('mergeFragments', () => {
     expect(
       mergeFragments(
         {
-          default: initialDefaultFragment,
+          default: [initialDefaultFragment],
         },
         {},
       ),
     ).toEqual({
-      default: initialDefaultFragment,
+      default: [initialDefaultFragment],
     })
   })
 
@@ -127,7 +88,7 @@ describe('mergeFragments', () => {
     expect(
       mergeFragments(
         {
-          default: initialDefaultFragment,
+          default: [initialDefaultFragment],
         },
         {
           default: null,
@@ -156,7 +117,12 @@ describe('mergeFragments', () => {
             modal: [initialModalFragment],
           },
           {
-            modal: nextModalFragment,
+            modal: [nextModalFragment],
+          },
+          {
+            modal: {
+              stacked: true,
+            },
           },
         ),
       ).toEqual({
@@ -178,7 +144,12 @@ describe('mergeFragments', () => {
             modal: [initialModalFragment],
           },
           {
-            modal: nextModalFragment,
+            modal: [nextModalFragment],
+          },
+          {
+            modal: {
+              stacked: true,
+            },
           },
         ),
       ).toEqual({
@@ -195,9 +166,14 @@ describe('mergeFragments', () => {
             modal: [initialModalFragment],
           },
           {},
+          {
+            modal: {
+              stacked: true,
+            },
+          },
         ),
       ).toEqual({
-        modal: [],
+        modal: null,
       })
     })
 
@@ -212,44 +188,47 @@ describe('mergeFragments', () => {
           {
             modal: null,
           },
+          {
+            modal: {
+              stacked: true,
+            },
+          },
         ),
       ).toEqual({
-        modal: [],
+        modal: null,
       })
     })
   })
 
-  describe('lazy', () => {
-    it('keeps lazy fragments in "default" when next fragment is undefined', () => {
+  describe('inert', () => {
+    it('keeps inert fragments in "default" when next fragment is undefined', () => {
       const initialDefaultFragment = createFragment()
 
       expect(
         mergeFragments(
           {
-            default: initialDefaultFragment,
+            default: [initialDefaultFragment],
           },
           {},
           {},
         ),
       ).toEqual({
-        default: initialDefaultFragment,
+        default: [initialDefaultFragment],
       })
     })
 
-    it('removes fragments in "default" when explicitly not set to lazy and next fragment is undefined', () => {
+    it('removes fragments in "default" when explicitly not set to inert and next fragment is undefined', () => {
       const initialDefaultFragment = createFragment()
 
       expect(
         mergeFragments(
           {
-            default: initialDefaultFragment,
+            default: [initialDefaultFragment],
           },
           {},
           {
-            fragments: {
-              default: {
-                lazy: false,
-              },
+            default: {
+              inert: false,
             },
           },
         ),
@@ -258,25 +237,69 @@ describe('mergeFragments', () => {
       })
     })
 
-    it('keeps lazy fragments when next fragment is undefined', () => {
-      const initialDefaultFragment = createFragment()
+    it('keeps inert fragments when next fragment is undefined', () => {
+      const initialLeftFragment = createFragment()
 
       expect(
         mergeFragments(
           {
-            left: initialDefaultFragment,
+            left: [initialLeftFragment],
           },
           {},
           {
-            fragments: {
-              left: {
-                lazy: true,
-              },
+            left: {
+              inert: true,
             },
           },
         ),
       ).toEqual({
-        left: initialDefaultFragment,
+        left: [initialLeftFragment],
+      })
+    })
+  })
+
+  describe('lazy', () => {
+    it('reuses previous visit when components are the same', () => {
+      const initialVisitId = '1'
+      const initialLeftFragment = createFragment(
+        {
+          foo: 'bar',
+        },
+        createPage(undefined, initialVisitId),
+      )
+      const nextLeftFragment = createFragment(
+        {
+          foo: 'foo',
+        },
+        createPage(undefined, '2'),
+      )
+
+      expect(
+        mergeFragments(
+          {
+            left: [initialLeftFragment],
+          },
+          {
+            left: [nextLeftFragment],
+          },
+          {
+            left: {
+              lazy: true,
+            },
+          },
+        ),
+      ).toEqual({
+        left: [
+          {
+            ...nextLeftFragment,
+            page: {
+              ...nextLeftFragment.page,
+              visit: {
+                id: initialVisitId,
+              },
+            },
+          },
+        ],
       })
     })
   })

@@ -762,7 +762,12 @@ export default class Router<TComponentModule> {
 
     // Merge current and incoming page into next page
     const pageWithBase = mergePages(
-      page.base,
+      page.base
+        ? {
+            ...page.base,
+            visit: page.visit,
+          }
+        : undefined,
       {
         ...page,
         base: undefined,

@@ -14,6 +14,7 @@ export type RouterOptions<TComponent> = {
     {
       stacked?: boolean
       lazy?: boolean
+      inert?: boolean
     }
   >
   events?: Partial<{

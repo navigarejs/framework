@@ -30,33 +30,16 @@ export default defineComponent({
   },
 
   setup(props, { slots }) {
+    const context = provideFragmentContext(props.name, () => props.fragment)
     const router = useRouter()
-    const fragment = computed(() => {
-      return props.fragment
-    })
-    const component = computed(() => {
-      return fragment.value.component
-    })
     const properties = computed(() => {
       return {
-        ...fragment.value.page!.properties,
-        ...fragment.value.properties,
+        ...props.fragment.page?.properties,
+        ...props.fragment.properties,
       }
     })
-    const rawRoute = computed(() => {
-      return fragment.value.page!.rawRoute
-    })
-    const parameters = computed(() => {
-      return fragment.value.page!.parameters
-    })
-    const defaults = computed(() => {
-      return fragment.value.page!.defaults
-    })
-    const location = computed(() => {
-      return fragment.value.page!.location
-    })
-    const key = computed(() => {
-      return location.value.href
+    const component = computed(() => {
+      return props.fragment.component
     })
     const componentModule = computed(() => {
       const module = router.instance.getComponentModule(component.value)
@@ -72,20 +55,6 @@ export default defineComponent({
       return module
     })
 
-    // Provide context to children
-    const context = reactive({
-      name: props.name,
-      rawRoute,
-      parameters,
-      defaults,
-      location,
-      properties,
-    })
-    Object.assign(window, {
-      [props.name]: context,
-    })
-    provideFragmentContext(context)
-
     return () => {
       const defaultSlot = slots.default
 
@@ -100,6 +69,7 @@ export default defineComponent({
       const renderedComponentModule = h(
         componentModule.value,
         {
+          key: context.key,
           ...properties.value,
         },
         {},
@@ -109,7 +79,6 @@ export default defineComponent({
         return defaultSlot(
           reactive({
             ...toRefs(context),
-            key: key.value,
             component: markRaw(renderedComponentModule),
           }),
         )

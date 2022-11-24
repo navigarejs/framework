@@ -17,8 +17,10 @@
 
 <script lang="ts" setup>
 import PushButton from '../../components/PushButton.vue'
+import { useFragment } from '@navigare/vue3'
+import { ref } from 'vue'
 
-const items = [
+const items = ref([
   {
     label: 'Sales Funnel',
   },
@@ -31,5 +33,17 @@ const items = [
   {
     label: 'Total Sales',
   },
-]
+])
+
+const id = new Date()
+
+const fragment = useFragment()
+const defaultFragment = useFragment('default')
+
+fragment.exposed.shuffle = () => {
+  items.value = items.value
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+}
 </script>

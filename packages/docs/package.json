@@ -32,6 +32,6 @@
     "vue": "^3.2.41"
   },
   "dependencies": {
-    "@vueuse/core": "^9.4.0"
+    "@vueuse/core": "^9.6.0"
   }
 }

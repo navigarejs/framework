@@ -128,60 +128,70 @@ export function mergeDataIntoQueryString(
 }
 
 export function mergeFragments<TComponentModule>(
-  currentFragments: Fragments,
-  nextFragments: Fragments,
+  allCurrentFragments: Fragments,
+  allNextFragments: Fragments,
   options: RouterOptions<TComponentModule>['fragments'] = {},
 ): Fragments {
-  return uniq([...getKeys(currentFragments), ...getKeys(nextFragments)]).reduce(
-    (cumulatedFragments, name) => {
-      let mergedFragment: Fragment[] | null = cumulatedFragments[name] ?? null
-      const nextFragment = nextFragments[name] as Fragment[] | null | undefined
+  return uniq([
+    ...getKeys(allCurrentFragments),
+    ...getKeys(allNextFragments),
+  ]).reduce((allCumulatedFragments, name) => {
+    let cumulatedFragments: Fragment[] | null =
+      allCumulatedFragments[name] ?? null
+    const nextFragments = allNextFragments[name] as
+      | Fragment[]
+      | null
+      | undefined
+    const stacked = !!options[name]?.stacked
+    const inert = isDefined(options[name]?.inert)
+      ? !!options[name]?.inert
+      : name === 'default'
+    const lazy = !!options[name]?.lazy
 
-      if (nextFragment) {
-        if (mergedFragment) {
-          const lastFragment = mergedFragment[mergedFragment.length - 1]
+    if (nextFragments) {
+      if (cumulatedFragments) {
+        const lastFragment = cumulatedFragments[cumulatedFragments.length - 1]
 
-          // In case the last modal points to the same URL, we will replace it
-          for (const fragment of castArray(nextFragment)) {
-            if (
-              !options[name]?.stacked ||
-              (lastFragment?.page &&
-                fragment.page &&
-                lastFragment?.page?.location.href ===
-                  fragment.page?.location.href)
-            ) {
-              mergedFragment.splice(mergedFragment.length - 1, 1, {
-                ...fragment,
-                properties: {
-                  ...lastFragment.properties,
-                  ...fragment.properties,
-                },
-              })
-            } else {
-              mergedFragment.push(fragment)
+        for (const fragment of castArray(nextFragments)) {
+          if (
+            !stacked ||
+            lastFragment?.page?.location.href === fragment.page?.location.href
+          ) {
+            const nextFragment = {
+              ...fragment,
+              properties: {
+                ...lastFragment.properties,
+                ...fragment.properties,
+              },
             }
-          }
-        } else {
-          mergedFragment = [...nextFragment]
-        }
-      } else if (nextFragment === null) {
-        mergedFragment = null
-      } else if (
-        (isDefined(options[name]?.lazy)
-          ? !options[name]?.lazy
-          : name !== 'default') &&
-        !nextFragment
-      ) {
-        mergedFragment = null
-      }
 
-      return {
-        ...cumulatedFragments,
-        [name]: mergedFragment,
+            if (lazy && lastFragment?.component.id === fragment?.component.id) {
+              nextFragment.page!.visit = lastFragment.page?.visit!
+            }
+
+            cumulatedFragments.splice(
+              cumulatedFragments.length - 1,
+              1,
+              nextFragment,
+            )
+          } else {
+            cumulatedFragments.push(fragment)
+          }
+        }
+      } else {
+        cumulatedFragments = [...nextFragments]
       }
-    },
-    currentFragments,
-  )
+    } else if (nextFragments === null) {
+      cumulatedFragments = null
+    } else if (!nextFragments && !inert) {
+      cumulatedFragments = null
+    }
+
+    return {
+      ...allCumulatedFragments,
+      [name]: cumulatedFragments,
+    }
+  }, allCurrentFragments)
 }
 
 export function assignPageToFragments(page: Page) {
