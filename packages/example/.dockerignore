@@ -10,6 +10,7 @@ storage/logs/*
 .rr.yml
 rr
 vendor
+public/hot
 
 # 2. Ignore common files/directories we don't need
 .vscode
