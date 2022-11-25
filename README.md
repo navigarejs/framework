@@ -6,6 +6,8 @@
 
 Navigare lets you quickly build a modern single-page app using classic server-side routing and controllers. Right now, we support Vue3 and Laravel only but the library is designed to work with other front-end and back-end frameworks as well. Find the full documentation [here](https://navigarejs.github.io/framework/).
 
+Or if you want to see it in action you can find a demo [here](https://navigare.fly.dev/).
+
 ## Acknowledgment
 
 Thanks a lot to the maintainers of [Inertia](https://inertiajs.com/) and [Ziggy](https://github.com/tighten/ziggy) for the work they have done. Both of the libraries serve as an huge inspiration for this library but unfortunately they did not fit all the use cases that I was looking for.
