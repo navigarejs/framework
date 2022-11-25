@@ -10,7 +10,7 @@ const github = 'navigare/framework'
 
 const twitter = 'jaulz'
 
-const logo = 'https://github.com/navigarejs/framework/main/assets/logo.svg'
+const logo = 'https://github.com/navigarejs/framework/blob/main/assets/logo.svg'
 
 const pkg = JSON.parse(
   fs.readFileSync(path.resolve('../../package.json'), 'utf-8'),
