@@ -328,7 +328,7 @@ class Response implements Responsable
       is_string($arguments[0])
     ) {
       $fragmentName = $arguments[0];
-      $properties = $arguments[1];
+      $properties = $arguments[1] ?? [];
 
       if (Str::startsWith($method, 'withFallback')) {
         return $this->withFallbackFragment(

@@ -1,3 +1,4 @@
+import useFragment from './compositions/useFragment'
 import useRouter from './compositions/useRouter'
 import {
   FormControl,
@@ -42,6 +43,7 @@ export default function createForm<
   getInitialValues: TValues | (() => TValues),
   options: FormOptions<TValues, TRoutable> = {},
 ): FormControl<TValues> {
+  const fragment = useFragment()
   const name = computed(() => {
     if (isFunction(getName)) {
       return getName()
@@ -279,6 +281,8 @@ export default function createForm<
         if (routable.value) {
           const visitOptions = options as FormVisitOptions<TValues>
           const visit = await router.instance.visit(routable.value, {
+            fragmentName: fragment.name ?? undefined,
+
             data: await transform(clonedValues),
 
             events: {

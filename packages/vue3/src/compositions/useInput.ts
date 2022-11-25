@@ -223,6 +223,9 @@ export default function useInput(
     () => value.value,
     () => {
       handleChange()
+
+      form.setError(path.value, null)
+
       validate()
     },
   )

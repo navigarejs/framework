@@ -110,6 +110,7 @@ export type RouterControl = {
 
 // Fragments
 export type FragmentControl = {
+  name: string | null
   properties: Page['properties'] & Record<string, any>
   rawRoute: Page['rawRoute']
   parameters: Page['parameters']

@@ -259,7 +259,7 @@ const props = defineProps({
   organization: Object,
   contacts: Array,
 })
-console.log(props)
+
 const breadcrumbs = useBreadcrumbs()
 
 const form = createForm(

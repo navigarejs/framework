@@ -254,6 +254,7 @@ export type LocationVisit = {
 }
 
 export type VisitOptions = Partial<{
+  fragmentName: string
   method: RawRouteMethod
   data: VisitData
   replace: boolean

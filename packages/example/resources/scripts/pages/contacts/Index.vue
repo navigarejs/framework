@@ -3,7 +3,7 @@
     <breadcrumbs />
 
     <page-title />
-
+    {{ fragment.visit.id }}
     <div class="flex items-center justify-between mb-6">
       <div></div>
 
@@ -139,10 +139,12 @@ import Icon from '../../components/Icon.vue'
 import PageTitle from '../../components/PageTitle.vue'
 import Pagination from '../../components/Pagination.vue'
 import PushButton from '../../components/PushButton.vue'
-import { NavigareLink } from '@navigare/vue3'
+import { NavigareLink, useFragment } from '@navigare/vue3'
 
 defineProps({
   filters: Object,
   contacts: Object,
 })
+
+const fragment = useFragment()
 </script>

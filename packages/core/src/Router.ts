@@ -441,6 +441,7 @@ export default class Router<TComponentModule> {
   ): Promise<Visit> {
     let { preserveScroll = false, preserveState = false } = options
     const {
+      fragmentName,
       replace = false,
       properties = [],
       headers = {},
@@ -650,6 +651,7 @@ export default class Router<TComponentModule> {
         replace,
         preserveScroll,
         preserveState,
+        fragmentName,
       })
 
       // Check if any errors occurred
@@ -749,16 +751,24 @@ export default class Router<TComponentModule> {
 
   protected async setPage(
     page: Page,
-    {
-      replace = false,
-      preserveScroll = false,
-    }: {
+    options: {
       replace?: boolean
       preserveScroll?: VisitPreserveStateOption
       preserveState?: VisitPreserveStateOption
+      fragmentName?: string
     } = {},
   ): Promise<Page> {
     const initialVisit = !this.page
+    const { replace = false, preserveScroll = false, fragmentName } = options
+    const fragments = fragmentName
+      ? {
+          ...this.options.fragments,
+          [fragmentName]: {
+            ...this.options.fragments?.[fragmentName],
+            lazy: true,
+          },
+        }
+      : this.options.fragments
 
     // Merge current and incoming page into next page
     const pageWithBase = mergePages(
@@ -772,7 +782,7 @@ export default class Router<TComponentModule> {
         ...page,
         base: undefined,
       },
-      this.options.fragments,
+      fragments,
     )
     const nextPage = mergePages(
       this.page,
@@ -780,7 +790,7 @@ export default class Router<TComponentModule> {
         pageWithBase,
         this.transformServerPropertyKey.bind(this),
       ),
-      this.options.fragments,
+      fragments,
     )
 
     // Reuse or initialize scroll regions and state

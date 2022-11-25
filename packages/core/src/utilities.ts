@@ -146,7 +146,7 @@ export function mergeFragments<TComponentModule>(
     const inert = isDefined(options[name]?.inert)
       ? !!options[name]?.inert
       : name === 'default'
-    const lazy = !!options[name]?.lazy
+    const lazy = isDefined(options[name]?.lazy) ? !!options[name]?.lazy : false
 
     if (nextFragments) {
       if (cumulatedFragments) {
@@ -165,7 +165,10 @@ export function mergeFragments<TComponentModule>(
               },
             }
 
-            if (lazy && lastFragment?.component.id === fragment?.component.id) {
+            if (
+              (lazy && lastFragment?.component.id === fragment?.component.id) ||
+              lastFragment?.page?.location.href === fragment.page?.location.href
+            ) {
               nextFragment.page!.visit = lastFragment.page?.visit!
             }
 

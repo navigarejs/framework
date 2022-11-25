@@ -67,6 +67,7 @@ export default function useFragment(
 
   // Expose again
   const control: FragmentControl = reactive({
+    name: name ?? context.value?.name ?? null,
     key,
     rawRoute,
     parameters,
