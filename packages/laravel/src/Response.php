@@ -114,6 +114,26 @@ class Response implements Responsable
   }
 
   /**
+   * Add fallback fragment to response.
+   *
+   * @param  string  $fragmentName
+   * @param  string  $component
+   * @param  array|Arrayable  $properties
+   * @return self
+   */
+  public function withFallbackFragment(
+    string $fragmentName,
+    string $componentName,
+    array|Arrayable $properties
+  ): self {
+    if (isset($this->fragments[$fragmentName])) {
+      return $this;
+    }
+
+    return $this->withFragment($fragmentName, $componentName, $properties);
+  }
+
+  /**
    * Extend data that will be passed to the view template.
    *
    * @param  string|array  $key
@@ -307,13 +327,19 @@ class Response implements Responsable
       isset($arguments[0]) &&
       is_string($arguments[0])
     ) {
-      $this->withFragment(
+      if (Str::startsWith($method, 'withFallback')) {
+        return $this->withFallbackFragment(
+          Str::camel(Str::after($method, 'withFallback')),
+          $arguments[0],
+          $arguments[1] ?? []
+        );
+      }
+
+      return $this->withFragment(
         Str::camel(Str::after($method, 'with')),
         $arguments[0],
         $arguments[1] ?? []
       );
-
-      return $this;
     }
 
     trigger_error(
