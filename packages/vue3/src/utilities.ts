@@ -44,11 +44,11 @@ export function getRouteProp() {
 }
 
 export function ensureFunction(
-  func: unknown,
+  maybeFunction: unknown,
 ): ((...args: unknown[]) => any) | undefined {
-  if (!isFunction(func)) {
+  if (!isFunction(maybeFunction)) {
     return undefined
   }
 
-  return func
+  return maybeFunction
 }

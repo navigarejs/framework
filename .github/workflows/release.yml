@@ -44,10 +44,6 @@ jobs:
         if: steps.changes.outputs.package == 'true'
         run: yarn install --immutable
 
-      - name: Pull latest changes
-        if: steps.changes.outputs.package == 'true'
-        run: git pull --rebase
-
       - name: Release
         if: steps.changes.outputs.package == 'true'
         env:

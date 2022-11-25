@@ -102,7 +102,7 @@ class Response implements Responsable
   public function withFragment(
     string $fragmentName,
     string $componentName,
-    array|Arrayable $properties
+    array|Arrayable $properties = []
   ): self {
     $this->fragments[$fragmentName] = new Fragment(
       name: $fragmentName,
@@ -124,7 +124,7 @@ class Response implements Responsable
   public function withFallbackFragment(
     string $fragmentName,
     string $componentName,
-    array|Arrayable $properties
+    array|Arrayable $properties = []
   ): self {
     if (isset($this->fragments[$fragmentName])) {
       return $this;
@@ -327,18 +327,21 @@ class Response implements Responsable
       isset($arguments[0]) &&
       is_string($arguments[0])
     ) {
+      $fragmentName = $arguments[0];
+      $properties = $arguments[1];
+
       if (Str::startsWith($method, 'withFallback')) {
         return $this->withFallbackFragment(
           Str::camel(Str::after($method, 'withFallback')),
-          $arguments[0],
-          $arguments[1] ?? []
+          $fragmentName,
+          $properties
         );
       }
 
       return $this->withFragment(
         Str::camel(Str::after($method, 'with')),
-        $arguments[0],
-        $arguments[1] ?? []
+        $fragmentName,
+        $properties
       );
     }
 
