@@ -10,8 +10,7 @@ const github = 'navigare/framework'
 
 const twitter = 'jaulz'
 
-const logo =
-  'https://raw.githubusercontent.com/jaulz/navigare/main/assets/logo.svg'
+const logo = 'https://github.com/navigarejs/framework/main/assets/logo.svg'
 
 const pkg = JSON.parse(
   fs.readFileSync(path.resolve('../../package.json'), 'utf-8'),
@@ -59,13 +58,13 @@ export default async function () {
       editLink: {
         repo: github,
         branch: 'main',
-        dir: 'packages/docs',
+        dir: 'packages/docs/src',
         text: 'Suggest changes to this page',
       },
 
       socialLinks: [
         { icon: 'twitter', link: `https://twitter.com/${twitter}` },
-        { icon: 'github', link: `'https://github.com/${github}` },
+        { icon: 'github', link: `https://github.com/${github}` },
       ],
 
       sidebar: {
