@@ -1,4 +1,4 @@
-import { PartialRoute, Routable } from '@navigare/core'
+import { PartialRoute, Routable, RouteName } from '@navigare/core'
 import castArray from 'lodash.castarray'
 import isArray from 'lodash.isarray'
 import isFunction from 'lodash.isfunction'
@@ -32,11 +32,8 @@ export function getVNodeText(
 
 export function getRouteType() {
   return [String, Object, Array] as PropType<
-    | Routable<import('@navigare/core').RouteName>
-    | [
-        Routable<import('@navigare/core').RouteName>,
-        ...(PartialRoute<import('@navigare/core').RouteName> | string)[],
-      ]
+    | Routable<RouteName>
+    | [Routable<RouteName>, ...(PartialRoute<RouteName> | string)[]]
   >
 }
 
