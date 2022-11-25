@@ -1,20 +1,21 @@
 import { injectRouterContext } from './../contexts/injectRouterContext'
 import { RouterControl } from './../types'
 import useFragment from './useFragment'
+import usePage from './usePage'
 import { RouterEventListener, Route } from '@navigare/core'
 import { computed, markRaw, onMounted, onUnmounted, reactive, ref } from 'vue'
 
 export default function useRouter() {
   const { router } = injectRouterContext()
-  const page = ref(router.page)
+  const page = usePage()
   const previousPage = ref(router.previousPage)
   const latestPage = ref(router.latestPage)
   const pages = ref(router.pages)
   const location = computed(() => {
-    return page.value.location
+    return page.location
   })
   const layout = computed(() => {
-    return page.value.layout
+    return page.layout
   })
   const fragment = useFragment()
   const parameters = computed(() => fragment.parameters)
@@ -22,7 +23,7 @@ export default function useRouter() {
     return new Route(fragment.rawRoute, fragment.parameters, false)
   })
   const fragments = computed(() => {
-    return page.value.fragments
+    return page.fragments
   })
   const processing = ref(false)
 
@@ -33,8 +34,7 @@ export default function useRouter() {
   const handleStart: RouterEventListener<'start'> = () => {
     processing.value = true
   }
-  const handleNavigate: RouterEventListener<'navigate'> = (event) => {
-    page.value = event.detail.page
+  const handleNavigate: RouterEventListener<'navigate'> = () => {
     previousPage.value = router.previousPage
     latestPage.value = router.latestPage
     pages.value = router.pages

@@ -168,6 +168,13 @@ const form = createForm(
   {
     validate: true,
 
+    transform: (values) => {
+      return {
+        ...values,
+        photo: values.photo?.startsWith('http') ? undefined : values.photo,
+      }
+    },
+
     events: {
       success: () => {
         form.reset()

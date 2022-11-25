@@ -1,14 +1,14 @@
 <template>
   <navigare-input
     :name="name"
-    #default="{ attributes, value, events }"
+    #default="{ ref, name, attributes, value, events }"
   >
-    <div v-bind="attributes">
+    <div :ref="ref">
       <input
-        ref="input"
         type="file"
         :accept="accept"
         class="hidden"
+        v-bind="attributes"
         @change="(event) => handleChange(event, value)"
       />
 

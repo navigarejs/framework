@@ -1,6 +1,7 @@
 import { injectRouterContext } from '../contexts/injectRouterContext'
 import { FragmentControl } from '../types'
 import { injectFragmentContext } from './../contexts/injectFragmentContext'
+import usePage from './usePage'
 import { computed, reactive } from 'vue'
 
 export default function useFragment(): FragmentControl
@@ -20,8 +21,9 @@ export default function useFragment(
   const fragment = computed(() => {
     return context.value?.fragment
   })
+  const activePage = usePage()
   const page = computed(() => {
-    return context.value?.page ?? router.router.page
+    return context.value?.page ?? activePage
   })
   const properties = computed(() => {
     return {

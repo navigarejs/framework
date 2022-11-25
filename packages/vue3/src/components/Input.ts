@@ -7,6 +7,7 @@ import {
   FormValue,
 } from './../types'
 import {
+  computed,
   PropType,
   Ref,
   ref,
@@ -49,6 +50,13 @@ export default defineComponent({
       validate: props.validate,
     })
     const element = ref<HTMLObjectElement | null>()
+    const isValidInputElement = computed(() => {
+      return (
+        element.value instanceof HTMLInputElement ||
+        element.value instanceof HTMLSelectElement ||
+        element.value instanceof HTMLObjectElement
+      )
+    })
 
     // Set validation message
     watch(
@@ -58,10 +66,12 @@ export default defineComponent({
           return
         }
 
-        element.value?.setCustomValidity(nextErrorMessage)
+        if (isValidInputElement) {
+          element.value?.setCustomValidity(nextErrorMessage)
 
-        if (nextErrorMessage && input.focused) {
-          element.value?.reportValidity()
+          if (nextErrorMessage && input.focused) {
+            element.value?.reportValidity()
+          }
         }
       },
       {
@@ -82,7 +92,9 @@ export default defineComponent({
           return
         }
 
-        element.value?.reportValidity()
+        if (isValidInputElement) {
+          element.value?.reportValidity()
+        }
       },
       {
         immediate: true,

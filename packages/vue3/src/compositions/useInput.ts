@@ -79,7 +79,7 @@ export default function useInput(
     return form.getInputId(path.value)
   })
   const checkValue = () => {
-    if (!isDefined(get(form.values, path.value))) {
+    if (false && !isDefined(get(form.values, path.value))) {
       throwError(`\`${name.value}\` is not defined in values of form.`)
     }
   }

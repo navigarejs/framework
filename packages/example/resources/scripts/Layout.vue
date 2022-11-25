@@ -161,6 +161,9 @@ watch(
       })
     }
   },
+  {
+    deep: true,
+  },
 )
 </script>
 

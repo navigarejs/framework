@@ -51,7 +51,10 @@ class Component implements Arrayable
         '*.' . $extension,
       ])
     );
-    if (!$absolutePath || !in_array(realpath($absolutePath), $files)) {
+    if (
+      !realpath($absolutePath) ||
+      !in_array(realpath($absolutePath), $files)
+    ) {
       throw new ComponentNotFoundException($name, $absolutePath ?: $path);
     }
 

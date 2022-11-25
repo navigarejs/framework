@@ -87,12 +87,13 @@ class UsersController extends Controller
 
   public function update(UpdateRequest $request, User $user)
   {
-    if (App::environment('demo') && $user->isDemoUser()) {
+    if ($user->isDemoUser()) {
       return Redirect::back()->with(
         'error',
         'Updating the demo user is not allowed.'
       );
     }
+
     $user->update(
       $request->safe()->only(['first_name', 'last_name', 'email', 'owner'])
     );

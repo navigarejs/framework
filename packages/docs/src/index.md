@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: Navigare
-  text: A framework for creating server-driven single page apps.
-  tagline: A modern alternative to Inertia with a lot of new features.
+  text: A modern alternative to Inertia with a lot of new features.
+  tagline: The framework for creating server-driven single page apps.
   image:
     src: https://github.com/navigarejs/framework/main/assets/logo.svg
     alt: Navigare
