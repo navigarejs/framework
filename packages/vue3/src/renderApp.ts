@@ -15,7 +15,7 @@ export default async function renderApp({
     htmlAttrs: htmlAttributes,
     bodyAttrs: bodyAttributes,
     bodyTags,
-  } = renderHeadToString(head)
+  } = await renderHeadToString(head)
 
   return {
     id,
