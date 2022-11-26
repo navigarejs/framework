@@ -34,7 +34,6 @@
     "prettier": "^2.8.0"
   },
   "resolutions": {
-    "@semantic-release/npm@^8.0.0": "patch:@semantic-release/npm@npm%3A8.0.3#./.yarn/patches/@semantic-release-npm-npm-8.0.3-06459d51fe.patch",
-    "vitepress@1.0.0-alpha.29": "patch:vitepress@npm%3A1.0.0-alpha.29#./.yarn/patches/vitepress-npm-1.0.0-alpha.29-1bb915c8c3.patch"
+    "@semantic-release/npm@^8.0.0": "patch:@semantic-release/npm@npm%3A8.0.3#./.yarn/patches/@semantic-release-npm-npm-8.0.3-06459d51fe.patch"
   }
 }

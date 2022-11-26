@@ -12261,25 +12261,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitepress@patch:vitepress@npm%3A1.0.0-alpha.29#./.yarn/patches/vitepress-npm-1.0.0-alpha.29-1bb915c8c3.patch::locator=navigare%40workspace%3A.":
-  version: 1.0.0-alpha.29
-  resolution: "vitepress@patch:vitepress@npm%3A1.0.0-alpha.29#./.yarn/patches/vitepress-npm-1.0.0-alpha.29-1bb915c8c3.patch::version=1.0.0-alpha.29&hash=a25aca&locator=navigare%40workspace%3A."
-  dependencies:
-    "@docsearch/css": ^3.3.0
-    "@docsearch/js": ^3.3.0
-    "@vitejs/plugin-vue": ^3.2.0
-    "@vue/devtools-api": ^6.4.5
-    "@vueuse/core": ^9.4.0
-    body-scroll-lock: 4.0.0-beta.0
-    shiki: ^0.11.1
-    vite: ^3.2.3
-    vue: ^3.2.41
-  bin:
-    vitepress: bin/vitepress.js
-  checksum: 6962337f099677a3d0421ef0e20a90429cdc77699827a958f05a6b59f89d88303ffb75c759e1f7557987b242c95752d0daad76c6b9b63fe3a8515a9979aa2662
-  languageName: node
-  linkType: hard
-
 "vitest@npm:^0.24.5":
   version: 0.24.5
   resolution: "vitest@npm:0.24.5"
