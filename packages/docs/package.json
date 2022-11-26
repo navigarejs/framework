@@ -3,7 +3,7 @@
   "version": "0.0.0-development",
   "license": "MIT",
   "private": true,
-  "description": "A framework for creating server-driven single page apps.",
+  "description": "Navigare lets you quickly build a modern single-page app with Vue while using Laravel.",
   "contributors": [
     "Julian Hundeloh <github@julian.fyi>"
   ],
