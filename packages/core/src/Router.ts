@@ -40,6 +40,11 @@ import {
   transformPagePropertyKeys,
   transformPropertyKeys,
   transformPropertyKey,
+  castArray,
+  cloneDeep,
+  debounce,
+  isObject,
+  isString,
 } from './utilities'
 import {
   default as Axios,
@@ -48,11 +53,6 @@ import {
   RawAxiosResponseHeaders,
   AxiosStatic,
 } from 'axios'
-import castArray from 'lodash.castarray'
-import cloneDeep from 'lodash.clonedeep'
-import debounce from 'lodash.debounce'
-import isObject from 'lodash.isobject'
-import isString from 'lodash.isstring'
 import { SetRequired } from 'type-fest'
 
 export default class Router<TComponentModule> {

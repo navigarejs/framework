@@ -2,7 +2,7 @@ import PartialRoute from './PartialRoute'
 import Route from './Route'
 import { Default, Wildcard } from './symbols'
 import { RawRoute, RawRouteParameters, RouteName } from './types'
-import isFunction from 'lodash.isfunction'
+import { isFunction } from './utilities'
 import { ConditionalPick } from 'type-fest'
 import type { IsEmptyObject } from 'type-fest'
 

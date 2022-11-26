@@ -13,17 +13,21 @@ import {
   FormValue,
 } from '../types'
 import useForm from './useForm'
-import { throwError, isDefined, isNotNull } from '@navigare/core'
-import castArray from 'lodash.castarray'
-import debounce from 'lodash.debounce'
-import get from 'lodash.get'
-import isArray from 'lodash.isarray'
-import isBoolean from 'lodash.isboolean'
-import isFunction from 'lodash.isfunction'
-import isObject from 'lodash.isobject'
-import isString from 'lodash.isstring'
-import mergeWith from 'lodash.mergewith'
-import set from 'lodash.set'
+import {
+  throwError,
+  isDefined,
+  isNotNull,
+  castArray,
+  debounce,
+  get,
+  isArray,
+  isBoolean,
+  isFunction,
+  isObject,
+  isString,
+  mergeWith,
+  set,
+} from '@navigare/core'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
 const resolveValidate = (

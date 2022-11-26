@@ -16,13 +16,40 @@ import {
 } from './types'
 import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
-import isArray from 'lodash.isarray'
+import debounce from 'lodash.debounce'
+import get from 'lodash.get'
+import isBoolean from 'lodash.isboolean'
+import isEqual from 'lodash.isequal'
 import isFunction from 'lodash.isfunction'
+import isNumber from 'lodash.isnumber'
 import isObject from 'lodash.isobject'
 import isString from 'lodash.isstring'
-import merge from 'lodash.merge'
+import isSymbol from 'lodash.issymbol'
+import mergeWith from 'lodash.mergewith'
+import set from 'lodash.set'
 import uniq from 'lodash.uniq'
 import { stringify, parse } from 'qs'
+
+export {
+  castArray,
+  isFunction,
+  isObject,
+  isString,
+  uniq,
+  isSymbol,
+  debounce,
+  get,
+  isBoolean,
+  isNumber,
+  mergeWith,
+  set,
+  cloneDeep,
+  isEqual,
+}
+
+export function isArray(value: any): value is any[] {
+  return Array.isArray(value)
+}
 
 export function isSSR(): boolean {
   return typeof window === 'undefined'
@@ -105,7 +132,7 @@ export function mergeDataIntoQueryString(
 
   if (method === RouteMethod.GET && Object.keys(data).length) {
     url.search = stringify(
-      merge(parse(url.search, { ignoreQueryPrefix: true }), data),
+      mergeWith(parse(url.search, { ignoreQueryPrefix: true }), data),
       {
         encodeValuesOnly: true,
         arrayFormat: queryStringArrayFormat,

@@ -2,8 +2,7 @@ import useRouter from './../compositions/useRouter'
 import { FragmentContext } from './../contexts/provideFragmentContext'
 import { ContextOf } from './../types'
 import FragmentVue from './Fragment'
-import { isDefined, isNotNull, Fragment } from '@navigare/core'
-import castArray from 'lodash.castarray'
+import { isDefined, isNotNull, Fragment, castArray } from '@navigare/core'
 import { computed, VNode, defineComponent, h } from 'vue'
 
 export default defineComponent({

@@ -1,6 +1,5 @@
 import { injectRouterContext } from '../contexts/injectRouterContext'
-import { Page, RouterEventListener } from '@navigare/core'
-import cloneDeep from 'lodash.clonedeep'
+import { Page, RouterEventListener, cloneDeep } from '@navigare/core'
 import { onMounted, onUnmounted, reactive } from 'vue'
 
 export default function usePage(): Page {

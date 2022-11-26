@@ -10,12 +10,17 @@ import {
   Component,
   RouterLocation,
 } from './types'
-import { getKeys, isNotNull, mapRouteMethod, throwError } from './utilities'
-import get from 'lodash.get'
-import isBoolean from 'lodash.isboolean'
-import isObject from 'lodash.isobject'
-import isString from 'lodash.isstring'
-import isSymbol from 'lodash.issymbol'
+import {
+  getKeys,
+  isNotNull,
+  mapRouteMethod,
+  throwError,
+  get,
+  isBoolean,
+  isObject,
+  isString,
+  isSymbol,
+} from './utilities'
 import { parse } from 'qs'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

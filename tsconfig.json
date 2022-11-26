@@ -16,6 +16,7 @@
     "esModuleInterop": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "noResolve": true
   }
 }

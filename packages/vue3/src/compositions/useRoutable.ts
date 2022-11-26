@@ -11,10 +11,10 @@ import {
   VisitOptions,
   ResolvedRoutable,
   Route,
+  castArray,
+  isArray,
+  isFunction,
 } from '@navigare/core'
-import castArray from 'lodash.castarray'
-import isArray from 'lodash.isarray'
-import isFunction from 'lodash.isfunction'
 import { Component, computed, markRaw, reactive, ref } from 'vue'
 
 type MatchingRoute = (Routable | PartialRoute) | (Routable | PartialRoute)[]

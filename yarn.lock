@@ -2088,14 +2088,15 @@ __metadata:
     "@types/lodash.clonedeep": ^4.5.7
     "@types/lodash.debounce": ^4.0.7
     "@types/lodash.get": ^4.4.7
-    "@types/lodash.isarray": ^4.0.7
     "@types/lodash.isboolean": ^3.0.7
+    "@types/lodash.isequal": ^4.5.6
     "@types/lodash.isfunction": ^3.0.7
     "@types/lodash.isnumber": ^3.0.7
     "@types/lodash.isobject": ^3.0.7
     "@types/lodash.isstring": ^4.0.7
     "@types/lodash.issymbol": ^4.0.7
-    "@types/lodash.merge": ^4.6.7
+    "@types/lodash.mergewith": ^4.6.7
+    "@types/lodash.set": ^4.3.7
     "@types/lodash.uniq": ^4.5.7
     "@types/qs": ^6.9.7
     "@types/semantic-release": ^17.2.4
@@ -2107,14 +2108,15 @@ __metadata:
     lodash.clonedeep: ^4.5.0
     lodash.debounce: ^4.0.8
     lodash.get: ^4.4.2
-    lodash.isarray: ^4.0.0
     lodash.isboolean: ^3.0.3
+    lodash.isequal: ^4.5.0
     lodash.isfunction: ^3.0.9
     lodash.isnumber: ^3.0.3
     lodash.isobject: ^3.0.2
     lodash.isstring: ^4.0.1
     lodash.issymbol: ^4.0.1
-    lodash.merge: ^4.6.2
+    lodash.mergewith: ^4.6.2
+    lodash.set: ^4.3.2
     lodash.uniq: ^4.5.0
     microbundle: ^0.15.1
     prettier: ^2.8.0
@@ -2283,37 +2285,11 @@ __metadata:
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@trivago/prettier-plugin-sort-imports": ^3.4.0
-    "@types/lodash.castarray": ^4.4.7
-    "@types/lodash.clonedeep": ^4.5.7
-    "@types/lodash.debounce": ^4.0.7
-    "@types/lodash.isarray": ^4.0.7
-    "@types/lodash.isboolean": ^3.0.7
-    "@types/lodash.isequal": ^4.5.6
-    "@types/lodash.isfunction": ^3.0.7
-    "@types/lodash.isnumber": ^3.0.7
-    "@types/lodash.isobject": ^3.0.7
-    "@types/lodash.isstring": ^4.0.7
-    "@types/lodash.issymbol": ^4.0.7
-    "@types/lodash.mergewith": ^4.6.7
-    "@types/lodash.set": ^4.3.7
     "@types/semantic-release": ^17.2.4
     "@vue/devtools-api": ^6.4.5
     "@vueuse/head": ^1.0.18
     axios: ^1.2.0
     eslint: ^8.28.0
-    lodash.castarray: ^4.4.0
-    lodash.clonedeep: ^4.5.0
-    lodash.debounce: ^4.0.8
-    lodash.isarray: ^4.0.0
-    lodash.isboolean: ^3.0.3
-    lodash.isequal: ^4.5.0
-    lodash.isfunction: ^3.0.9
-    lodash.isnumber: ^3.0.3
-    lodash.isobject: ^3.0.2
-    lodash.isstring: ^4.0.1
-    lodash.issymbol: ^4.0.1
-    lodash.mergewith: ^4.6.2
-    lodash.set: ^4.3.2
     microbundle: ^0.15.1
     prettier: ^2.8.0
     semantic-release: ^19.0.5
@@ -3215,15 +3191,6 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: b4b0e8568b78d10d5336ce2caaec13d1207ddbe0db20f5fe2bdeacc8e64e8ecd38d46f570a266acacf24855b11d1ac855d499fc6055750ea82b5b8b148f6d4ad
-  languageName: node
-  linkType: hard
-
-"@types/lodash.merge@npm:^4.6.7":
-  version: 4.6.7
-  resolution: "@types/lodash.merge@npm:4.6.7"
-  dependencies:
-    "@types/lodash": "*"
-  checksum: 94cd6fb8e606756a28f45d63c658aacfbce11a151f7fa322c4a3e87aa50d8bf26e0ae8cba0250070a7c5a6792fc51f79abf4c648bbb1850692be386cd76cd0ca
   languageName: node
   linkType: hard
 

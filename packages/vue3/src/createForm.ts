@@ -17,16 +17,16 @@ import {
   getKeys,
   isDefined,
   createEmitter,
+  isArray,
+  isFunction,
+  isEqual,
+  isSymbol,
+  mergeWith,
+  set,
+  get,
+  castArray,
+  cloneDeep,
 } from '@navigare/core'
-import castArray from 'lodash.castarray'
-import cloneDeep from 'lodash.clonedeep'
-import get from 'lodash.get'
-import isArray from 'lodash.isarray'
-import isEqual from 'lodash.isequal'
-import isFunction from 'lodash.isfunction'
-import isSymbol from 'lodash.issymbol'
-import mergeWith from 'lodash.mergewith'
-import set from 'lodash.set'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
 const globalDisabled = ref(false)

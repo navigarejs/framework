@@ -1,7 +1,5 @@
 import useRouter from './useRouter'
-import { RouteParameter } from '@navigare/core'
-import get from 'lodash.get'
-import isString from 'lodash.isstring'
+import { RouteParameter, get, isString } from '@navigare/core'
 import { computed } from 'vue'
 
 export default function useParameter<TParameter extends RouteParameter>(

@@ -8,9 +8,7 @@ import {
   RouteDefaults,
   QueryStringArrayFormat,
 } from './types'
-import { throwError } from './utilities'
-import get from 'lodash.get'
-import isBoolean from 'lodash.isboolean'
+import { throwError, get, isBoolean } from './utilities'
 import { stringify } from 'qs'
 
 export default class Route<

@@ -6,8 +6,8 @@ import {
   VisitData,
   RouteMethod,
   RouterEvent,
+  isString,
 } from '@navigare/core'
-import isString from 'lodash.isstring'
 import { DefineComponent, normalizeClass, PropType } from 'vue'
 import { defineComponent, h } from 'vue'
 
