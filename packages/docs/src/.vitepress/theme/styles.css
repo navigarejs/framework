@@ -3,11 +3,7 @@
 
   --vp-c-brand: #fc5c7d !important;
   --vp-c-brand-dark: #f02952 !important;
-
-  --vp-button-brand-text: white !important;
-  --vp-button-brand-hover-text: white !important;
-  --vp-button-brand-bg: #6865ec !important;
-  --vp-button-brand-hover-bg: #4b48e8 !important;
-  --vp-button-brand-border: #6865ec !important;
-  --vp-button-brand-hover-border: #4b48e8 !important;
+  --vp-c-brand-darker: #f02952 !important;
+  --vp-c-brand-light: #fc5c7d !important;
+  --vp-c-brand-lighter: #fc5c7d !important;
 }

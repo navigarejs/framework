@@ -32,7 +32,7 @@ export default async function () {
 
     lastUpdated: true,
 
-    base: isCI ? '/framework' : undefined,
+    base: '/framework',
 
     head: [
       ['meta', { property: 'og:type', content: 'website' }],
@@ -57,9 +57,8 @@ export default async function () {
       },
 
       editLink: {
-        repo: github,
-        branch: 'main',
-        dir: 'packages/docs/src',
+        pattern:
+          'https://github.com/navigarejs/framework/edit/main/packages/docs/src/:path',
         text: 'Suggest changes to this page',
       },
 

@@ -28,10 +28,7 @@
     "release": ""
   },
   "devDependencies": {
-    "vitepress": "^1.0.0-draft.8",
-    "vue": "^3.2.41"
-  },
-  "dependencies": {
-    "@vueuse/core": "^9.6.0"
+    "vitepress": "1.0.0-alpha.29",
+    "vue": "^3.2.45"
   }
 }

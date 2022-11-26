@@ -10,7 +10,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /framework/guide/getting-started/introduction.html
+      link: /guide/getting-started/introduction.html
     - theme: alt
       text: View on GitHub
       link: https://github.com/navigarejs/framework
