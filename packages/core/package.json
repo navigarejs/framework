@@ -6,7 +6,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "Navigare lets you quickly build a modern single-page app with Vue while using Laravel.",
+  "description": "Navigare lets you quickly build modern single-page apps with Vue and Laravel.",
   "contributors": [
     "Julian Hundeloh <github@julian.fyi>"
   ],

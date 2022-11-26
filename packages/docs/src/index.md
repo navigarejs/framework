@@ -3,10 +3,9 @@ layout: home
 
 hero:
   name: Navigare
-  text: A modern alternative to Inertia with a lot of new features.
-  tagline: The framework for creating server-driven single page apps.
+  tagline: Quickly build modern single-page apps with Vue and Laravel.
   image:
-    src: https://github.com/navigarejs/framework/blob/main/assets/logo.svg
+    src: https://raw.githubusercontent.com/navigarejs/framework/main/assets/logo.svg
     alt: Navigare
   actions:
     - theme: brand
