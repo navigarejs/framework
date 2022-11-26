@@ -1,6 +1,6 @@
 # Introduction
 
-Navigare is an alternative to [Inertia](https://inertiajs.com/) which allows you to create a modern SPA with a traditional back-end. If you already know how Inertia works you will easily learn how to use Navigare as well. If not, simply build controllers and page views like you've always done!
+Navigare is an alternative to [Inertia](https://inertiajs.com/) which allows you to create a modern SPA with a traditional back-end like [Laravel](https://laravel.com/). If you already know how Inertia works you will easily learn how to use Navigare as well. If not, simply build controllers and page views like you've always done!
 
 In comparison to Inertia, Navigare comes with a lot of innovative features:
 
