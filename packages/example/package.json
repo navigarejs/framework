@@ -15,7 +15,7 @@
     "@navigare/core": "^1.0.58",
     "@navigare/ssr": "^1.0.23",
     "@navigare/vite": "^1.0.36",
-    "@navigare/vue3": "^1.0.98",
+    "@navigare/vue3": "^1.0.99",
     "@prettier/plugin-php": "^0.19.2",
     "@vitejs/plugin-vue": "^3.2.0",
     "autoprefixer": "^10.4.13",
