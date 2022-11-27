@@ -2,7 +2,7 @@ import PartialRoute from './PartialRoute'
 import Route from './Route'
 import { Default, Wildcard } from './symbols'
 import { RawRoute, RawRouteParameters, RouteName } from './types'
-import { isFunction } from './utilities'
+import { isFunction, throwError, isObject } from './utilities'
 import { ConditionalPick } from 'type-fest'
 import type { IsEmptyObject } from 'type-fest'
 
@@ -48,6 +48,10 @@ export default function createRoute<
       })
     : getParameters
   const partial = Object.values(parameters).includes(Wildcard)
+
+  if (!isObject(rawRoute)) {
+    throwError(`"${rawRoute}" is not a valid route`)
+  }
 
   if (partial) {
     return new PartialRoute<TName>(

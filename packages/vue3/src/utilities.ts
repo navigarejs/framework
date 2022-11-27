@@ -8,6 +8,8 @@ import {
 } from '@navigare/core'
 import { PropType, Slot, VNode } from 'vue'
 
+type RouteName = keyof import('@navigare/core').Routes
+
 function getVNodesText(children: VNode[]): string {
   return children
     .map((node) => {
@@ -33,10 +35,11 @@ export function getVNodeText(
   return getVNodesText(isFunction(vnode) ? vnode() : castArray(vnode))
 }
 
-export function getRouteType() {
-  return [String, Object, Array] as PropType<
-    Routable | [Routable, ...(PartialRoute | string)[]]
-  >
+export function getRouteType(): PropType<
+  | Routable<RouteName>
+  | [Routable<RouteName>, ...(PartialRoute<RouteName> | string)[]]
+> {
+  return [String, Object, Array] as any
 }
 
 export function getRouteProp() {
