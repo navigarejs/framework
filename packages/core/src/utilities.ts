@@ -624,6 +624,10 @@ export function transformPagePropertyKeys(
     Object.entries(page.fragments).map(([name, fragments]) => {
       if (fragments) {
         for (const fragment of fragments) {
+          if (!fragment) {
+            continue
+          }
+
           fragment.properties = transformPropertyKeys(
             fragment.properties,
             transform,

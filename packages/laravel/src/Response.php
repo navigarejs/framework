@@ -96,19 +96,21 @@ class Response implements Responsable
    *
    * @param  string  $fragmentName
    * @param  string  $component
-   * @param  array|Arrayable  $properties
+   * @param  array|Arrayable|null  $properties
    * @return self
    */
   public function withFragment(
     string $fragmentName,
     string $componentName,
-    array|Arrayable $properties = []
+    array|Arrayable|null $properties = []
   ): self {
-    $this->fragments[$fragmentName] = new Fragment(
-      name: $fragmentName,
-      component: Component::fromName($componentName, $this->configuration),
-      properties: collect($properties)
-    );
+    $this->fragments[$fragmentName] = $properties
+      ? new Fragment(
+        name: $fragmentName,
+        component: Component::fromName($componentName, $this->configuration),
+        properties: collect($properties)
+      )
+      : null;
 
     return $this;
   }
@@ -251,6 +253,10 @@ class Response implements Responsable
       $request,
       $location
     ) {
+      if (!$fragment) {
+        return null;
+      }
+
       $properties = collect(
         $selectedProperties->count() > 0
           ? $fragment->properties->only(
@@ -328,6 +334,15 @@ class Response implements Responsable
       is_string($arguments[0])
     ) {
       $fragmentName = $arguments[0];
+
+      if (Str::startsWith($method, 'without')) {
+        return $this->withFragment(
+          Str::camel(Str::after($method, 'without')),
+          $fragmentName,
+          null
+        );
+      }
+
       $properties = $arguments[1] ?? [];
 
       if (Str::startsWith($method, 'withFallback')) {

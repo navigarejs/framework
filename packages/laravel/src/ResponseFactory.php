@@ -205,13 +205,13 @@ class ResponseFactory
    *
    * @param  string  $fragmentName
    * @param  ?string  $componentName
-   * @param  ?array|Arrayable  $properties
+   * @param  ?array|Arrayable|null  $properties
    * @return Response
    */
   public function withFragment(
     string $fragmentName,
     string $componentName = null,
-    array|Arrayable $properties = []
+    array|Arrayable|null $properties = []
   ): Response {
     $response = new Response(
       rootView: $this->rootView,
@@ -254,16 +254,26 @@ class ResponseFactory
    */
   public function __call($method, $arguments)
   {
-    if (
-      Str::startsWith($method, 'with') &&
-      isset($arguments[0]) &&
-      is_string($arguments[0])
-    ) {
-      return $this->withFragment(
-        Str::camel(Str::after($method, 'with')),
-        $arguments[0],
-        $arguments[1] ?? []
-      );
+    if (isset($arguments[0]) && is_string($arguments[0])) {
+      if (Str::startsWith($method, 'with')) {
+        $fragmentName = $arguments[0];
+
+        if (Str::startsWith($method, 'without')) {
+          return $this->withFragment(
+            Str::camel(Str::after($method, 'without')),
+            $fragmentName,
+            null
+          );
+        }
+
+        $properties = $arguments[1] ?? [];
+
+        return $this->withFragment(
+          Str::camel(Str::after($method, 'with')),
+          $fragmentName,
+          $properties
+        );
+      }
     }
 
     trigger_error(
