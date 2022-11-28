@@ -45,6 +45,7 @@ import {
   debounce,
   isObject,
   isString,
+  isDefined,
 } from './utilities'
 import {
   default as Axios,
@@ -909,7 +910,7 @@ export default class Router<TComponentModule> {
         return [
           ...cumulatedComponents,
           ...fragments?.map((fragment) => fragment?.component),
-        ]
+        ].filter(isDefined)
       },
       [] as Component[],
     )
