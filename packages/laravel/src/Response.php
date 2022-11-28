@@ -104,13 +104,13 @@ class Response implements Responsable
     string $componentName,
     array|Arrayable|null $properties = []
   ): self {
-    $this->fragments[$fragmentName] = $properties
-      ? new Fragment(
+    $this->fragments[$fragmentName] = is_null($properties)
+      ? null
+      : new Fragment(
         name: $fragmentName,
         component: Component::fromName($componentName, $this->configuration),
         properties: collect($properties)
-      )
-      : null;
+      );
 
     return $this;
   }
