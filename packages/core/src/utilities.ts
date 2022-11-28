@@ -163,7 +163,7 @@ export function mergeFragments<TComponentModule>(
     ...getKeys(allCurrentFragments),
     ...getKeys(allNextFragments),
   ]).reduce((allCumulatedFragments, name) => {
-    let cumulatedFragments: Fragment[] | null =
+    let cumulatedFragments: (Fragment | null)[] | null =
       allCumulatedFragments[name] ?? null
     const nextFragments = allNextFragments[name] as
       | Fragment[]
@@ -177,7 +177,8 @@ export function mergeFragments<TComponentModule>(
 
     if (nextFragments) {
       if (cumulatedFragments) {
-        const lastFragment = cumulatedFragments[cumulatedFragments.length - 1]
+        const lastFragment: Fragment | null =
+          cumulatedFragments[cumulatedFragments.length - 1]
 
         for (const fragment of castArray(nextFragments)) {
           if (
@@ -187,7 +188,7 @@ export function mergeFragments<TComponentModule>(
             const nextFragment = {
               ...fragment,
               properties: {
-                ...lastFragment.properties,
+                ...lastFragment?.properties,
                 ...fragment.properties,
               },
             }
@@ -196,7 +197,7 @@ export function mergeFragments<TComponentModule>(
               (lazy && lastFragment?.component.id === fragment?.component.id) ||
               lastFragment?.page?.location.href === fragment.page?.location.href
             ) {
-              nextFragment.page!.visit = lastFragment.page?.visit!
+              nextFragment.page!.visit = lastFragment?.page?.visit!
             }
 
             cumulatedFragments.splice(

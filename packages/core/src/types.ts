@@ -74,7 +74,7 @@ export type Fragment = {
   page?: Page
 }
 
-export type Fragments = Record<string, Fragment[] | null>
+export type Fragments = Record<string, (Fragment | null)[] | null>
 
 export interface Page {
   visit: Visit
