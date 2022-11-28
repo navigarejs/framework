@@ -800,6 +800,7 @@ export default class Router<TComponentModule> {
 
     // Either replace the current state or push the next state
     if (
+      initialVisit ||
       replace ||
       (!isSSR() && nextPage.location.href === window.location.href)
     ) {
