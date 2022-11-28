@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
@@ -95,16 +96,16 @@ class Response implements Responsable
    * Add new fragment to response.
    *
    * @param  string  $fragmentName
-   * @param  string  $component
+   * @param  string|null  $component
    * @param  array|Arrayable|null  $properties
    * @return self
    */
   public function withFragment(
     string $fragmentName,
-    string $componentName,
+    string|null $componentName,
     array|Arrayable|null $properties = []
   ): self {
-    $this->fragments[$fragmentName] = is_null($properties)
+    $this->fragments[$fragmentName] = is_null($componentName)
       ? null
       : new Fragment(
         name: $fragmentName,
@@ -128,7 +129,7 @@ class Response implements Responsable
     string $componentName,
     array|Arrayable $properties = []
   ): self {
-    if (isset($this->fragments[$fragmentName])) {
+    if (Arr::exists($this->fragments, $fragmentName)) {
       return $this;
     }
 
@@ -328,34 +329,31 @@ class Response implements Responsable
    */
   public function __call($method, $arguments): self
   {
-    if (
-      Str::startsWith($method, 'with') &&
-      isset($arguments[0]) &&
-      is_string($arguments[0])
-    ) {
-      $fragmentName = $arguments[0];
+    if (Str::startsWith($method, 'without')) {
+      return $this->withFragment(
+        Str::camel(Str::after($method, 'without')),
+        null
+      );
+    }
 
-      if (Str::startsWith($method, 'without')) {
-        return $this->withFragment(
-          Str::camel(Str::after($method, 'without')),
-          $fragmentName,
-          null
-        );
-      }
-
+    if (Str::startsWith($method, 'withFallback')) {
+      $componentName = $arguments[0];
       $properties = $arguments[1] ?? [];
 
-      if (Str::startsWith($method, 'withFallback')) {
-        return $this->withFallbackFragment(
-          Str::camel(Str::after($method, 'withFallback')),
-          $fragmentName,
-          $properties
-        );
-      }
+      return $this->withFallbackFragment(
+        Str::camel(Str::after($method, 'withFallback')),
+        $componentName,
+        $properties
+      );
+    }
+
+    if (Str::startsWith($method, 'with')) {
+      $componentName = $arguments[0];
+      $properties = $arguments[1] ?? [];
 
       return $this->withFragment(
         Str::camel(Str::after($method, 'with')),
-        $fragmentName,
+        $componentName,
         $properties
       );
     }

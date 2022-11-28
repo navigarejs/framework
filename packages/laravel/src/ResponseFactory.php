@@ -254,26 +254,22 @@ class ResponseFactory
    */
   public function __call($method, $arguments)
   {
-    if (isset($arguments[0]) && is_string($arguments[0])) {
-      if (Str::startsWith($method, 'with')) {
-        $fragmentName = $arguments[0];
+    if (Str::startsWith($method, 'without')) {
+      return $this->withFragment(
+        Str::camel(Str::after($method, 'without')),
+        null
+      );
+    }
 
-        if (Str::startsWith($method, 'without')) {
-          return $this->withFragment(
-            Str::camel(Str::after($method, 'without')),
-            $fragmentName,
-            null
-          );
-        }
+    if (Str::startsWith($method, 'with')) {
+      $componentName = $arguments[0];
+      $properties = $arguments[1] ?? [];
 
-        $properties = $arguments[1] ?? [];
-
-        return $this->withFragment(
-          Str::camel(Str::after($method, 'with')),
-          $fragmentName,
-          $properties
-        );
-      }
+      return $this->withFragment(
+        Str::camel(Str::after($method, 'with')),
+        $componentName,
+        $properties
+      );
     }
 
     trigger_error(
