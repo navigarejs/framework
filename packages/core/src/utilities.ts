@@ -166,7 +166,7 @@ export function mergeFragments<TComponentModule>(
     let cumulatedFragments: (Fragment | null)[] | null =
       allCumulatedFragments[name] ?? null
     const nextFragments = allNextFragments[name] as
-      | Fragment[]
+      | (Fragment | null)[]
       | null
       | undefined
     const stacked = !!options[name]?.stacked
@@ -181,6 +181,10 @@ export function mergeFragments<TComponentModule>(
           cumulatedFragments[cumulatedFragments.length - 1]
 
         for (const fragment of castArray(nextFragments)) {
+          if (!fragment) {
+            continue
+          }
+
           if (
             !stacked ||
             lastFragment?.page?.location.href === fragment.page?.location.href
