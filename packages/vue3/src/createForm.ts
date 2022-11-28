@@ -424,20 +424,22 @@ export default function createForm<
               if (error.code === 'ERR_CANCELED') {
                 // Ignore
               } else {
-                const { response } = error
+                const { response, status } = error
 
-                control.setErrors(
-                  Object.fromEntries(
-                    Object.entries(response?.data.errors).map(
-                      ([key, value]) => {
-                        return [
-                          router.instance.transformServerPropertyKey(key),
-                          value as FormError,
-                        ]
-                      },
+                if (status === 422) {
+                  control.setErrors(
+                    Object.fromEntries(
+                      Object.entries(response?.data.errors).map(
+                        ([key, value]) => {
+                          return [
+                            router.instance.transformServerPropertyKey(key),
+                            value as FormError,
+                          ]
+                        },
+                      ),
                     ),
-                  ),
-                )
+                  )
+                }
               }
             } else {
               throw error
