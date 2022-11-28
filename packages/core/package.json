@@ -1,6 +1,6 @@
 {
   "name": "@navigare/core",
-  "version": "1.0.61",
+  "version": "1.0.62",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
