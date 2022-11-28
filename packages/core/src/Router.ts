@@ -908,7 +908,7 @@ export default class Router<TComponentModule> {
 
         return [
           ...cumulatedComponents,
-          ...fragments?.map((fragment) => fragment.component),
+          ...fragments?.map((fragment) => fragment?.component),
         ]
       },
       [] as Component[],
