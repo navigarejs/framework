@@ -200,10 +200,13 @@ export default function createForm<
         return
       }
 
-      console.log('change')
-      emitter.emit('change', {
-        values,
-      })
+      emitter.emit(
+        'change',
+        {
+          values,
+        },
+        options.events?.change,
+      )
     },
     {
       deep: true,
