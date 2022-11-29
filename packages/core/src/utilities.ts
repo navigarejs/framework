@@ -646,3 +646,40 @@ export function transformPagePropertyKeys(
 
   return page
 }
+
+export function createQueue<TOutput = void>(): {
+  push: (task: () => Promise<TOutput>, clear?: boolean) => void
+  size: number
+} {
+  const queue: (() => Promise<TOutput>)[] = []
+  let running: boolean = false
+
+  const start = async () => {
+    running = true
+
+    while (queue.length) {
+      const task = queue.shift()!
+
+      await task().catch(() => {})
+    }
+
+    running = false
+  }
+
+  return {
+    push: (task, clear = false) => {
+      if (clear) {
+        queue.length = 0
+      }
+
+      queue.push(task)
+
+      if (!running) {
+        start()
+      }
+    },
+    get size() {
+      return queue.length
+    },
+  }
+}

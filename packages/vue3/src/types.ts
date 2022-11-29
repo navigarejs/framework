@@ -213,7 +213,7 @@ export type FormBaseOptions<TValues extends FormValues = FormValues> = Partial<{
   disabled: boolean | (() => boolean)
   remember: boolean
   reset: boolean
-  transform: (values: TValues) => any
+  transform: (values: TValues) => any | Promise<any>
   events: Partial<{
     [TEventName in FormEventNames]: FormEventListener<TEventName>
   }>

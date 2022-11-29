@@ -26,6 +26,7 @@ import {
   get,
   castArray,
   cloneDeep,
+  createQueue,
 } from '@navigare/core'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
@@ -196,26 +197,32 @@ export default function createForm<
     },
   )
 
-  // Emit change event
+  // Handle changes asynchronously
+  const changes = createQueue()
   watch(
-    () => cloneDeep(values),
-    (nextValues, previousValues) => {
-      if (
-        isEqual(
-          transform(previousValues as TValues),
-          transform(nextValues as TValues),
+    [() => cloneDeep(values), () => initialValues.value],
+    ([nextValues, nextInitialValues], [previousValues]) => {
+      changes.push(async () => {
+        const transformedPreviousValues = await transform(
+          previousValues as TValues,
         )
-      ) {
-        return
-      }
+        const transformedNextValues = await transform(nextValues as TValues)
+        const transformedInitialValues = await transform(
+          nextInitialValues as TValues,
+        )
 
-      emitter.emit(
-        'change',
-        {
-          values,
-        },
-        options.events?.change,
-      )
+        if (!isEqual(transformedPreviousValues, transformedNextValues)) {
+          emitter.emit(
+            'change',
+            {
+              values,
+            },
+            options.events?.change,
+          )
+        }
+
+        dirty.value = !isEqual(transformedNextValues, transformedInitialValues)
+      }, true)
     },
     {
       deep: true,
@@ -320,7 +327,7 @@ export default function createForm<
           const visit = await router.instance.visit(routable.value, {
             fragmentName: fragment.name ?? undefined,
 
-            data: transform(clonedValues),
+            data: await transform(clonedValues),
 
             events: {
               progress(event) {
