@@ -248,6 +248,23 @@ class ResponseFactory
   }
 
   /**
+   * Redirect back with properties.
+   *
+   * @param  ?array|Arrayable|null  $flash
+   * @param  RedirectResponse
+   */
+  public function back(array|Arrayable|null $flash = null): RedirectResponse
+  {
+    $response = back();
+
+    if (!empty($flash)) {
+      $response->withNavigareFlash($flash);
+    }
+
+    return $response;
+  }
+
+  /**
    * In case the method name is not defined we assume it's the name of the fragment.
    *
    * @return Response

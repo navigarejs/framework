@@ -607,6 +607,10 @@ export function transformPropertyKeys(
 ): Properties {
   return Object.fromEntries(
     Object.entries(properties).map(([key, value]) => {
+      if (key.startsWith('$')) {
+        return [key, value]
+      }
+
       return [
         transform(key),
         isObject(value) &&

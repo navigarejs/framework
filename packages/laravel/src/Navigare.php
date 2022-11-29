@@ -19,8 +19,9 @@ use Navigare\View\LazyProperty;
  * @method static self share(Closure|array $callback)
  * @method static LazyProperty lazy(Closure $callback)
  * @method static DeferredProperty deferred(Closure $callback)
- * @method static Response render($component, array|Arrayable $props = [])
+ * @method static Response render($component, array|Arrayable $properties = [])
  * @method static \Symfony\Component\HttpFoundation\Response location(string $url)
+ * @method static \Illuminate\Http\RedirectResponse back(array|Arrayable|null $flash = null)
  *
  * @see \Navigare\ResponseFactory
  */
