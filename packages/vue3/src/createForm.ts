@@ -312,7 +312,7 @@ export default function createForm<
           const visit = await router.instance.visit(routable.value, {
             fragmentName: fragment.name ?? undefined,
 
-            data: await transform(clonedValues),
+            data: transform(clonedValues),
 
             events: {
               progress(event) {
