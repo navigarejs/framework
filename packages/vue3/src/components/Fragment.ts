@@ -29,7 +29,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, { slots }) {
+  setup(props, { slots, attrs }) {
     const context = provideFragmentContext(props.name, () => props.fragment)
     const router = useRouter()
     const properties = computed(() => {
@@ -58,10 +58,10 @@ export default defineComponent({
     return () => {
       const defaultSlot = slots.default
 
-      // Disable inheritance of attributes
+      // Enable inheritance of attributes
       safe(() => {
         Object.assign(componentModule.value, {
-          inheritAttrs: false,
+          inheritAttrs: true,
         })
       })
 
