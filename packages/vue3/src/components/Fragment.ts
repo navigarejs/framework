@@ -58,10 +58,10 @@ export default defineComponent({
     return () => {
       const defaultSlot = slots.default
 
-      // Enable inheritance of attributes
+      // Disable inheritance of attributes
       safe(() => {
         Object.assign(componentModule.value, {
-          inheritAttrs: true,
+          inheritAttrs: false,
         })
       })
 
