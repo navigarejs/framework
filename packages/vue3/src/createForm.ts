@@ -151,6 +151,7 @@ export default function createForm<
   > = {}
   const successful = ref<boolean | undefined>(undefined)
   const recentlySuccessful = ref<boolean | undefined>(undefined)
+  const transform = options.transform || ((values) => values)
 
   // Remember values
   watch(
@@ -169,7 +170,10 @@ export default function createForm<
   watch(
     [() => values, () => initialValues.value],
     ([nextValues, nextInitialValues]) => {
-      dirty.value = !isEqual(nextValues, nextInitialValues)
+      dirty.value = !isEqual(
+        transform(nextValues as TValues),
+        transform(nextInitialValues as TValues),
+      )
     },
     {
       deep: true,
@@ -196,7 +200,12 @@ export default function createForm<
   watch(
     () => cloneDeep(values),
     (nextValues, previousValues) => {
-      if (isEqual(previousValues, nextValues)) {
+      if (
+        isEqual(
+          transform(previousValues as TValues),
+          transform(nextValues as TValues),
+        )
+      ) {
         return
       }
 
@@ -273,7 +282,6 @@ export default function createForm<
 
         // Transform values before submission if required
         const clonedValues = cloneDeep(values) as TValues
-        const transform = options.transform || ((values) => values)
 
         // Run `validate` hook
         if (
