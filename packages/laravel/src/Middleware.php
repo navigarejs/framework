@@ -103,8 +103,8 @@ class Middleware
           return $this->resolveValidationErrors($request);
         },
 
-        '$response' => function () use ($request) {
-          return $request->session()->get('response') ?? [];
+        '$flash' => function () use ($request) {
+          return $request->session()->get('navigare_flash') ?? [];
         },
       ]);
     });

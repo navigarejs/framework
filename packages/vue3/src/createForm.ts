@@ -306,14 +306,14 @@ export default function createForm<
 
         // Submit via callback
         if (callback.value) {
-          const response = await callback.value(clonedValues)
+          const flash = await callback.value(clonedValues)
 
           successful.value = true
 
           emitter.emit(
             'success',
             {
-              response,
+              flash,
             },
             options.events?.success,
           )
@@ -365,7 +365,7 @@ export default function createForm<
                 emitter.emit(
                   'success',
                   {
-                    response: event.detail.page.properties.$response,
+                    flash: event.detail.page.properties.$flash,
                   },
                   visitOptions.events?.success,
                 )

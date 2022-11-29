@@ -99,7 +99,7 @@ export interface PageProperties extends Properties {}
 
 export type DefaultPageProperties = {
   $errors?: PageErrors & PageErrorBag
-  $response?: Record<string, any>
+  $flash?: Record<string, any>
 }
 
 export type PropertyKey = string | number
