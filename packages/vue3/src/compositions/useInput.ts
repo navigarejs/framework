@@ -226,11 +226,11 @@ export default function useInput(
   watch(
     () => value.value,
     () => {
+      // Treat external change the same way as an internal change
       handleChange()
 
+      // Reset errors because the new value might be valid
       form.setError(path.value, null)
-
-      validate()
     },
   )
 

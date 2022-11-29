@@ -236,7 +236,7 @@ export default function createForm<
           trigger: null,
         },
       ) => {
-        if (disabled.value || blocked.value) {
+        if (disabled.value || blocked.value || processing.value) {
           return
         }
 
