@@ -99,8 +99,12 @@ class Middleware
     // Expose validation errors by default
     Navigare::share(function (Request $request, NavigareResponse $response) {
       $response->with([
-        'errors' => function () use ($request) {
+        '$errors' => function () use ($request) {
           return Arr::undot($this->resolveValidationErrors($request));
+        },
+
+        '$response' => function () use ($request) {
+          return $request->session()->get('response') ?? [];
         },
       ]);
     });
