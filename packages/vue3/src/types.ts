@@ -158,7 +158,7 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
 
   success: {
     details: {
-      response: DefaultPageProperties['$form']
+      response: DefaultPageProperties['$response']
     }
     result: void
   }
