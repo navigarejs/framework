@@ -192,6 +192,24 @@ export default function createForm<
     },
   )
 
+  // Emit change event
+  watch(
+    () => cloneDeep(values),
+    (nextValues, previousValues) => {
+      if (isEqual(previousValues, nextValues)) {
+        return
+      }
+
+      console.log('change')
+      emitter.emit('change', {
+        values,
+      })
+    },
+    {
+      deep: true,
+    },
+  )
+
   // Expose control
   const control: FormControl<TValues> = reactive({
     name,

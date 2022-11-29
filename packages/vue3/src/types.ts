@@ -26,6 +26,7 @@ import {
   DefineComponent,
   ComponentInternalInstance,
   UnwrapNestedRefs,
+  Ref,
 } from 'vue'
 
 export type App = {
@@ -164,6 +165,13 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
     details: {}
     result: void
   }
+
+  change: {
+    details: {
+      values: UnwrapNestedRefs<TValues>
+    }
+    result: void
+  }
 }
 
 export type FormEventNames = keyof FormEvents
@@ -240,9 +248,9 @@ export interface FormControl<
     validation: FormValidationOptions
   }
 
-  values: TValues
+  values: UnwrapNestedRefs<TValues>
 
-  initialValues: TValues
+  initialValues: Ref<UnwrapNestedRefs<TValues>>
 
   routable: Routable | null
 
