@@ -271,7 +271,7 @@ export default function createForm<
         }
 
         // Run "before" hook
-        emitter.emit('before', {})
+        emitter.emit('before', {}, options.events?.before)
 
         // Indicate processing state
         processing.value = true
@@ -285,10 +285,14 @@ export default function createForm<
 
         // Run `validate` hook
         if (
-          !emitter.emit('validate', {
-            values: clonedValues,
-            errors,
-          })
+          !emitter.emit(
+            'validate',
+            {
+              values: clonedValues,
+              errors,
+            },
+            options.events?.validate,
+          )
         ) {
           return undefined
         }
@@ -299,9 +303,13 @@ export default function createForm<
 
           successful.value = true
 
-          emitter.emit('success', {
-            response,
-          })
+          emitter.emit(
+            'success',
+            {
+              response,
+            },
+            options.events?.success,
+          )
 
           return undefined
         }
@@ -324,6 +332,15 @@ export default function createForm<
 
                 control.clearErrors()
                 control.setErrors(event.detail.errors)
+
+                // Emit event
+                emitter.emit(
+                  'error',
+                  {
+                    errors: event.detail.errors,
+                  },
+                  visitOptions.events?.error,
+                )
               },
 
               success(event) {

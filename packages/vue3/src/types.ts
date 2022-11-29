@@ -18,6 +18,7 @@ import {
   VisitProgress,
   Visit,
   FormDataConvertible,
+  PageErrors,
 } from '@navigare/core'
 import { HeadClient } from '@vueuse/head'
 import {
@@ -157,6 +158,13 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
   success: {
     details: {
       response: any
+    }
+    result: void
+  }
+
+  error: {
+    details: {
+      errors: PageErrors
     }
     result: void
   }
