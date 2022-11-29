@@ -100,7 +100,7 @@ class Middleware
     Navigare::share(function (Request $request, NavigareResponse $response) {
       $response->with([
         '$errors' => function () use ($request) {
-          return Arr::undot($this->resolveValidationErrors($request));
+          return $this->resolveValidationErrors($request);
         },
 
         '$response' => function () use ($request) {
