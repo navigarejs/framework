@@ -30,8 +30,8 @@ import {
 } from '@navigare/core'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
-const resolveValidate = (
-  validate?: FormValidationOptions,
+const resolveValidation = (
+  validation?: FormValidationOptions,
   defaults?: Partial<{
     on?: false | 'input' | 'change'
     debounce?: number
@@ -42,11 +42,11 @@ const resolveValidate = (
 }> => {
   return {
     on:
-      validate === false
+      validation === false
         ? false
-        : validate === true
+        : validation === true
         ? defaults?.on
-        : validate?.on,
+        : validation?.on,
   }
 }
 
@@ -55,7 +55,7 @@ export default function useInput(
   options: {
     form?: FormControl
     submitOnChange?: boolean | FormSubmitOptions
-    validate?: FormValidationOptions
+    validation?: FormValidationOptions
   } = {},
 ): ContextOf<typeof InputContext> {
   const { form = useForm()! } = options
@@ -155,8 +155,8 @@ export default function useInput(
 
       return mergeWith(
         defaults,
-        resolveValidate(form.options.validate, defaults),
-        resolveValidate(options.validate, defaults),
+        resolveValidation(form.options.validation, defaults),
+        resolveValidation(options.validation, defaults),
       )
     },
   )

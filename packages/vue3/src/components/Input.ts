@@ -38,7 +38,7 @@ export default defineComponent({
       default: () => 'text',
     },
 
-    validate: {
+    validation: {
       type: [Boolean, Object] as PropType<FormValidationOptions>,
       default: () => undefined,
     },
@@ -47,7 +47,7 @@ export default defineComponent({
   setup(props, { slots, attrs, emit }) {
     const input = useInput(() => props.name, {
       form: props.form,
-      validate: props.validate,
+      validation: props.validation,
     })
     const element = ref<HTMLObjectElement | null>()
     const isValidInputElement = computed(() => {
@@ -66,7 +66,7 @@ export default defineComponent({
           return
         }
 
-        if (isValidInputElement) {
+        if (isValidInputElement.value) {
           element.value?.setCustomValidity(nextErrorMessage)
 
           if (nextErrorMessage && input.focused) {
@@ -92,7 +92,7 @@ export default defineComponent({
           return
         }
 
-        if (isValidInputElement) {
+        if (isValidInputElement.value) {
           element.value?.reportValidity()
         }
       },

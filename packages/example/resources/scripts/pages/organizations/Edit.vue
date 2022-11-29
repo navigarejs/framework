@@ -278,7 +278,7 @@ const form = createForm(
     postal_code: props.organization.postal_code,
   }),
   {
-    validate: true,
+    validation: true,
   },
 )
 </script>

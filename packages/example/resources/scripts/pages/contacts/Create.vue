@@ -151,7 +151,7 @@ const form = createForm(
     postal_code: '',
   }),
   {
-    validate: false,
+    validation: true,
   },
 )
 

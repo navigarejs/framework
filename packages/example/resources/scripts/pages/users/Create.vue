@@ -90,7 +90,7 @@ const form = createForm(
     photo: null,
   }),
   {
-    validate: true,
+    validation: true,
   },
 )
 </script>

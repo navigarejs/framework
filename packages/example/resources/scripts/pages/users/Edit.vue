@@ -166,7 +166,7 @@ const form = createForm(
     photo: props.user.photo,
   }),
   {
-    validate: true,
+    validation: true,
 
     transform: (values) => {
       return {

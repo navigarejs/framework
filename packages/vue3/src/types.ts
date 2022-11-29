@@ -201,7 +201,7 @@ export type FormBaseOptions<TValues extends FormValues = FormValues> = Partial<{
   events: Partial<{
     [TEventName in FormEventNames]: FormEventListener<TEventName>
   }>
-  validate: FormValidationOptions
+  validation: FormValidationOptions
 }>
 
 export type FormVisitOptions<TValues extends FormValues = FormValues> =
@@ -237,7 +237,7 @@ export interface FormControl<
   name: string
 
   options: {
-    validate: FormValidationOptions
+    validation: FormValidationOptions
   }
 
   values: TValues

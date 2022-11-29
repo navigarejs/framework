@@ -197,7 +197,7 @@ export default function createForm<
     name,
 
     options: {
-      validate: options.validate ?? false,
+      validation: options.validation ?? false,
     },
 
     values: values as any,
@@ -424,9 +424,9 @@ export default function createForm<
               if (error.code === 'ERR_CANCELED') {
                 // Ignore
               } else {
-                const { response, status } = error
+                const { response } = error
 
-                if (status === 422) {
+                if (response?.status === 422) {
                   control.setErrors(
                     Object.fromEntries(
                       Object.entries(response?.data.errors).map(

@@ -184,7 +184,7 @@ const form = createForm(
     postal_code: props.contact.postal_code,
   }),
   {
-    validate: true,
+    validation: true,
   },
 )
 </script>
