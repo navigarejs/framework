@@ -365,7 +365,7 @@ export default function createForm<
                 emitter.emit(
                   'success',
                   {
-                    response: event.detail.page,
+                    response: event.detail.page.properties.$form,
                   },
                   visitOptions.events?.success,
                 )

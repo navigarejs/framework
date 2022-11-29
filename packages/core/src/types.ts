@@ -80,9 +80,7 @@ export interface Page {
   visit: Visit
   csrf: string | null
   fragments: Fragments
-  properties: PageProperties & {
-    errors?: PageErrors & PageErrorBag
-  }
+  properties: PageProperties & DefaultPageProperties
   rawRoute: RawRoute
   location: RouterLocation
   defaults: PageDefaults
@@ -98,6 +96,11 @@ export interface Page {
 }
 
 export interface PageProperties extends Properties {}
+
+export type DefaultPageProperties = {
+  $errors?: PageErrors & PageErrorBag
+  $form?: Record<string, any>
+}
 
 export type PropertyKey = string | number
 

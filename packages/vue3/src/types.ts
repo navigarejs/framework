@@ -19,6 +19,7 @@ import {
   Visit,
   FormDataConvertible,
   PageErrors,
+  DefaultPageProperties,
 } from '@navigare/core'
 import { HeadClient } from '@vueuse/head'
 import {
@@ -157,7 +158,7 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
 
   success: {
     details: {
-      response: any
+      response: DefaultPageProperties['$form']
     }
     result: void
   }
