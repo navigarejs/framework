@@ -29,7 +29,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, { slots, attrs }) {
+  setup(props, { slots }) {
     const context = provideFragmentContext(props.name, () => props.fragment)
     const router = useRouter()
     const properties = computed(() => {
