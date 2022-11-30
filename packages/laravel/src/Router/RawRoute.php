@@ -179,9 +179,9 @@ class RawRoute implements Arrayable
       'name' => $this->name,
       'uri' => $this->uri,
       'methods' => $this->methods,
-      'wheres' => (object) $this->wheres,
+      'wheres' => (array) $this->wheres,
       'domain' => $this->domain,
-      'bindings' => (object) $this->bindings,
+      'bindings' => (array) $this->bindings,
       'components' => $this->components
         ->map(function ($component) use ($ssr, $configuration) {
           return $component->toArray($ssr, $configuration);
