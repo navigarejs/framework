@@ -1,6 +1,6 @@
 {
   "name": "@navigare/laravel",
-  "version": "1.0.49",
+  "version": "1.0.50",
   "license": "MIT",
   "private": true,
   "description": "Navigare lets you quickly build modern single-page apps with Vue and Laravel.",
