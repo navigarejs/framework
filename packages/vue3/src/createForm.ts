@@ -153,6 +153,11 @@ export default function createForm<
   const successful = ref<boolean | undefined>(undefined)
   const recentlySuccessful = ref<boolean | undefined>(undefined)
   const transform = options.transform || ((values) => values)
+  const finish = () => {
+    processing.value = false
+    globalDisabled.value = false
+    trigger.value = null
+  }
 
   // Remember values
   watch(
@@ -318,6 +323,8 @@ export default function createForm<
             options.events?.success,
           )
 
+          finish()
+
           return undefined
         }
 
@@ -372,9 +379,7 @@ export default function createForm<
               },
 
               finish(_event) {
-                processing.value = false
-                globalDisabled.value = false
-                trigger.value = null
+                finish()
               },
 
               before(_event) {},
@@ -384,15 +389,11 @@ export default function createForm<
               start(_event) {},
 
               invalid(_event) {
-                processing.value = false
-                globalDisabled.value = false
-                trigger.value = null
+                finish()
               },
 
               exception(_event) {
-                processing.value = false
-                globalDisabled.value = false
-                trigger.value = null
+                finish()
               },
             },
           })
