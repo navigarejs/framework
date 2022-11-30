@@ -453,7 +453,15 @@ class Response implements Responsable
 
       if (
         $value instanceof ResourceResponse ||
-        $value instanceof JsonResource
+        $value instanceof JsonResource ||
+        rescue(
+          fn() => get_class($value) === 'Spatie\LaravelData\DataCollection' ||
+            in_array(
+              'Spatie\LaravelData\DataCollection',
+              class_parents($value)
+            ),
+          false
+        )
       ) {
         $value = $value->toResponse($request)->getData(true);
       }
