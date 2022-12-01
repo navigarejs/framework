@@ -1,7 +1,6 @@
 import provideFormContext from './provideFormContext'
 import { FormControl, FormError } from './types'
 import useForm from './useForm'
-import { ensureFunction } from './utilities'
 import {
   isDefined,
   throwError,
@@ -51,7 +50,12 @@ export default defineComponent({
     },
   },
 
-  setup(props, { slots, attrs }) {
+  emits: {
+    input: (_event: Event) => true,
+    change: (_event: Event) => true,
+  },
+
+  setup(props, { slots, attrs, emit }) {
     const form = useForm()
     const element = ref<HTMLObjectElement | null>()
     const resolvedForm = computed<FormControl>(() => {
@@ -151,7 +155,7 @@ export default defineComponent({
 
     // Validate when value was changed (programmatically)
     const handleInput = (event: Event = new Event('input')) => {
-      ensureFunction(attrs.onInput)?.(event)
+      emit('input', event)
 
       // Validate when `on` is not explicitly set to `false` and `on` is undefined/`on` is `input`
       if (
@@ -162,7 +166,7 @@ export default defineComponent({
       }
     }
     const handleChange = (event: Event = new Event('change')) => {
-      ensureFunction(attrs.onChange)?.(event)
+      emit('change', event)
 
       // Only validate when `on` is `change`
       if (props.validation.on === 'change') {

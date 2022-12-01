@@ -1,5 +1,5 @@
 import useRoutable from '../compositions/useRoutable'
-import { ensureFunction, getRouteProp } from './../utilities'
+import { getRouteProp } from './../utilities'
 import {
   RawRouteMethod,
   VisitData,
@@ -173,13 +173,27 @@ export default defineComponent({
               properties: props.properties,
               headers: props.headers,
               events: {
-                before: ensureFunction(attrs.onBefore),
-                start: ensureFunction(attrs.onStart),
-                progress: ensureFunction(attrs.onProgress),
-                finish: ensureFunction(attrs.onFinish),
-                cancel: ensureFunction(attrs.onCancel),
-                success: ensureFunction(attrs.onSuccess),
-                error: ensureFunction(attrs.onError),
+                before: (event) => {
+                  emit('before', event)
+                },
+                start: (event) => {
+                  emit('start', event)
+                },
+                progress: (event) => {
+                  emit('progress', event)
+                },
+                finish: (event) => {
+                  emit('finish', event)
+                },
+                cancel: (event) => {
+                  emit('cancel', event)
+                },
+                success: (event) => {
+                  emit('success', event)
+                },
+                error: (event) => {
+                  emit('error', event)
+                },
               },
             })
           },
