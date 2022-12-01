@@ -158,7 +158,7 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
 
   success: {
     details: {
-      flash: DefaultPageProperties['$flash']
+      flash: DefaultPageProperties['__flash']
     }
     result: void
   }

@@ -372,7 +372,7 @@ export default function createForm<
                 emitter.emit(
                   'success',
                   {
-                    flash: event.detail.page.properties.$flash,
+                    flash: event.detail.page.properties.__flash,
                   },
                   visitOptions.events?.success,
                 )

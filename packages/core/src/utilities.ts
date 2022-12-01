@@ -608,7 +608,7 @@ export function transformPropertyKeys(
   return Object.fromEntries(
     Object.entries(properties).map(([key, value]) => {
       return [
-        // We don't want `$errors` or `$flash` to be transformed
+        // We don't want `__errors` or `__flash` to be transformed
         key.startsWith('__') ? key : transform(key),
         isObject(value) &&
         !isArray(value) &&
