@@ -133,10 +133,15 @@ export default function useRoutable(
       data: data.value,
       method: resolvedMethod.value,
       events: {
-        start: () => {
+        ...options.events,
+        start: (event) => {
+          options.events?.start?.(event)
+
           pending.value = true
         },
-        finish: () => {
+        finish: (event) => {
+          options.events?.finish?.(event)
+
           pending.value = false
         },
       },

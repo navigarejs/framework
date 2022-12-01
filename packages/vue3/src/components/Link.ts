@@ -1,7 +1,6 @@
 import useRoutable from '../compositions/useRoutable'
 import { ensureFunction, getRouteProp } from './../utilities'
 import {
-  shouldInterceptLink,
   RawRouteMethod,
   VisitData,
   RouteMethod,
@@ -154,7 +153,11 @@ export default defineComponent({
             routable.preload()
           },
           onClick: (event: MouseEvent) => {
-            if (!props.route || attrs.disabled || !shouldInterceptLink(event)) {
+            if (
+              !props.route ||
+              attrs.disabled ||
+              !routable.shouldInterceptLink(event)
+            ) {
               emit('click', event)
               return
             }
