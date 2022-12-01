@@ -276,6 +276,7 @@ export default function createForm<
       async (
         submitOptions = {
           trigger: null,
+          background: false,
         },
       ) => {
         if (disabled.value || blocked.value || processing.value) {
@@ -287,7 +288,7 @@ export default function createForm<
 
         // Indicate processing state
         processing.value = true
-        globalDisabled.value = true
+        globalDisabled.value = !submitOptions.background
 
         // Remember which element triggered the submission
         trigger.value = submitOptions.trigger ?? null
