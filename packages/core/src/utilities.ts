@@ -609,7 +609,7 @@ export function transformPropertyKeys(
     Object.entries(properties).map(([key, value]) => {
       return [
         // We don't want `$errors` or `$flash` to be transformed
-        key.startsWith('$') ? key : transform(key),
+        key.startsWith('__') ? key : transform(key),
         isObject(value) &&
         !isArray(value) &&
         !(value instanceof Blob) &&

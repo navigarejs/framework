@@ -415,7 +415,7 @@ export default class Router<TComponentModule> {
     }
 
     if (value === 'errors') {
-      return Object.keys(page.properties.$errors || {}).length > 0
+      return Object.keys(page.properties.__errors || {}).length > 0
     }
 
     return !!value
@@ -656,7 +656,7 @@ export default class Router<TComponentModule> {
       })
 
       // Check if any errors occurred
-      const errors = this.page.properties.$errors || {}
+      const errors = this.page.properties.__errors || {}
       if (Object.keys(errors).length > 0) {
         const scopedErrors = Object.fromEntries(
           Object.entries(

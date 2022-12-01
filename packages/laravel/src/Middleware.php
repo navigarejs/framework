@@ -99,11 +99,11 @@ class Middleware
     // Expose validation errors by default
     Navigare::share(function (Request $request, NavigareResponse $response) {
       $response->with([
-        '$errors' => function () use ($request) {
+        '__errors' => function () use ($request) {
           return $this->resolveValidationErrors($request);
         },
 
-        '$flash' => function () use ($request) {
+        '__flash' => function () use ($request) {
           return $request->session()->get('navigare_flash') ?? [];
         },
       ]);

@@ -98,8 +98,8 @@ export interface Page {
 export interface PageProperties extends Properties {}
 
 export type DefaultPageProperties = {
-  $errors?: PageErrors & PageErrorBag
-  $flash?: Record<string, any>
+  __errors?: PageErrors & PageErrorBag
+  __flash?: Record<string, any>
 }
 
 export type PropertyKey = string | number

@@ -35,6 +35,7 @@ export default function useRoutable(
   preload: () => Promise<void>
   visit: (options?: VisitOptions) => Promise<void>
   pending: boolean
+  shouldInterceptLink: (event: KeyboardEvent | MouseEvent) => boolean
 } {
   const router = useRouter()
   const fragment = useFragment()
@@ -152,5 +153,6 @@ export default function useRoutable(
     visit: markRaw(visit),
     pending: pending,
     fragment,
+    shouldInterceptLink,
   })
 }
