@@ -14,6 +14,7 @@ import {
   castArray,
   isArray,
   isFunction,
+  shouldInterceptLink,
 } from '@navigare/core'
 import { Component, computed, markRaw, reactive, ref } from 'vue'
 
@@ -153,6 +154,6 @@ export default function useRoutable(
     visit: markRaw(visit),
     pending: pending,
     fragment,
-    shouldInterceptLink,
+    shouldInterceptLink: markRaw(shouldInterceptLink),
   })
 }
