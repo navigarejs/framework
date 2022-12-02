@@ -450,6 +450,7 @@ export default class Router<TComponentModule> {
       forceFormData = false,
       queryStringArrayFormat = QueryStringArrayFormat.Brackets,
       events = {},
+      background = false,
     } = options
     const { location, method, data } = this.resolveRoutable(
       routable,
@@ -466,6 +467,7 @@ export default class Router<TComponentModule> {
       method,
       data,
       replace,
+      background,
       preserveScroll,
       preserveState,
       properties,
@@ -473,6 +475,7 @@ export default class Router<TComponentModule> {
       errorBag,
       forceFormData,
       queryStringArrayFormat,
+      events,
     })
 
     if (
@@ -484,32 +487,31 @@ export default class Router<TComponentModule> {
         events?.before,
       ))
     ) {
-      return this.activeVisit!
+      return visit
     }
 
-    if (this.activeVisit) {
-      this.cancelVisit(visit.id, true)
-    }
-
-    this.saveScrollPositions()
-
-    this.activeVisit = {
-      ...visit,
-      events,
-      queryStringArrayFormat,
-      cancelToken: Axios.CancelToken.source(),
-      cancel: () => {
-        this.cancelVisit(visit.id)
-      },
-      interrupt: () => {
+    if (!visit.background) {
+      if (this.activeVisit) {
         this.cancelVisit(visit.id, true)
-      },
+      }
+
+      this.saveScrollPositions()
+
+      visit.cancelToken = Axios.CancelToken.source()
+      visit.cancel = () => {
+        this.cancelVisit(visit.id)
+      }
+      visit.interrupt = () => {
+        this.cancelVisit(visit.id, true)
+      }
+
+      this.activeVisit = visit
     }
 
     await this.emit(
       'start',
       {
-        visit: this.activeVisit,
+        visit,
       },
       events?.start,
     )
@@ -524,7 +526,7 @@ export default class Router<TComponentModule> {
 
         params: method === RouteMethod.GET ? data : {},
 
-        cancelToken: this.activeVisit.cancelToken?.token,
+        cancelToken: visit.cancelToken?.token,
 
         headers: {
           ...headers,
@@ -552,7 +554,7 @@ export default class Router<TComponentModule> {
           await this.emit(
             'progress',
             {
-              visit: this.activeVisit!,
+              visit,
               progress: {
                 ...progress,
                 percentage: progress.total
@@ -565,18 +567,19 @@ export default class Router<TComponentModule> {
         },
       })
 
-      if (!this.isNavigareResponse(response)) {
-        return Promise.reject({ response })
-      }
+      if (!visit.background) {
+        if (!this.isNavigareResponse(response)) {
+          return Promise.reject({ response })
+        }
 
-      // Prepare next page
-      const nextPage: Page = {
-        ...response.data,
-        visit: this.activeVisit,
-      }
+        // Prepare next page
+        const nextPage: Page = {
+          ...response.data,
+          visit,
+        }
 
-      // Merge properties of fragments
-      /*if (properties.length) {
+        // Merge properties of fragments
+        /*if (properties.length) {
         const selectedProperties = properties.map((property) => {
           if (property.includes('/')) {
             const [fragmentName, name] = property.split('/')
@@ -629,57 +632,70 @@ export default class Router<TComponentModule> {
         }
       }*/
 
-      // Check if we need to manually preserve the scroll area
-      preserveScroll = this.resolvePreserveOption(preserveScroll, nextPage)
+        // Check if we need to manually preserve the scroll area
+        preserveScroll = this.resolvePreserveOption(preserveScroll, nextPage)
 
-      // Check if we need to preserve the state
-      preserveState = this.resolvePreserveOption(preserveState, nextPage)
-      if (preserveState && window.history.state?.rememberedState) {
-        nextPage.rememberedState = window.history.state.rememberedState
-      }
+        // Check if we need to preserve the state
+        preserveState = this.resolvePreserveOption(preserveState, nextPage)
+        if (preserveState && window.history.state?.rememberedState) {
+          nextPage.rememberedState = window.history.state.rememberedState
+        }
 
-      // In case the next location is the same as the current location, we will copy the hash
-      if (
-        location.hash &&
-        !nextPage.location.hash &&
-        location.href === nextPage.location.href
-      ) {
-        nextPage.location.hash = location.hash
-      }
+        // In case the next location is the same as the current location, we will copy the hash
+        if (
+          location.hash &&
+          !nextPage.location.hash &&
+          location.href === nextPage.location.href
+        ) {
+          nextPage.location.hash = location.hash
+        }
 
-      // Set new page
-      await this.setPage(nextPage, {
-        replace,
-        preserveScroll,
-        preserveState,
-        fragmentName,
-      })
+        // Set new page
+        await this.setPage(nextPage, {
+          replace,
+          preserveScroll,
+          preserveState,
+          fragmentName,
+        })
 
-      // Check if any errors occurred
-      const errors = this.page.properties.__errors || {}
-      if (Object.keys(errors).length > 0) {
-        const scopedErrors = Object.fromEntries(
-          Object.entries(
-            errorBag ? (errors[errorBag] ? errors[errorBag] : {}) : errors,
-          ).map(([name, message]) => {
-            return [this.transformServerPropertyKey(name), castArray(message)]
-          }),
-        )
+        // Check if any errors occurred
+        const errors = this.page.properties.__errors || {}
+        if (Object.keys(errors).length > 0) {
+          const scopedErrors = Object.fromEntries(
+            Object.entries(
+              errorBag ? (errors[errorBag] ? errors[errorBag] : {}) : errors,
+            ).map(([name, message]) => {
+              return [this.transformServerPropertyKey(name), castArray(message)]
+            }),
+          )
 
-        await this.emit(
-          'error',
-          {
-            visit: this.activeVisit,
-            errors: scopedErrors,
-          },
-          events?.error,
-        )
+          await this.emit(
+            'error',
+            {
+              visit,
+              errors: scopedErrors,
+              response: response,
+            },
+            events?.error,
+          )
+        } else {
+          await this.emit(
+            'success',
+            {
+              visit,
+              page: this.page,
+              response: response,
+            },
+            events?.success,
+          )
+        }
       } else {
         await this.emit(
           'success',
           {
-            visit: this.activeVisit,
+            visit,
             page: this.page,
+            response: response,
           },
           events?.success,
         )
@@ -710,11 +726,21 @@ export default class Router<TComponentModule> {
           }
 
           this.locationVisit(redirectLocation, preserveScroll === true)
+        } else if (visit.background) {
+          await this.emit(
+            'error',
+            {
+              visit,
+              errors: {},
+              response: error.response,
+            },
+            events?.error,
+          )
         } else if (
           await this.emit(
             'invalid',
             {
-              visit: this.activeVisit,
+              visit,
               response: error.response,
             },
             events?.invalid,
@@ -727,16 +753,16 @@ export default class Router<TComponentModule> {
       await this.emit(
         'exception',
         {
-          visit: this.activeVisit,
+          visit,
           error: error as Error,
         },
         events?.exception,
       )
     }
 
-    this.finishVisit(this.activeVisit)
+    this.finishVisit(visit)
 
-    return this.activeVisit
+    return visit
   }
 
   protected getHeader(
@@ -1142,6 +1168,7 @@ export default class Router<TComponentModule> {
       method: RouteMethod.GET,
       data: {},
       replace: false,
+      background: false,
       preserveScroll: false,
       preserveState: false,
       properties: [],

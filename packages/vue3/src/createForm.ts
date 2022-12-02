@@ -277,6 +277,7 @@ export default function createForm<
         submitOptions = {
           trigger: null,
           background: false,
+          disable: true,
         },
       ) => {
         if (disabled.value || blocked.value || processing.value) {
@@ -288,7 +289,7 @@ export default function createForm<
 
         // Indicate processing state
         processing.value = true
-        globalDisabled.value = !submitOptions.background
+        globalDisabled.value = !!submitOptions.disable
 
         // Remember which element triggered the submission
         trigger.value = submitOptions.trigger ?? null
@@ -336,6 +337,8 @@ export default function createForm<
             fragmentName: fragment.name ?? undefined,
 
             data: await transform(clonedValues),
+
+            background: submitOptions.background,
 
             events: {
               progress(event) {

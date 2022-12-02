@@ -172,6 +172,7 @@ export type RouterEvents = {
     details: {
       visit: Visit
       page: Page
+      response: AxiosResponse
     }
     result: void
   }
@@ -180,6 +181,7 @@ export type RouterEvents = {
     details: {
       visit: Visit
       errors: PageErrors
+      response: AxiosResponse
     }
     result: void
   }
@@ -260,6 +262,7 @@ export type VisitOptions = Partial<{
   fragmentName: string
   method: RawRouteMethod
   data: VisitData
+  background: boolean
   replace: boolean
   preserveScroll: VisitPreserveStateOption
   preserveState: VisitPreserveStateOption
@@ -278,6 +281,7 @@ export type Visit = {
   method: RouteMethod
   data: VisitData
   replace: boolean
+  background: boolean
   preserveScroll: VisitPreserveStateOption
   preserveState: VisitPreserveStateOption
   properties: Array<string>

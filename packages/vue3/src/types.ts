@@ -201,13 +201,15 @@ export type FormEventListener<TEventName extends FormEventNames> = (
 
 export type FormValidationOptions =
   | boolean
-  | {
-      on?: 'input' | 'change' | false
-      debounce?: number
-    }
+  | Partial<{
+      on: 'input' | 'change' | false
+      debounce: number
+    }>
 
 export type FormSubmitOptions = Partial<{
   trigger: FormTrigger
+  background: boolean
+  disable: boolean
 }>
 
 export type FormBaseOptions<TValues extends FormValues = FormValues> = Partial<{
