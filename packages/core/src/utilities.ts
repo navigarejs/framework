@@ -656,6 +656,10 @@ export function createQueue<TOutput = void>(): {
   let running: boolean = false
 
   const start = async () => {
+    if (running) {
+      return
+    }
+
     running = true
 
     while (queue.length) {
