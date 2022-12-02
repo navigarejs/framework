@@ -170,6 +170,11 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
     result: void
   }
 
+  finish: {
+    details: {}
+    result: void
+  }
+
   reset: {
     details: {}
     result: void

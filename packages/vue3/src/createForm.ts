@@ -153,11 +153,6 @@ export default function createForm<
   const successful = ref<boolean | undefined>(undefined)
   const recentlySuccessful = ref<boolean | undefined>(undefined)
   const transform = options.transform || ((values) => values)
-  const finish = () => {
-    processing.value = false
-    globalDisabled.value = false
-    trigger.value = null
-  }
 
   // Remember values
   watch(
@@ -275,14 +270,28 @@ export default function createForm<
     recentlySuccessful,
 
     submit: markRaw(async (submitOptions = {}) => {
+      // Set defaults
       defaults(submitOptions, {
         trigger: null,
         disable: true,
         background: false,
       })
 
+      // Stop early if there is no need to submit the form
       if (disabled.value || blocked.value || processing.value) {
         return
+      }
+
+      // Prepare helpers
+      const finish = () => {
+        processing.value = false
+        globalDisabled.value = false
+        trigger.value = null
+
+        emitter.emit('finish', {}, [
+          options.events?.finish,
+          submitOptions.events?.finish,
+        ])
       }
 
       // Run "before" hook
