@@ -390,7 +390,7 @@ export function createEmitter<
   const control: {
     off: <
       TEventName extends keyof TEvents,
-      TListener = (
+      TListener extends (event: CustomEvent) => void = (
         event: CustomEvent<TEvents[TEventName]['details']>,
       ) => TEvents[TEventName]['result'],
     >(
@@ -400,7 +400,7 @@ export function createEmitter<
 
     on: <
       TEventName extends keyof TEvents,
-      TListener = (
+      TListener extends (event: CustomEvent) => void = (
         event: CustomEvent<TEvents[TEventName]['details']>,
       ) => TEvents[TEventName]['result'],
     >(
@@ -410,7 +410,7 @@ export function createEmitter<
 
     emit: <
       TEventName extends keyof TEvents,
-      TListener = (
+      TListener extends (event: CustomEvent) => void = (
         event: CustomEvent<TEvents[TEventName]['details']>,
       ) => TEvents[TEventName]['result'],
     >(
