@@ -18,7 +18,8 @@ class Fragment implements Arrayable
     public ?RawRoute $rawRoute = null,
     public ?Location $location = null,
     public ?Collection $defaults = null,
-    public ?Collection $parameters = null
+    public ?Collection $parameters = null,
+    public bool $fallback = false
   ) {
     $this->defaults = collect($defaults ?? []);
     $this->parameters = collect($parameters ?? []);

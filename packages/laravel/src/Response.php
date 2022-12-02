@@ -103,14 +103,16 @@ class Response implements Responsable
   public function withFragment(
     string $fragmentName,
     string|null $componentName,
-    array|Arrayable|null $properties = []
+    array|Arrayable|null $properties = [],
+    bool $fragment = false
   ): self {
     $this->fragments[$fragmentName] = is_null($componentName)
       ? null
       : new Fragment(
         name: $fragmentName,
         component: Component::fromName($componentName, $this->configuration),
-        properties: collect($properties)
+        properties: collect($properties),
+        fallback: $fallback
       );
 
     return $this;
@@ -133,7 +135,12 @@ class Response implements Responsable
       return $this;
     }
 
-    return $this->withFragment($fragmentName, $componentName, $properties);
+    return $this->withFragment(
+      $fragmentName,
+      $componentName,
+      $properties,
+      true
+    );
   }
 
   /**
