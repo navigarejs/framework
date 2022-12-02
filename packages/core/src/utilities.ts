@@ -450,7 +450,10 @@ export function createEmitter<
       })
 
       // Dispatches a synthetic event event to target and returns true if either event's cancelable attribute value is false or its preventDefault() method was not invoked, and false otherwise.
-      const listeners = [...castArray(priorityListeners), ...(all[name] ?? [])]
+      const listeners = [
+        ...castArray(priorityListeners),
+        ...(all[name] ?? []),
+      ].filter(isDefined)
 
       for (const listener of listeners) {
         const result = await listener?.(event as any)
