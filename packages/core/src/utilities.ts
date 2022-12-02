@@ -665,7 +665,7 @@ export function createQueue<TOutput = void>(): {
     while (queue.length) {
       const task = queue.shift()!
 
-      await task().catch(() => {})
+      await task()
     }
 
     running = false
@@ -679,9 +679,7 @@ export function createQueue<TOutput = void>(): {
 
       queue.push(task)
 
-      if (!running) {
-        start()
-      }
+      start()
     },
     get size() {
       return queue.length
