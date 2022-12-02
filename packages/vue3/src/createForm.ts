@@ -203,7 +203,9 @@ export default function createForm<
   )
 
   // Handle changes asynchronously
-  const changes = createQueue()
+  const changes = createQueue({
+    max: 1,
+  })
   watch(
     [() => cloneDeep(values), () => initialValues.value],
     ([nextValues, nextInitialValues], [previousValues]) => {
@@ -227,7 +229,7 @@ export default function createForm<
         }
 
         dirty.value = !isEqual(transformedNextValues, transformedInitialValues)
-      }, true)
+      })
     },
     {
       deep: true,

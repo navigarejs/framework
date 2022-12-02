@@ -648,18 +648,19 @@ export function transformPagePropertyKeys(
   return page
 }
 
-export function createQueue<TOutput = void>(): {
+export function createQueue<TOutput = void>(
+  options: Partial<{
+    debounce: number
+    max: number
+  }> = {},
+): {
   push: (task: () => Promise<TOutput>, clear?: boolean) => void
   size: number
 } {
   const queue: (() => Promise<TOutput>)[] = []
   let running: boolean = false
 
-  const start = async () => {
-    if (running) {
-      return
-    }
-
+  const run = async () => {
     running = true
 
     while (queue.length) {
@@ -670,13 +671,17 @@ export function createQueue<TOutput = void>(): {
 
     running = false
   }
+  const start = debounce(() => {
+    if (running) {
+      return
+    }
+
+    run()
+  }, options.debounce ?? 0)
 
   return {
-    push: (task, clear = false) => {
-      if (clear) {
-        queue.length = 0
-      }
-
+    push: (task) => {
+      queue.splice(0, queue.length - Math.max(options.max ?? 1, 1))
       queue.push(task)
 
       start()
