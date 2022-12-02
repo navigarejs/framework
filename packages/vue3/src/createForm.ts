@@ -307,7 +307,7 @@ export default function createForm<
               values: clonedValues,
               errors,
             },
-            options.events?.validate,
+            [options.events?.validate, submitOptions.events?.validate],
           )
         ) {
           return undefined
@@ -324,7 +324,7 @@ export default function createForm<
             {
               flash,
             },
-            options.events?.success,
+            [options.events?.success, submitOptions.events?.success],
           )
 
           finish()
@@ -360,6 +360,7 @@ export default function createForm<
                     errors: event.detail.errors,
                   },
                   visitOptions.events?.error,
+                  [options.events?.validate, submitOptions.events?.validate],
                 )
               },
 
@@ -380,7 +381,7 @@ export default function createForm<
                   {
                     flash: event.detail.page.properties.__flash,
                   },
-                  visitOptions.events?.success,
+                  [options.events?.success, submitOptions.events?.success],
                 )
               },
 

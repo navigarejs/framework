@@ -210,6 +210,9 @@ export type FormSubmitOptions = Partial<{
   trigger: FormTrigger
   background: boolean
   disable: boolean
+  events: Partial<{
+    [TEventName in FormEventNames]: FormEventListener<TEventName>
+  }>
 }>
 
 export type FormBaseOptions<TValues extends FormValues = FormValues> = Partial<{

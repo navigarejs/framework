@@ -384,104 +384,91 @@ export function createEmitter<
       handle: (result: TEvents[TEventName]['result']) => boolean
     }>
   }>,
-): {
-  off: <TEventName extends keyof TEvents>(
-    name: TEventName,
-    listener: (
-      event: CustomEvent<TEvents[TEventName]['details']>,
-    ) => TEvents[TEventName]['result'],
-  ) => void
-  on: <TEventName extends keyof TEvents>(
-    name: TEventName,
-    listener: (
-      event: CustomEvent<TEvents[TEventName]['details']>,
-    ) => TEvents[TEventName]['result'],
-  ) => () => void
-  emit: <TEventName extends keyof TEvents>(
-    name: TEventName,
-    details: TEvents[TEventName]['details'],
-    initialListener?: (
-      event: CustomEvent<TEvents[TEventName]['details']>,
-    ) => TEvents[TEventName]['result'],
-  ) => Promise<boolean>
-} {
+) {
   const all: Partial<Record<keyof TEvents, ((event: any) => void)[]>> = {}
-  const off = <TEventName extends keyof TEvents>(
-    name: TEventName,
-    listener?: (
-      event: CustomEvent<TEvents[TEventName]['details']>,
-    ) => TEvents[TEventName]['result'],
-  ): void => {
-    const listeners = all[name]
 
-    if (listeners) {
-      if (listener) {
-        listeners.splice(listeners.indexOf(listener) >>> 0, 1)
+  const control: {
+    off: <TEventName extends keyof TEvents>(
+      name: TEventName,
+      listener: (
+        event: CustomEvent<TEvents[TEventName]['details']>,
+      ) => TEvents[TEventName]['result'],
+    ) => void
+    on: <TEventName extends keyof TEvents>(
+      name: TEventName,
+      listener: (
+        event: CustomEvent<TEvents[TEventName]['details']>,
+      ) => TEvents[TEventName]['result'],
+    ) => () => void
+    emit: <TEventName extends keyof TEvents>(
+      name: TEventName,
+      details: TEvents[TEventName]['details'],
+      priorityListeners?:
+        | ((
+            event: CustomEvent<TEvents[TEventName]['details']>,
+          ) => TEvents[TEventName]['result'])
+        | ((
+            event: CustomEvent<TEvents[TEventName]['details']>,
+          ) => TEvents[TEventName]['result'])[],
+    ) => Promise<boolean>
+  } = {
+    on: (name, listener) => {
+      const listeners = all[name]
+
+      if (listeners) {
+        listeners.push(listener)
       } else {
-        all[name] = []
+        all[name] = [listener]
       }
-    }
-  }
-  const on = <TEventName extends keyof TEvents>(
-    name: TEventName,
-    listener: (
-      event: CustomEvent<TEvents[TEventName]['details']>,
-    ) => TEvents[TEventName]['result'],
-  ): (() => void) => {
-    const listeners = all[name]
 
-    if (listeners) {
-      listeners.push(listener)
-    } else {
-      all[name] = [listener]
-    }
+      return () => {
+        return control.off(name, listener)
+      }
+    },
+    off: (name, listener?) => {
+      const listeners = all[name]
 
-    return () => {
-      return off(name, listener)
-    }
-  }
-  const emit = async <TEventName extends keyof TEvents>(
-    name: TEventName,
-    details: TEvents[TEventName]['details'],
-    initialListener?: (
-      event: CustomEvent<TEvents[TEventName]['details']>,
-    ) => TEvents[TEventName]['result'],
-  ): Promise<boolean> => {
-    const event = new CustomEvent(String(name), {
-      ...events[name]?.options,
-      detail: details,
-    })
+      if (listeners) {
+        if (listener) {
+          listeners.splice(listeners.indexOf(listener) >>> 0, 1)
+        } else {
+          all[name] = []
+        }
+      }
+    },
+    emit: async (name, details, priorityListeners?) => {
+      const event = new CustomEvent(String(name), {
+        ...events[name]?.options,
+        detail: details,
+      })
 
-    // Dispatches a synthetic event event to target and returns true if either event's cancelable attribute value is false or its preventDefault() method was not invoked, and false otherwise.
-    const listeners = [initialListener, ...(all[name] ?? [])]
+      // Dispatches a synthetic event event to target and returns true if either event's cancelable attribute value is false or its preventDefault() method was not invoked, and false otherwise.
+      const listeners = [...castArray(priorityListeners), ...(all[name] ?? [])]
 
-    for (const listener of listeners) {
-      const result = await listener?.(event as any)
+      for (const listener of listeners) {
+        const result = await listener?.(event as any)
 
-      const handle = events[name]?.handle
-      if (handle) {
-        if (!handle(result)) {
+        const handle = events[name]?.handle
+        if (handle) {
+          if (!handle(result)) {
+            return false
+          }
+        }
+
+        if (!event.cancelable) {
+          continue
+        }
+
+        if (event.defaultPrevented) {
           return false
         }
       }
 
-      if (!event.cancelable) {
-        continue
-      }
-
-      if (event.defaultPrevented) {
-        return false
-      }
-    }
-
-    return true
+      return true
+    },
   }
 
-  return {
-    on,
-    off,
-    emit,
-  }
+  return control
 }
 
 export function mapRouteMethod(
