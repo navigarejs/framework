@@ -492,7 +492,7 @@ export default class Router<TComponentModule> {
 
     if (!visit.background) {
       if (this.activeVisit) {
-        this.cancelVisit(visit.id, true)
+        this.cancelVisit(this.activeVisit.id, true)
       }
 
       this.saveScrollPositions()
@@ -959,6 +959,11 @@ export default class Router<TComponentModule> {
     if (!nextPage) {
       history.back()
       return
+    }
+
+    // Cancel pending visit
+    if (this.activeVisit) {
+      this.cancelVisit(this.activeVisit.id, true)
     }
 
     // Try to find page via visit id
