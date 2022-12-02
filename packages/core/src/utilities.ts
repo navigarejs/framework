@@ -17,6 +17,7 @@ import {
 import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
 import debounce from 'lodash.debounce'
+import defaults from 'lodash.defaults'
 import get from 'lodash.get'
 import isBoolean from 'lodash.isboolean'
 import isEqual from 'lodash.isequal'
@@ -45,6 +46,7 @@ export {
   set,
   cloneDeep,
   isEqual,
+  defaults,
 }
 
 export function isArray(value: any): value is any[] {

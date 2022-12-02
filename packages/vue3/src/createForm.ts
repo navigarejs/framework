@@ -26,6 +26,7 @@ import {
   castArray,
   cloneDeep,
   createQueue,
+  defaults,
 } from '@navigare/core'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
@@ -273,142 +274,140 @@ export default function createForm<
 
     recentlySuccessful,
 
-    submit: markRaw(
-      async (
-        submitOptions = {
-          trigger: null,
-          background: false,
-          disable: true,
-        },
-      ) => {
-        if (disabled.value || blocked.value || processing.value) {
-          return
-        }
+    submit: markRaw(async (submitOptions = {}) => {
+      defaults(submitOptions, {
+        trigger: null,
+        disable: true,
+        background: false,
+      })
 
-        // Run "before" hook
-        emitter.emit('before', {}, options.events?.before)
+      if (disabled.value || blocked.value || processing.value) {
+        return
+      }
 
-        // Indicate processing state
-        processing.value = true
-        globalDisabled.value = !!submitOptions.disable
+      // Run "before" hook
+      emitter.emit('before', {}, options.events?.before)
 
-        // Remember which element triggered the submission
-        trigger.value = submitOptions.trigger ?? null
+      // Indicate processing state
+      processing.value = true
+      globalDisabled.value = !!submitOptions.disable
 
-        // Transform values before submission if required
-        const clonedValues = cloneDeep(values) as TValues
+      // Remember which element triggered the submission
+      trigger.value = submitOptions.trigger ?? null
 
-        // Run `validate` hook
-        if (
-          !emitter.emit(
-            'validate',
-            {
-              values: clonedValues,
-              errors,
-            },
-            [options.events?.validate, submitOptions.events?.validate],
-          )
-        ) {
-          return undefined
-        }
+      // Transform values before submission if required
+      const clonedValues = cloneDeep(values) as TValues
 
-        // Submit via callback
-        if (callback.value) {
-          const flash = await callback.value(clonedValues)
+      // Run `validate` hook
+      if (
+        !emitter.emit(
+          'validate',
+          {
+            values: clonedValues,
+            errors,
+          },
+          [options.events?.validate, submitOptions.events?.validate],
+        )
+      ) {
+        return undefined
+      }
 
-          successful.value = true
+      // Submit via callback
+      if (callback.value) {
+        const flash = await callback.value(clonedValues)
 
-          emitter.emit(
-            'success',
-            {
-              flash,
-            },
-            [options.events?.success, submitOptions.events?.success],
-          )
+        successful.value = true
 
-          finish()
+        emitter.emit(
+          'success',
+          {
+            flash,
+          },
+          [options.events?.success, submitOptions.events?.success],
+        )
 
-          return undefined
-        }
-
-        // ... or submit via route
-        if (routable.value) {
-          // const visitOptions = options as FormVisitOptions<TValues>
-          const visit = await router.instance.visit(routable.value, {
-            fragmentName: fragment.name ?? undefined,
-
-            data: await transform(clonedValues),
-
-            background: submitOptions.background,
-
-            events: {
-              progress(event) {
-                progress.value = event.detail.progress ?? null
-              },
-
-              error(event) {
-                successful.value = false
-
-                control.clearErrors()
-                control.setErrors(event.detail.errors)
-
-                // Emit event
-                emitter.emit(
-                  'error',
-                  {
-                    errors: event.detail.errors,
-                  },
-                  [options.events?.error, submitOptions.events?.error],
-                )
-              },
-
-              success(event) {
-                successful.value = true
-
-                // Clear errors
-                control.clearErrors()
-
-                // Reset values
-                if (!isDefined(options.reset) || !!options.reset) {
-                  control.reset()
-                }
-
-                // Emit event
-                emitter.emit(
-                  'success',
-                  {
-                    flash: event.detail.page.properties.__flash,
-                  },
-                  [options.events?.success, submitOptions.events?.success],
-                )
-              },
-
-              finish(_event) {
-                finish()
-              },
-
-              before(_event) {},
-
-              cancel(_event) {},
-
-              start(_event) {},
-
-              invalid(_event) {
-                finish()
-              },
-
-              exception(_event) {
-                finish()
-              },
-            },
-          })
-
-          return visit
-        }
+        finish()
 
         return undefined
-      },
-    ),
+      }
+
+      // ... or submit via route
+      if (routable.value) {
+        // const visitOptions = options as FormVisitOptions<TValues>
+        const visit = await router.instance.visit(routable.value, {
+          fragmentName: fragment.name ?? undefined,
+
+          data: await transform(clonedValues),
+
+          background: submitOptions.background,
+
+          events: {
+            progress(event) {
+              progress.value = event.detail.progress ?? null
+            },
+
+            error(event) {
+              successful.value = false
+
+              control.clearErrors()
+              control.setErrors(event.detail.errors)
+
+              // Emit event
+              emitter.emit(
+                'error',
+                {
+                  errors: event.detail.errors,
+                },
+                [options.events?.error, submitOptions.events?.error],
+              )
+            },
+
+            success(event) {
+              successful.value = true
+
+              // Clear errors
+              control.clearErrors()
+
+              // Reset values
+              if (!isDefined(options.reset) || !!options.reset) {
+                control.reset()
+              }
+
+              // Emit event
+              emitter.emit(
+                'success',
+                {
+                  flash: event.detail.page.properties.__flash,
+                },
+                [options.events?.success, submitOptions.events?.success],
+              )
+            },
+
+            finish(_event) {
+              finish()
+            },
+
+            before(_event) {},
+
+            cancel(_event) {},
+
+            start(_event) {},
+
+            invalid(_event) {
+              finish()
+            },
+
+            exception(_event) {
+              finish()
+            },
+          },
+        })
+
+        return visit
+      }
+
+      return undefined
+    }),
 
     validate: markRaw(async (path) => {
       const name = control.getInputName(path)

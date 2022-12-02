@@ -2087,6 +2087,7 @@ __metadata:
     "@types/lodash.castarray": ^4.4.7
     "@types/lodash.clonedeep": ^4.5.7
     "@types/lodash.debounce": ^4.0.7
+    "@types/lodash.defaults": ^4.2.7
     "@types/lodash.get": ^4.4.7
     "@types/lodash.isboolean": ^3.0.7
     "@types/lodash.isequal": ^4.5.6
@@ -2107,6 +2108,7 @@ __metadata:
     lodash.castarray: ^4.4.0
     lodash.clonedeep: ^4.5.0
     lodash.debounce: ^4.0.8
+    lodash.defaults: ^4.2.0
     lodash.get: ^4.4.2
     lodash.isboolean: ^3.0.3
     lodash.isequal: ^4.5.0
@@ -3110,6 +3112,15 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: e873b2d77f89010876baba3437ef826b17221b98948e00b5590828334a481dea1c8f9d28543210e564adc53199584f42c3cb171f8b6c3614fefc0b4e0888679c
+  languageName: node
+  linkType: hard
+
+"@types/lodash.defaults@npm:^4.2.7":
+  version: 4.2.7
+  resolution: "@types/lodash.defaults@npm:4.2.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: b2beeff8bfc7acfcd9241d96c4b9e561ce8ae82831735bc25c26a8a1d6eb6448a0b316794c0e121acb5b3f2e8c806ab6eb63cfd637c62834276eea3c0525e5f2
   languageName: node
   linkType: hard
 
@@ -8049,6 +8060,13 @@ __metadata:
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
   checksum: a3f527d22c548f43ae31c861ada88b2637eb48ac6aa3eb56e82d44917971b8aa96fbb37aa60efea674dc4ee8c42074f90f7b1f772e9db375435f6c83a19b3bc6
+  languageName: node
+  linkType: hard
+
+"lodash.defaults@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "lodash.defaults@npm:4.2.0"
+  checksum: 84923258235592c8886e29de5491946ff8c2ae5c82a7ac5cddd2e3cb697e6fbdfbbb6efcca015795c86eec2bb953a5a2ee4016e3735a3f02720428a40efbb8f1
   languageName: node
   linkType: hard
 
