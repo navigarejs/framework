@@ -388,28 +388,35 @@ export function createEmitter<
   const all: Partial<Record<keyof TEvents, ((event: any) => void)[]>> = {}
 
   const control: {
-    off: <TEventName extends keyof TEvents>(
-      name: TEventName,
-      listener: (
+    off: <
+      TEventName extends keyof TEvents,
+      TListener = (
         event: CustomEvent<TEvents[TEventName]['details']>,
       ) => TEvents[TEventName]['result'],
+    >(
+      name: TEventName,
+      listener: TListener,
     ) => void
-    on: <TEventName extends keyof TEvents>(
-      name: TEventName,
-      listener: (
+
+    on: <
+      TEventName extends keyof TEvents,
+      TListener = (
         event: CustomEvent<TEvents[TEventName]['details']>,
       ) => TEvents[TEventName]['result'],
+    >(
+      name: TEventName,
+      listener: TListener,
     ) => () => void
-    emit: <TEventName extends keyof TEvents>(
+
+    emit: <
+      TEventName extends keyof TEvents,
+      TListener = (
+        event: CustomEvent<TEvents[TEventName]['details']>,
+      ) => TEvents[TEventName]['result'],
+    >(
       name: TEventName,
       details: TEvents[TEventName]['details'],
-      priorityListeners?:
-        | ((
-            event: CustomEvent<TEvents[TEventName]['details']>,
-          ) => TEvents[TEventName]['result'])
-        | ((
-            event: CustomEvent<TEvents[TEventName]['details']>,
-          ) => TEvents[TEventName]['result'])[],
+      priorityListeners?: TListener | (TListener | undefined)[],
     ) => Promise<boolean>
   } = {
     on: (name, listener) => {
@@ -531,7 +538,7 @@ export function isDeferred<TInput>(
     return false
   }
 
-  return input.__deferred === true
+  return '__deferred' in input && input.__deferred === true
 }
 
 export function getPageProperties(page: Page): Properties {

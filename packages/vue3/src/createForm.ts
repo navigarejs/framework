@@ -9,7 +9,6 @@ import {
   FormOptions,
   FormTrigger,
   FormValues,
-  FormVisitOptions,
 } from './types'
 import {
   Routable,
@@ -334,7 +333,7 @@ export default function createForm<
 
         // ... or submit via route
         if (routable.value) {
-          const visitOptions = options as FormVisitOptions<TValues>
+          // const visitOptions = options as FormVisitOptions<TValues>
           const visit = await router.instance.visit(routable.value, {
             fragmentName: fragment.name ?? undefined,
 
@@ -359,8 +358,7 @@ export default function createForm<
                   {
                     errors: event.detail.errors,
                   },
-                  visitOptions.events?.error,
-                  [options.events?.validate, submitOptions.events?.validate],
+                  [options.events?.error, submitOptions.events?.error],
                 )
               },
 
