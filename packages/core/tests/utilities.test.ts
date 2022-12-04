@@ -100,32 +100,6 @@ describe('mergeFragments', () => {
     })
   })
 
-  it('skip fallback fragments when fragment is already set', () => {
-    const initialDefaultFragment = createFragment()
-    const nextDefaultFallbackFragment = {
-      ...createFragment(
-        {
-          initial: false,
-        },
-        createPage('next'),
-      ),
-      fallback: true,
-    }
-
-    expect(
-      mergeFragments(
-        {
-          default: [initialDefaultFragment],
-        },
-        {
-          default: [nextDefaultFallbackFragment],
-        },
-      ),
-    ).toEqual({
-      default: [initialDefaultFragment],
-    })
-  })
-
   describe('stacked', () => {
     it('merges stacked fragments by concatenating them', () => {
       const initialModalFragment = createFragment({

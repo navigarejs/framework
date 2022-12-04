@@ -96,7 +96,7 @@ class Response implements Responsable
    * Add new fragment to response.
    *
    * @param  string  $fragmentName
-   * @param  string|null  $component
+   * @param  string|null  $componentName
    * @param  array|Arrayable|null  $properties
    * @return self
    */
@@ -126,14 +126,14 @@ class Response implements Responsable
    * Add fallback fragment to response.
    *
    * @param  string  $fragmentName
-   * @param  string  $component
-   * @param  array|Arrayable  $properties
+   * @param  string|null  $componentName
+   * @param  array|Arrayable|null  $properties
    * @return self
    */
   public function withFallbackFragment(
     string $fragmentName,
-    string $componentName,
-    array|Arrayable $properties = []
+    string|null $componentName,
+    array|Arrayable|null $properties = []
   ): self {
     return $this->withFragment(
       $fragmentName,
@@ -316,7 +316,25 @@ class Response implements Responsable
     if ($this->baseURL) {
       $basePage = $this->getBasePage($request);
 
+      // Assign base page to actual requested page
       $page->base = $basePage;
+
+      // Remove fallback fragments if they are defined on the base page
+      foreach ($page->fragments as $fragmentName => $fragment) {
+        if (!$fragment) {
+          continue;
+        }
+
+        if (!$fragment->fallback) {
+          continue;
+        }
+
+        if (!$basePage->fragments->keys()->contains($fragmentName)) {
+          continue;
+        }
+
+        unset($page->fragments[$fragmentName]);
+      }
     }
 
     return ResponseFactory::view(
