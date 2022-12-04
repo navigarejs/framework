@@ -72,6 +72,7 @@ export type Fragment = {
   defaults: PageDefaults
   parameters: Record<string, RouteParameter>*/
   page?: Page
+  fallback: boolean
 }
 
 export type Fragments = Record<string, (Fragment | null)[] | null>

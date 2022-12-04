@@ -179,31 +179,42 @@ export function mergeFragments<TComponentModule>(
 
     if (nextFragments) {
       if (cumulatedFragments) {
-        const lastFragment: Fragment | null =
+        const previousFragment: Fragment | null =
           cumulatedFragments[cumulatedFragments.length - 1]
 
         for (const fragment of castArray(nextFragments)) {
+          // Skipp nullish fragments
           if (!fragment) {
             continue
           }
 
+          // Skip fallback fragments that are already defined
+          if (fragment.fallback && previousFragment) {
+            continue
+          }
+
+          // Replace previous fragment
           if (
             !stacked ||
-            lastFragment?.page?.location.href === fragment.page?.location.href
+            (!!stacked &&
+              previousFragment?.page?.location.href ===
+                fragment.page?.location.href)
           ) {
             const nextFragment = {
               ...fragment,
               properties: {
-                ...lastFragment?.properties,
+                ...previousFragment?.properties,
                 ...fragment.properties,
               },
             }
 
             if (
-              (lazy && lastFragment?.component.id === fragment?.component.id) ||
-              lastFragment?.page?.location.href === fragment.page?.location.href
+              (lazy &&
+                previousFragment?.component.id === fragment?.component.id) ||
+              previousFragment?.page?.location.href ===
+                fragment.page?.location.href
             ) {
-              nextFragment.page!.visit = lastFragment?.page?.visit!
+              nextFragment.page!.visit = previousFragment?.page?.visit!
             }
 
             cumulatedFragments.splice(

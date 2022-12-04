@@ -47,6 +47,7 @@ describe('mergeFragments', () => {
       },
       properties,
       page,
+      fallback: false,
     }
   }
 
@@ -96,6 +97,32 @@ describe('mergeFragments', () => {
       ),
     ).toEqual({
       default: null,
+    })
+  })
+
+  it('skip fallback fragments when fragment is already set', () => {
+    const initialDefaultFragment = createFragment()
+    const nextDefaultFallbackFragment = {
+      ...createFragment(
+        {
+          initial: false,
+        },
+        createPage('next'),
+      ),
+      fallback: true,
+    }
+
+    expect(
+      mergeFragments(
+        {
+          default: [initialDefaultFragment],
+        },
+        {
+          default: [nextDefaultFallbackFragment],
+        },
+      ),
+    ).toEqual({
+      default: [initialDefaultFragment],
     })
   })
 

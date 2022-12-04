@@ -49,10 +49,6 @@ export default function createRoute<
     : getParameters
   const partial = Object.values(parameters).includes(Wildcard)
 
-  if (!isObject(rawRoute)) {
-    throwError(`"${rawRoute}" is not a valid route`)
-  }
-
   if (partial) {
     return new PartialRoute<TName>(
       rawRoute,

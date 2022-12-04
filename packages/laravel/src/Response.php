@@ -104,8 +104,12 @@ class Response implements Responsable
     string $fragmentName,
     string|null $componentName,
     array|Arrayable|null $properties = [],
-    bool $fragment = false
+    bool $fallback = false
   ): self {
+    if ($fallback && Arr::exists($this->fragments, $fragmentName)) {
+      return $this;
+    }
+
     $this->fragments[$fragmentName] = is_null($componentName)
       ? null
       : new Fragment(
@@ -131,10 +135,6 @@ class Response implements Responsable
     string $componentName,
     array|Arrayable $properties = []
   ): self {
-    if (Arr::exists($this->fragments, $fragmentName)) {
-      return $this;
-    }
-
     return $this->withFragment(
       $fragmentName,
       $componentName,

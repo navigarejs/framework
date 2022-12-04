@@ -55,6 +55,7 @@ class Fragment implements Arrayable
       'name' => $this->name,
       'component' => $this->component->toArray($ssr, $configuration),
       'properties' => (object) $this->properties->toArray(),
+      'fallback' => $this->fallback,
       /*'defaults' => $this->defaults?->toArray(),
       'parameters' => $this->parameters?->toArray(),
       'rawRoute' => $this->rawRoute?->toArray($ssr, $configuration),

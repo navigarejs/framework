@@ -35,6 +35,10 @@ export default class PartialRoute<TName extends RouteName = RouteName> {
     rawRoute: RawRoute,
     parameters: RawRouteParameters<TName>,
   ) {
+    if (!isObject(rawRoute)) {
+      throwError(`"${rawRoute}" is not a valid route`)
+    }
+
     this.rawRoute = rawRoute
     this.parameters = parameters
   }
