@@ -166,8 +166,10 @@ export function mergeFragments<TComponentModule>(
     ...getKeys(allCurrentFragments),
     ...getKeys(allNextFragments),
   ]).reduce((allCumulatedFragments, name) => {
-    let cumulatedFragments: (Fragment | null)[] | null =
-      allCumulatedFragments[name] ?? null
+    let cumulatedFragments: (Fragment | null)[] | null | undefined =
+      allCumulatedFragments[name] ?? undefined
+    const currentFragment: Fragment | null | undefined =
+      cumulatedFragments?.[cumulatedFragments?.length - 1]
     const nextFragments = allNextFragments[name] as
       | (Fragment | null)[]
       | null
@@ -199,9 +201,6 @@ export function mergeFragments<TComponentModule>(
 
     if (nextFragments) {
       if (cumulatedFragments) {
-        const previousFragment: Fragment | null =
-          cumulatedFragments[cumulatedFragments.length - 1]
-
         for (const fragment of castArray(nextFragments)) {
           // Skipp nullish fragments
           if (!fragment) {
@@ -209,7 +208,7 @@ export function mergeFragments<TComponentModule>(
           }
 
           // Skip fallback fragments that are already defined
-          if (fragment.fallback && previousFragment) {
+          if (fragment.fallback && currentFragment) {
             continue
           }
 
@@ -217,24 +216,24 @@ export function mergeFragments<TComponentModule>(
           if (
             !stacked ||
             (!!stacked &&
-              previousFragment?.page?.location.href ===
+              currentFragment?.page?.location.href ===
                 fragment.page?.location.href)
           ) {
             const nextFragment = {
               ...fragment,
               properties: {
-                ...previousFragment?.properties,
+                ...currentFragment?.properties,
                 ...fragment.properties,
               },
             }
 
             if (
               (lazy &&
-                previousFragment?.component.id === fragment?.component.id) ||
-              previousFragment?.page?.location.href ===
+                currentFragment?.component.id === fragment?.component.id) ||
+              currentFragment?.page?.location.href ===
                 fragment.page?.location.href
             ) {
-              nextFragment.page!.visit = previousFragment?.page?.visit!
+              nextFragment.page!.visit = currentFragment?.page?.visit!
             }
 
             cumulatedFragments.splice(
@@ -246,6 +245,8 @@ export function mergeFragments<TComponentModule>(
             cumulatedFragments.push(fragment)
           }
         }
+      } else if (cumulatedFragments === null && nextFragments[0]?.fallback) {
+        cumulatedFragments = null
       } else {
         cumulatedFragments = [...nextFragments]
       }
