@@ -15,4 +15,11 @@ class ReportsController extends Controller
   {
     return Navigare::render('reports/Show')->withLeft('reports/Sidebar');
   }
+
+  public function settings()
+  {
+    return Navigare::withModal('reports/Settings')->extends(
+      route('reports.index')
+    );
+  }
 }

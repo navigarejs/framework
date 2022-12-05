@@ -12,6 +12,8 @@
     >
       {{ item.label }}
     </push-button>
+
+    <push-button :route="$route('reports.settings')"> Settings</push-button>
   </div>
 </template>
 

@@ -143,7 +143,11 @@ Route::get('reports', [ReportsController::class, 'index'])
   ->name('reports.index')
   ->middleware('auth');
 
-Route::get('reports/{name}', [ReportsController::class, 'show'])
+Route::get('reports/settings', [ReportsController::class, 'settings'])
+  ->name('reports.settings')
+  ->middleware('auth');
+
+Route::get('reports/show/{name}', [ReportsController::class, 'show'])
   ->name('reports.show')
   ->middleware('auth');
 

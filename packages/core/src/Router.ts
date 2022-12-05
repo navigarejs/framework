@@ -162,6 +162,7 @@ export default class Router<TComponentModule> {
     this.on('before', options.events?.before)
     this.on('start', options.events?.start)
     this.on('progress', options.events?.progress)
+    this.on('navigate', options.events?.navigate)
     this.on('finish', options.events?.finish)
     this.on('cancel', options.events?.cancel)
     this.on('success', options.events?.success)
@@ -947,7 +948,7 @@ export default class Router<TComponentModule> {
 
         return [
           ...cumulatedComponents,
-          ...fragments?.map((fragment) => fragment?.component ?? undefined),
+          ...fragments?.map((fragment) => fragment.component ?? undefined),
         ].filter(isDefined)
       },
       [] as Component[],

@@ -39,6 +39,12 @@ Breadcrumbs::for('reports.show', function (
   );
 });
 
+Breadcrumbs::for('reports.settings', function (BreadcrumbTrail $trail) {
+  $trail->parent('reports.index');
+
+  $trail->push('Settings', route('reports.settings'));
+});
+
 // Organizations
 Breadcrumbs::for('organizations.index', function (BreadcrumbTrail $trail) {
   $trail->push('Organizations', route('organizations.index'));
