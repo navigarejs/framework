@@ -272,12 +272,23 @@ export default class Router<TComponentModule> {
   }
 
   protected async handleBackForwardVisit(page: Page): Promise<void> {
-    window.history.state.version = page.version
+    const nextPage = safeParse<Page>(window.history.state)
 
-    await this.setPage(window.history.state, {
-      preserveScroll: true,
-      preserveState: true,
-    })
+    if (!nextPage) {
+      return
+    }
+
+    await this.setPage(
+      {
+        ...nextPage,
+        version: page.version,
+      },
+      {
+        preserveScroll: true,
+        preserveState: true,
+        replace: true,
+      },
+    )
 
     this.restoreScrollPositions()
   }
