@@ -115,7 +115,7 @@ export function mergeDataIntoQueryString(
   method: RouteMethod,
   href: string,
   data: Record<string, FormDataConvertible>,
-  queryStringArrayFormat: QueryStringArrayFormat = QueryStringArrayFormat.Brackets,
+  queryStringArrayFormat: QueryStringArrayFormat = QueryStringArrayFormat.Indices,
 ): {
   href: string
   data: Record<string, FormDataConvertible>

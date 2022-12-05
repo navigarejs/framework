@@ -459,7 +459,7 @@ export default class Router<TComponentModule> {
       headers = {},
       errorBag = '',
       forceFormData = false,
-      queryStringArrayFormat = QueryStringArrayFormat.Brackets,
+      queryStringArrayFormat = QueryStringArrayFormat.Indices,
       events = {},
       background = false,
     } = options
@@ -1105,7 +1105,7 @@ export default class Router<TComponentModule> {
       forceFormData?: boolean
       queryStringArrayFormat?: QueryStringArrayFormat
     } = {
-      queryStringArrayFormat: QueryStringArrayFormat.Brackets,
+      queryStringArrayFormat: QueryStringArrayFormat.Indices,
     },
   ): ResolvedRoutable {
     let finalHref =
@@ -1191,7 +1191,7 @@ export default class Router<TComponentModule> {
       headers: {},
       errorBag: null,
       forceFormData: false,
-      queryStringArrayFormat: QueryStringArrayFormat.Brackets,
+      queryStringArrayFormat: QueryStringArrayFormat.Indices,
       completed: true,
       cancelled: false,
       interrupted: false,
