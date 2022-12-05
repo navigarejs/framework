@@ -30,6 +30,9 @@ export default createNavigareApp({
 
     left: {
       lazy: true,
+      inert: ({ nextFragments }) => {
+        return !!nextFragments.modal
+      },
     },
 
     modal: {

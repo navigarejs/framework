@@ -13,6 +13,7 @@ import {
   FormDataConvertible,
   RouteMethod,
   QueryStringArrayFormat,
+  FragmentOption,
 } from './types'
 import castArray from 'lodash.castarray'
 import cloneDeep from 'lodash.clonedeep'
@@ -171,11 +172,29 @@ export function mergeFragments<TComponentModule>(
       | (Fragment | null)[]
       | null
       | undefined
-    const stacked = !!options[name]?.stacked
-    const inert = isDefined(options[name]?.inert)
-      ? !!options[name]?.inert
-      : name === 'default'
-    const lazy = isDefined(options[name]?.lazy) ? !!options[name]?.lazy : false
+
+    const resolveOption = <TReturn>(
+      option: FragmentOption<TReturn>,
+      defaultValue: TReturn,
+    ): TReturn => {
+      if (!isDefined(option)) {
+        return defaultValue
+      }
+
+      if (isFunction(option)) {
+        return (
+          option({
+            currentFragments: allCurrentFragments,
+            nextFragments: allNextFragments,
+          }) ?? defaultValue
+        )
+      }
+
+      return option
+    }
+    const stacked = resolveOption(options[name]?.stacked, false)
+    const inert = resolveOption(options[name]?.inert, name === 'default')
+    const lazy = resolveOption(options[name]?.lazy, false)
 
     if (nextFragments) {
       if (cumulatedFragments) {

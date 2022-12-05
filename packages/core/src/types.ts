@@ -5,6 +5,13 @@ import { AxiosResponse, AxiosStatic, Canceler, CancelToken } from 'axios'
 import { IsEmptyObject } from 'type-fest'
 
 // Router
+export type FragmentOption<TReturn> =
+  | TReturn
+  | ((options: {
+      currentFragments: Fragments
+      nextFragments: Fragments
+    }) => TReturn | undefined)
+
 export type RouterOptions<TComponent> = {
   initialPage: Page
   base: string
@@ -12,9 +19,9 @@ export type RouterOptions<TComponent> = {
   fragments?: Record<
     string,
     {
-      stacked?: boolean
-      lazy?: boolean
-      inert?: boolean
+      stacked?: FragmentOption<boolean>
+      lazy?: FragmentOption<boolean>
+      inert?: FragmentOption<boolean>
     }
   >
   events?: Partial<{
