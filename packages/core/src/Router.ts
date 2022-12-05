@@ -948,7 +948,7 @@ export default class Router<TComponentModule> {
 
         return [
           ...cumulatedComponents,
-          ...fragments?.map((fragment) => fragment.component ?? undefined),
+          ...fragments?.map((fragment) => fragment?.component ?? undefined),
         ].filter(isDefined)
       },
       [] as Component[],

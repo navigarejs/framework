@@ -173,6 +173,7 @@ export function mergeFragments<TComponentModule>(
       | null
       | undefined
 
+    // Resolve all options
     const resolveOption = <TReturn>(
       option: FragmentOption<TReturn>,
       defaultValue: TReturn,
