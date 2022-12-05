@@ -188,6 +188,11 @@ export function mergeFragments<TComponentModule>(
             continue
           }
 
+          // Skip fallback fragments that are already defined
+          if (fragment.fallback && previousFragment) {
+            continue
+          }
+
           // Replace previous fragment
           if (
             !stacked ||
