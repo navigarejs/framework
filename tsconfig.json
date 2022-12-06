@@ -17,7 +17,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "incremental": true,
-    "noResolve": true
+    "incremental": true
   }
 }

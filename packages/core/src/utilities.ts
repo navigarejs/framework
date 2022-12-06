@@ -168,18 +168,27 @@ export function mergeFragments<TComponentModule>(
   ]).reduce((allCumulatedFragments, name) => {
     let cumulatedFragments: (Fragment | null)[] | null | undefined =
       allCumulatedFragments[name] ?? undefined
-    const currentFragment: Fragment | null | undefined =
-      cumulatedFragments?.[cumulatedFragments?.length - 1]
     const nextFragments = allNextFragments[name] as
       | (Fragment | null)[]
       | null
       | undefined
 
+    // Determine current fragment details
+    const currentFragment: Fragment | null | undefined =
+      cumulatedFragments?.[cumulatedFragments?.length - 1]
+    const currentLocation = currentFragment?.page?.location.href
+    const currentComponentId = currentFragment?.component.id
+
+    // For simplicity we assume that there is only one next fragment
+    const nextFragment = castArray(nextFragments)[0]
+    const nextLocation = nextFragment?.page?.location.href
+    const nextComponentId = nextFragment?.component.id
+
     // Resolve all options
     const resolveOption = <TReturn>(
       option: FragmentOption<TReturn>,
-      defaultValue: TReturn,
-    ): TReturn => {
+      defaultValue: NonNullable<TReturn>,
+    ): NonNullable<TReturn> => {
       if (!isDefined(option)) {
         return defaultValue
       }
@@ -193,67 +202,53 @@ export function mergeFragments<TComponentModule>(
         )
       }
 
-      return option
+      return option ?? defaultValue
     }
     const stacked = resolveOption(options[name]?.stacked, false)
     const inert = resolveOption(options[name]?.inert, name === 'default')
     const lazy = resolveOption(options[name]?.lazy, false)
 
-    if (nextFragments) {
+    if (nextFragment) {
       if (cumulatedFragments) {
-        for (const fragment of castArray(nextFragments)) {
-          // Skipp nullish fragments
-          if (!fragment) {
-            continue
-          }
-
-          // Skip fallback fragments that are already defined
-          if (fragment.fallback && currentFragment) {
-            continue
-          }
-
-          // Replace previous fragment
-          if (
-            !stacked ||
-            (!!stacked &&
-              currentFragment?.page?.location.href ===
-                fragment.page?.location.href)
-          ) {
-            const nextFragment = {
-              ...fragment,
-              properties: {
-                ...currentFragment?.properties,
-                ...fragment.properties,
-              },
-            }
-
-            if (
-              (lazy &&
-                currentFragment?.component.id === fragment?.component.id) ||
-              currentFragment?.page?.location.href ===
-                fragment.page?.location.href
-            ) {
-              nextFragment.page!.visit = currentFragment?.page?.visit!
-            }
-
-            cumulatedFragments.splice(
-              cumulatedFragments.length - 1,
-              1,
-              nextFragment,
-            )
-          } else {
-            cumulatedFragments.push(fragment)
-          }
+        // Skip fallback fragments that are already defined
+        if (nextFragment.fallback && currentFragment) {
         }
-      } else if (cumulatedFragments === null && nextFragments[0]?.fallback) {
+        // Replace previous fragment
+        else if (!stacked || (!!stacked && currentLocation === nextLocation)) {
+          nextFragment.properties = {
+            ...currentFragment?.properties,
+            ...nextFragment.properties,
+          }
+
+          // Reuse component by using the same visit
+          if (
+            (lazy && currentComponentId === nextComponentId) ||
+            currentLocation === nextLocation
+          ) {
+            nextFragment.page!.visit = currentFragment?.page?.visit!
+          }
+
+          cumulatedFragments.splice(
+            cumulatedFragments.length - 1,
+            1,
+            nextFragment,
+          )
+        } else {
+          cumulatedFragments.push(nextFragment)
+        }
+      } else if (cumulatedFragments === null && nextFragment?.fallback) {
         cumulatedFragments = null
       } else {
-        cumulatedFragments = [...nextFragments]
+        cumulatedFragments = [nextFragment]
       }
-    } else if (nextFragments === null) {
+    } else if (nextFragment === null) {
       cumulatedFragments = null
-    } else if (!nextFragments && !inert) {
+    } else if (!nextFragment && !inert) {
       cumulatedFragments = null
+    }
+
+    if (!isDefined(cumulatedFragments)) {
+      return allCumulatedFragments
     }
 
     return {
