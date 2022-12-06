@@ -64,7 +64,7 @@ export default class Router<TComponentModule> {
   protected internalPages: Page[] = []
 
   public get pages(): Page[] {
-    return cloneDeep(this.internalPages).map((page, index) => {
+    return this.internalPages.map((page, index) => {
       return {
         ...page,
         obsolete: index > this.pageIndex,
@@ -83,7 +83,7 @@ export default class Router<TComponentModule> {
   }
 
   public get page(): Page {
-    return cloneDeep(this.internalPage)
+    return this.internalPage
   }
 
   protected get internalPreviousPage(): Page | undefined {
@@ -91,7 +91,7 @@ export default class Router<TComponentModule> {
   }
 
   public get previousPage(): Page | undefined {
-    return cloneDeep(this.internalPreviousPage)
+    return this.internalPreviousPage
   }
 
   protected get internalLatestPage(): Page {
@@ -101,7 +101,7 @@ export default class Router<TComponentModule> {
   }
 
   public get latestPage(): Page {
-    return cloneDeep(this.internalLatestPage)
+    return this.internalLatestPage
   }
 
   public get location(): RouterLocation {
