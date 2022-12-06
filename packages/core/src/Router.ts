@@ -375,47 +375,49 @@ export default class Router<TComponentModule> {
       return
     }
 
-    const { activeVisit } = this
+    const { activeVisit: visit } = this
 
-    if (activeVisit.completed) {
+    if (visit.completed || visit.cancelled) {
       return
     }
 
-    activeVisit.cancelToken?.cancel()
-    activeVisit.completed = false
-    activeVisit.cancelled = true
-    activeVisit.interrupted = interrupt ? true : false
+    visit.cancelToken?.cancel()
+    visit.completed = false
+    visit.cancelled = true
+    visit.interrupted = interrupt ? true : false
 
     await this.emit(
       'cancel',
       {
-        visit: activeVisit,
+        visit,
       },
-      activeVisit.events.cancel,
+      visit.events.cancel,
     )
     await this.emit(
       'finish',
       {
-        visit: activeVisit,
+        visit,
       },
-      activeVisit.events.finish,
+      visit.events.finish,
     )
   }
 
   protected async finishVisit(visit: Visit): Promise<void> {
-    if (!visit.cancelled && !visit.interrupted) {
-      visit.completed = true
-      visit.cancelled = false
-      visit.interrupted = false
-
-      await this.emit(
-        'finish',
-        {
-          visit,
-        },
-        visit.events.finish,
-      )
+    if (visit.completed || visit.cancelled) {
+      return
     }
+
+    visit.completed = true
+    visit.cancelled = false
+    visit.interrupted = false
+
+    await this.emit(
+      'finish',
+      {
+        visit,
+      },
+      visit.events.finish,
+    )
   }
 
   protected resolvePreserveOption(
@@ -1193,7 +1195,7 @@ export default class Router<TComponentModule> {
       errorBag: null,
       forceFormData: false,
       queryStringArrayFormat: QueryStringArrayFormat.Indices,
-      completed: true,
+      completed: false,
       cancelled: false,
       interrupted: false,
       events: visit.events || {},
