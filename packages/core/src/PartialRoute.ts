@@ -239,7 +239,7 @@ export default class PartialRoute<TName extends RouteName = RouteName> {
 
     // Now we deal with Route instances
     const parameters = this.getParameters(defaults)
-    const comparableParameters = comparableRoute.getParameters()
+    const comparableParameters = comparableRoute.getParameters(defaults)
     const comparableRawParameters = comparableRoute.parameters
 
     // Simple check by comparing the name
