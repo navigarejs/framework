@@ -29,7 +29,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, { slots }) {
+  setup(props, { slots, attrs }) {
     const context = provideFragmentContext(props.name, () => props.fragment)
     const router = useRouter()
     const properties = computed(() => {
@@ -69,6 +69,7 @@ export default defineComponent({
       const renderedComponentModule = h(
         componentModule.value,
         {
+          ...attrs,
           key: context.key,
           ...properties.value,
         },
@@ -79,6 +80,8 @@ export default defineComponent({
         return defaultSlot(
           reactive({
             ...toRefs(context),
+            properties,
+            attrs,
             component: markRaw(renderedComponentModule),
           }),
         )

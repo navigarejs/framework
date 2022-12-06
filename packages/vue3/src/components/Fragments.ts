@@ -17,7 +17,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, { slots }) {
+  setup(props, { slots, attrs }) {
     const router = useRouter()
     const fragments = computed(() => {
       return castArray(router.page.fragments[props.name])
@@ -35,6 +35,7 @@ export default defineComponent({
             // key: `${fragment.component.uri}-${fragment.location.url}`,
             name: props.name,
             fragment,
+            ...attrs,
           },
           {
             default: fragmentSlot
