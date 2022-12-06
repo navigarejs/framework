@@ -206,7 +206,7 @@ export function mergeFragments<TComponentModule>(
     }
     const stacked = resolveOption(options[name]?.stacked, false)
     const inert = resolveOption(options[name]?.inert, name === 'default')
-    const lazy = resolveOption(options[name]?.lazy, false)
+    const lazy = resolveOption(options[name]?.lazy, true)
 
     if (nextFragment) {
       if (cumulatedFragments) {
