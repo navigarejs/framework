@@ -717,3 +717,8 @@ export function createQueue<TOutput = void>(
     },
   }
 }
+
+export function clonePage<TPage extends Page | undefined>(page: TPage): TPage {
+  // This is just a dummy but maybe it becomes handy in the future
+  return page
+}

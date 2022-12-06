@@ -46,6 +46,7 @@ import {
   isObject,
   isString,
   isDefined,
+  clonePage,
 } from './utilities'
 import {
   default as Axios,
@@ -66,7 +67,7 @@ export default class Router<TComponentModule> {
   public get pages(): Page[] {
     return this.internalPages.map((page, index) => {
       return {
-        ...page,
+        ...clonePage(page),
         obsolete: index > this.pageIndex,
       }
     })
@@ -83,7 +84,7 @@ export default class Router<TComponentModule> {
   }
 
   public get page(): Page {
-    return this.internalPage
+    return clonePage(this.internalPage)
   }
 
   protected get internalPreviousPage(): Page | undefined {
@@ -91,7 +92,7 @@ export default class Router<TComponentModule> {
   }
 
   public get previousPage(): Page | undefined {
-    return this.internalPreviousPage
+    return clonePage(this.internalPreviousPage)
   }
 
   protected get internalLatestPage(): Page {
@@ -101,7 +102,7 @@ export default class Router<TComponentModule> {
   }
 
   public get latestPage(): Page {
-    return this.internalLatestPage
+    return clonePage(this.internalLatestPage)
   }
 
   public get location(): RouterLocation {

@@ -1,5 +1,5 @@
 import { injectRouterContext } from '../contexts/injectRouterContext'
-import { Page, RouterEventListener, cloneDeep } from '@navigare/core'
+import { Page, RouterEventListener, clonePage } from '@navigare/core'
 import { onMounted, onUnmounted, reactive } from 'vue'
 
 export default function usePage(): Page {
@@ -7,7 +7,7 @@ export default function usePage(): Page {
   const page = reactive(router.page)
 
   const handleNavigate: RouterEventListener<'navigate'> = (event) => {
-    Object.assign(page, cloneDeep(event.detail.page))
+    Object.assign(page, clonePage(event.detail.page))
   }
   onMounted(() => {
     router.on('navigate', handleNavigate)
