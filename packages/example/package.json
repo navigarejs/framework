@@ -12,7 +12,7 @@
     "@navigare/cli": "^1.0.8"
   },
   "devDependencies": {
-    "@navigare/core": "^1.0.91",
+    "@navigare/core": "^1.0.92",
     "@navigare/ssr": "^1.0.23",
     "@navigare/vite": "^1.0.36",
     "@navigare/vue3": "^1.0.129",
