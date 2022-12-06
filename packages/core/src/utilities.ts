@@ -167,7 +167,7 @@ export function mergeFragments<TComponentModule>(
     ...getKeys(allNextFragments),
   ]).reduce((allCumulatedFragments, name) => {
     let cumulatedFragments: (Fragment | null)[] | null | undefined =
-      allCumulatedFragments[name] ?? undefined
+      allCumulatedFragments[name]
     const nextFragments = allNextFragments[name] as
       | (Fragment | null)[]
       | null
