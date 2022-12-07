@@ -116,15 +116,8 @@ export default defineComponent({
             ? 'a'
             : 'button'
           : 'a')
-      const attributes: {
-        href?: string
-        rel?: string
-      } = {}
 
       if (isString(as) && as.toLowerCase() === 'a') {
-        attributes.href = location?.href
-        attributes.rel = routable.foreign ? 'noopener noreferrer' : undefined
-
         // Warn about issues with non-GET requests
         if (routable.method && routable.method !== RouteMethod.GET) {
           console.warn(
@@ -137,7 +130,6 @@ export default defineComponent({
         as as DefineComponent,
         {
           ...attrs,
-          ...attributes,
           'data-pending': routable.pending,
           'data-active': routable.active,
           class: normalizeClass([
@@ -147,24 +139,10 @@ export default defineComponent({
               : props.inactiveClass,
             routable.pending ? props.pendingClass : undefined,
           ]),
-          onMouseenter() {
-            // Preload components whenever the user hovers a link so
-            // we don't lose time when the actual response comes in
-            routable.preload()
-          },
-          onClick: (event: MouseEvent) => {
-            if (
-              !props.route ||
-              attrs.disabled ||
-              !routable.shouldInterceptLink(event)
-            ) {
-              emit('click', event)
-              return
-            }
+          ...routable.getAttributes({
+            disabled: !!attrs.disabled,
 
-            event.preventDefault()
-
-            routable.visit({
+            visit: {
               replace: props.replace,
               preserveScroll: props.preserveScroll,
               preserveState:
@@ -195,8 +173,8 @@ export default defineComponent({
                   emit('error', event)
                 },
               },
-            })
-          },
+            },
+          }),
         },
         slots,
       )

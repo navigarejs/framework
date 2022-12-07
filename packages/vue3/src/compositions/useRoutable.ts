@@ -37,6 +37,17 @@ export default function useRoutable(
   visit: (options?: VisitOptions) => Promise<void>
   pending: boolean
   shouldInterceptLink: (event: KeyboardEvent | MouseEvent) => boolean
+  getAttributes: (
+    options?: Partial<{
+      disabled: boolean
+      visit: VisitOptions
+    }>,
+  ) => {
+    href?: string
+    rel?: string
+    onMouseenter: (event: MouseEvent) => void
+    onClick: (event: MouseEvent) => void
+  }
 } {
   const router = useRouter()
   const fragment = useFragment()
@@ -147,6 +158,43 @@ export default function useRoutable(
       },
     })
   }
+  const getAttributes = (
+    options: Partial<{
+      disabled: boolean
+      visit: VisitOptions
+    }> = {},
+  ) => {
+    const { disabled = false, visit: visitOptions } = options
+
+    return {
+      href: location.value?.href,
+      rel: foreign.value ? 'noopener noreferrer' : undefined,
+
+      onClick: (event: MouseEvent) => {
+        if (!shouldInterceptLink(event)) {
+          return
+        }
+
+        event.preventDefault()
+
+        if (!resolvedHref.value) {
+          return
+        }
+
+        if (disabled) {
+          return
+        }
+
+        visit(visitOptions)
+      },
+
+      onMouseenter: (_event: MouseEvent) => {
+        // Preload components whenever the user hovers a link so
+        // we don't lose time when the actual response comes in
+        preload()
+      },
+    }
+  }
 
   return reactive({
     href: resolvedHref,
@@ -160,5 +208,6 @@ export default function useRoutable(
     pending: pending,
     fragment,
     shouldInterceptLink: markRaw(shouldInterceptLink),
+    getAttributes: markRaw(getAttributes),
   })
 }
