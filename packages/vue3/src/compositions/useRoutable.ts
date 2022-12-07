@@ -41,6 +41,10 @@ export default function useRoutable(
     options?: Partial<{
       disabled: boolean
       visit: VisitOptions
+      events: {
+        click: (event: MouseEvent) => void
+        mouseenter: (event: MouseEvent) => void
+      }
     }>,
   ) => {
     href?: string
@@ -162,36 +166,35 @@ export default function useRoutable(
     options: Partial<{
       disabled: boolean
       visit: VisitOptions
+      events: {
+        click: (event: MouseEvent) => void
+        mouseenter: (event: MouseEvent) => void
+      }
     }> = {},
   ) => {
-    const { disabled = false, visit: visitOptions } = options
+    const { disabled = false, visit: visitOptions, events } = options
 
     return {
       href: location.value?.href,
       rel: foreign.value ? 'noopener noreferrer' : undefined,
 
       onClick: (event: MouseEvent) => {
-        if (!shouldInterceptLink(event)) {
-          return
+        events?.click(event)
+
+        if (!disabled && !!resolvedHref.value && shouldInterceptLink(event)) {
+          event.preventDefault()
+          visit(visitOptions)
         }
-
-        event.preventDefault()
-
-        if (!resolvedHref.value) {
-          return
-        }
-
-        if (disabled) {
-          return
-        }
-
-        visit(visitOptions)
       },
 
-      onMouseenter: (_event: MouseEvent) => {
+      onMouseenter: (event: MouseEvent) => {
+        events?.mouseenter(event)
+
         // Preload components whenever the user hovers a link so
         // we don't lose time when the actual response comes in
-        preload()
+        if (!disabled && !!resolvedHref.value && shouldInterceptLink(event)) {
+          preload()
+        }
       },
     }
   }
