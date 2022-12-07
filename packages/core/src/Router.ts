@@ -5,7 +5,7 @@ import {
   LocationVisit,
   RouteMethod,
   Page,
-  VisitPreserveStateOption,
+  VisitPreserveOption,
   QueryStringArrayFormat,
   VisitData,
   Routable,
@@ -422,7 +422,7 @@ export default class Router<TComponentModule> {
   }
 
   protected resolvePreserveOption(
-    value: VisitPreserveStateOption,
+    value: VisitPreserveOption,
     page: Page,
   ): boolean {
     if (typeof value === 'function') {
@@ -455,7 +455,11 @@ export default class Router<TComponentModule> {
     routable: Routable,
     options: VisitOptions = {},
   ): Promise<Visit> {
-    let { preserveScroll = false, preserveState = false } = options
+    let {
+      preserveScroll = false,
+      preserveState = false,
+      preserveURL = false,
+    } = options
     const {
       fragmentName,
       replace = false,
@@ -670,6 +674,7 @@ export default class Router<TComponentModule> {
           replace,
           preserveScroll,
           preserveState,
+          preserveURL: this.resolvePreserveOption(preserveURL, nextPage),
           fragmentName,
         })
 
@@ -795,13 +800,19 @@ export default class Router<TComponentModule> {
     page: Page,
     options: {
       replace?: boolean
-      preserveScroll?: VisitPreserveStateOption
-      preserveState?: VisitPreserveStateOption
+      preserveScroll?: boolean
+      preserveState?: boolean
+      preserveURL?: boolean
       fragmentName?: string
     } = {},
   ): Promise<Page> {
     const initialVisit = !this.page
-    const { replace = false, preserveScroll = false, fragmentName } = options
+    const {
+      replace = false,
+      preserveScroll = false,
+      preserveURL = false,
+      fragmentName,
+    } = options
     const fragments = fragmentName
       ? {
           ...this.options.fragments,
@@ -843,9 +854,10 @@ export default class Router<TComponentModule> {
     if (
       initialVisit ||
       replace ||
+      preserveURL ||
       (!isSSR() && nextPage.location.href === window.location.href)
     ) {
-      this.replaceState(nextPage)
+      this.replaceState(nextPage, preserveURL)
     } else {
       this.pushState(nextPage)
     }
@@ -894,12 +906,16 @@ export default class Router<TComponentModule> {
     }
   }
 
-  protected replaceState(page: Page): void {
+  protected replaceState(page: Page, preserveURL: boolean = false): void {
     // Simply replace the page at the current page index
     this.internalPage = page
 
     if (!isSSR()) {
-      window.history.replaceState(serialize(page), '', page.location.href)
+      window.history.replaceState(
+        serialize(page),
+        '',
+        preserveURL ? undefined : page.location.href,
+      )
     }
   }
 
@@ -1191,6 +1207,7 @@ export default class Router<TComponentModule> {
       background: false,
       preserveScroll: false,
       preserveState: false,
+      preserveURL: false,
       properties: [],
       headers: {},
       errorBag: null,

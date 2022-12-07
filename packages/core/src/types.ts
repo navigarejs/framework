@@ -245,10 +245,7 @@ export type VisitCancelToken = {
   cancel: Canceler
 }
 
-export type VisitPreserveStateOption =
-  | boolean
-  | 'errors'
-  | ((page: Page) => boolean)
+export type VisitPreserveOption = boolean | 'errors' | ((page: Page) => boolean)
 
 export type VisitProgress = {
   percentage?: number
@@ -272,8 +269,9 @@ export type VisitOptions = Partial<{
   data: VisitData
   background: boolean
   replace: boolean
-  preserveScroll: VisitPreserveStateOption
-  preserveState: VisitPreserveStateOption
+  preserveScroll: VisitPreserveOption
+  preserveState: VisitPreserveOption
+  preserveURL: VisitPreserveOption
   properties: Array<string>
   headers: Record<string, string>
   errorBag: string | null
@@ -290,8 +288,9 @@ export type Visit = {
   data: VisitData
   replace: boolean
   background: boolean
-  preserveScroll: VisitPreserveStateOption
-  preserveState: VisitPreserveStateOption
+  preserveScroll: VisitPreserveOption
+  preserveState: VisitPreserveOption
+  preserveURL: VisitPreserveOption
   properties: Array<string>
   headers: Record<string, string>
   errorBag: string | null
