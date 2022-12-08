@@ -530,21 +530,17 @@ class Response implements Responsable
     Collection $properties,
     ?Collection $requestedProperties = null
   ): Collection {
-    return $properties->map(function ($value) use (
+    return $properties->map(function ($value, $key) use (
       $request,
       $requestedProperties
     ) {
       if ($value instanceof Closure) {
         $value = App::call($value);
-      }
-
-      if ($value instanceof LazyProperty) {
+      } elseif ($value instanceof LazyProperty) {
         if ($requestedProperties?->count() > 0) {
           $value = App::call($value);
         }
-      }
-
-      if ($value instanceof DeferredProperty) {
+      } elseif ($value instanceof DeferredProperty) {
         if ($requestedProperties?->count() > 0) {
           $value = App::call($value);
         } else {
@@ -556,28 +552,21 @@ class Response implements Responsable
 
       if ($value instanceof PromiseInterface) {
         $value = $value->wait();
-      }
-
-      if (
+      } elseif (
         $value instanceof ResourceResponse ||
         $value instanceof JsonResource ||
         rescue(
-          fn() => get_class($value) === 'Spatie\LaravelData\DataCollection' ||
-            in_array(
-              'Spatie\LaravelData\DataCollection',
-              class_parents($value)
-            ),
+          fn() => is_object($value) &&
+            (get_class($value) === 'Spatie\LaravelData\DataCollection' ||
+              in_array(
+                'Spatie\LaravelData\DataCollection',
+                class_parents($value)
+              )),
           false
         )
       ) {
         $value = $value->toResponse($request)->getData(true);
-      }
-
-      if ($value instanceof Arrayable) {
-        $value = $value->toArray();
-      }
-
-      if (is_array($value) || $value instanceof Collection) {
+      } elseif (is_array($value) || $value instanceof Arrayable) {
         $value = $this->resolvePropertyInstances($request, collect($value));
       }
 
