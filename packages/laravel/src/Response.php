@@ -223,6 +223,11 @@ class Response implements Responsable
       }
     }
 
+    // Indicate start of response
+    if (config('app.debug')) {
+      Event::dispatch('navigare.start', []);
+    }
+
     // Prepare page
     $route = $request->route();
 
@@ -296,50 +301,61 @@ class Response implements Responsable
       csrf: csrf_token()
     );
 
+    // Expose event for debugging
+    if (config('app.debug')) {
+      Event::dispatch('navigare.collect', [
+        'page' => $page,
+      ]);
+    }
+
+    // If the request was triggered by Navigare itself, we return the response in JSON format
+    $response = null;
+    if ($request->header('X-Navigare')) {
+      $response = new JsonResponse($page, 200, ['X-Navigare' => 'true']);
+    } else {
+      // Get base page for first rendering and merge fragments
+      if ($this->baseURL) {
+        $basePage = $this->getBasePage($request);
+
+        // Assign base page to actual requested page
+        $page->base = $basePage;
+
+        // Remove fallback fragments if they are defined on the base page
+        foreach ($page->fragments as $fragmentName => $fragment) {
+          if (!$fragment) {
+            continue;
+          }
+
+          if (!$fragment->fallback) {
+            continue;
+          }
+
+          if (!$basePage->fragments->keys()->contains($fragmentName)) {
+            continue;
+          }
+
+          unset($page->fragments[$fragmentName]);
+        }
+      }
+
+      $response = ResponseFactory::view(
+        $this->rootView,
+        $this->viewData->toArray() + ['page' => $page],
+        200,
+        [
+          'X-Navigare' => true,
+        ]
+      );
+    }
+
     // Expose page for debugging
     if (config('app.debug')) {
-      Event::dispatch('navigare.response', [$page]);
+      Event::dispatch('navigare.response', [
+        'page' => $page,
+      ]);
     }
 
-    // If the request was triggered by Navigare itself, we return the response
-    // in JSON format
-    if ($request->header('X-Navigare')) {
-      return new JsonResponse($page, 200, ['X-Navigare' => 'true']);
-    }
-
-    // Get base page for first rendering and merge fragments
-    if ($this->baseURL) {
-      $basePage = $this->getBasePage($request);
-
-      // Assign base page to actual requested page
-      $page->base = $basePage;
-
-      // Remove fallback fragments if they are defined on the base page
-      foreach ($page->fragments as $fragmentName => $fragment) {
-        if (!$fragment) {
-          continue;
-        }
-
-        if (!$fragment->fallback) {
-          continue;
-        }
-
-        if (!$basePage->fragments->keys()->contains($fragmentName)) {
-          continue;
-        }
-
-        unset($page->fragments[$fragmentName]);
-      }
-    }
-
-    return ResponseFactory::view(
-      $this->rootView,
-      $this->viewData->toArray() + ['page' => $page],
-      200,
-      [
-        'X-Navigare' => true,
-      ]
-    );
+    return $response;
   }
 
   /**
@@ -392,6 +408,12 @@ class Response implements Responsable
    */
   public function getBasePage(Request $originalRequest): Page
   {
+    if (config('app.debug')) {
+      Event::dispatch('navigare.base.request', [
+        'baseURL' => $this->baseURL,
+      ]);
+    }
+
     $request = Request::create(
       $this->baseURL,
       Request::METHOD_GET,
@@ -416,6 +438,13 @@ class Response implements Responsable
     }
 
     $page = $response->getOriginalContent();
+
+    if (config('app.debug')) {
+      Event::dispatch('navigare.base.response', [
+        'baseURL' => $this->baseURL,
+        'page' => $page,
+      ]);
+    }
 
     return $page;
   }
