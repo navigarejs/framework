@@ -263,6 +263,10 @@ export type LocationVisit = {
   preserveScroll: boolean
 }
 
+export type VisitProperties = Array<string>
+
+export type VisitHeaders = Record<string, string>
+
 export type VisitOptions = Partial<{
   fragmentName: string
   method: RawRouteMethod
@@ -272,8 +276,8 @@ export type VisitOptions = Partial<{
   preserveScroll: VisitPreserveOption
   preserveState: VisitPreserveOption
   preserveURL: VisitPreserveOption
-  properties: Array<string>
-  headers: Record<string, string>
+  properties: VisitProperties
+  headers: VisitHeaders
   errorBag: string | null
   forceFormData: boolean
   queryStringArrayFormat: QueryStringArrayFormat
@@ -399,7 +403,14 @@ export type ResolvedRoutable = {
   location: RouterLocation
   data: VisitData
   components: Component[]
+  options: RouteOptions
 }
+
+export type RouteOptions = Partial<{
+  absolute: boolean
+  properties: VisitProperties
+  headers: VisitHeaders
+}>
 
 // Rendered
 export interface RenderedApp {

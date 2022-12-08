@@ -455,6 +455,22 @@ export default class Router<TComponentModule> {
     routable: Routable,
     options: VisitOptions = {},
   ): Promise<Visit> {
+    const {
+      forceFormData = false,
+      queryStringArrayFormat = QueryStringArrayFormat.Indices,
+    } = options
+    const {
+      location,
+      method,
+      data,
+      options: routeOptions = {},
+    } = this.resolveRoutable(routable, options.data, {
+      method: options.method,
+      forceFormData,
+      queryStringArrayFormat,
+    })
+
+    // Resolve options
     let {
       preserveScroll = false,
       preserveState = false,
@@ -463,23 +479,12 @@ export default class Router<TComponentModule> {
     const {
       fragmentName,
       replace = false,
-      properties = [],
-      headers = {},
+      properties = routeOptions.properties ?? [],
+      headers = routeOptions.headers ?? {},
       errorBag = '',
-      forceFormData = false,
-      queryStringArrayFormat = QueryStringArrayFormat.Indices,
       events = {},
       background = false,
     } = options
-    const { location, method, data } = this.resolveRoutable(
-      routable,
-      options.data,
-      {
-        method: options.method,
-        forceFormData,
-        queryStringArrayFormat,
-      },
-    )
 
     const visit: Visit = this.createVisit({
       location,
@@ -1142,6 +1147,7 @@ export default class Router<TComponentModule> {
         ? routable.method
         : mapRouteMethod(options.method) ?? RouteMethod.GET
     const components = routable instanceof Route ? routable.components : []
+    const routeOptions = routable instanceof Route ? routable.options : {}
 
     // Check if the route was resolved
     if (!finalHref) {
@@ -1195,6 +1201,7 @@ export default class Router<TComponentModule> {
       location: this.createLocation(finalHref),
       data: finalData,
       components,
+      options: routeOptions,
     }
   }
 

@@ -7,6 +7,7 @@ import {
   RawRouteParameters,
   RouteDefaults,
   QueryStringArrayFormat,
+  RouteOptions,
 } from './types'
 import { throwError, get, isBoolean } from './utilities'
 import { stringify } from 'qs'
@@ -16,16 +17,16 @@ export default class Route<
 > extends PartialRoute<TName> {
   public partial = false
 
-  public absolute: boolean
-
   public constructor(
     rawRoute: RawRoute,
     parameters: RawRouteParameters<TName>,
-    absolute = false,
+    options: RouteOptions = {},
   ) {
-    super(rawRoute, parameters)
+    super(rawRoute, parameters, options)
+  }
 
-    this.absolute = absolute
+  public get absolute(): boolean {
+    return !!this.options.absolute
   }
 
   /**

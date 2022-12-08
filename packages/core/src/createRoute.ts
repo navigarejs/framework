@@ -1,7 +1,7 @@
 import PartialRoute from './PartialRoute'
 import Route from './Route'
 import { Default, Wildcard } from './symbols'
-import { RawRoute, RawRouteParameters, RouteName } from './types'
+import { RawRoute, RawRouteParameters, RouteName, RouteOptions } from './types'
 import { isFunction } from './utilities'
 import { ConditionalPick } from 'type-fest'
 import type { IsEmptyObject } from 'type-fest'
@@ -27,7 +27,7 @@ export default function createRoute<
               Default: typeof Default
             }) => TParameters)
         )?,
-        boolean?,
+        RouteOptions?,
       ]
     : [
         (
@@ -37,10 +37,10 @@ export default function createRoute<
               Default: typeof Default
             }) => TParameters)
         ),
-        boolean?,
+        RouteOptions?,
       ]
 ): TPartial extends true ? PartialRoute<TName> : Route<TName> {
-  const [getParameters = () => ({}), absolute = false] = args
+  const [getParameters = () => ({}), options = {}] = args
   const parameters = isFunction(getParameters)
     ? getParameters({
         Wildcard,
@@ -53,12 +53,13 @@ export default function createRoute<
     return new PartialRoute<TName>(
       rawRoute,
       parameters,
+      options,
     ) as TPartial extends true ? PartialRoute<TName> : Route<TName>
   }
 
   return new Route<TName>(
     rawRoute,
     parameters,
-    absolute,
+    options,
   ) as TPartial extends true ? PartialRoute<TName> : Route<TName>
 }

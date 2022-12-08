@@ -9,6 +9,7 @@ import {
   Routable,
   Component,
   RouterLocation,
+  RouteOptions,
 } from './types'
 import {
   getKeys,
@@ -29,11 +30,14 @@ export default class PartialRoute<TName extends RouteName = RouteName> {
 
   public parameters: RawRouteParameters<TName>
 
+  public options: RouteOptions
+
   public partial = true
 
   public constructor(
     rawRoute: RawRoute,
     parameters: RawRouteParameters<TName>,
+    options: RouteOptions = {},
   ) {
     if (!isObject(rawRoute)) {
       throwError(`"${rawRoute}" is not a valid route`)
@@ -41,6 +45,7 @@ export default class PartialRoute<TName extends RouteName = RouteName> {
 
     this.rawRoute = rawRoute
     this.parameters = parameters
+    this.options = options
   }
 
   public get method(): RouteMethod {
