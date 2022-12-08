@@ -16,8 +16,10 @@ class OrganizationsController extends Controller
   {
     return Navigare::render('organizations/Index', [
       'filters' => Request::all('search', 'trashed'),
-      'organizations' => Navigare::deferred(
-        fn() => Auth::user()
+      'organizations' => Navigare::deferred(function () {
+        sleep(3);
+
+        return Auth::user()
           ->account->organizations()
           ->orderBy('updated_at', 'DESC')
           ->filter(Request::only('search', 'trashed'))
@@ -31,8 +33,8 @@ class OrganizationsController extends Controller
               'city' => $organization->city,
               'deleted_at' => $organization->deleted_at,
             ]
-          )
-      ),
+          );
+      }),
     ]);
   }
 

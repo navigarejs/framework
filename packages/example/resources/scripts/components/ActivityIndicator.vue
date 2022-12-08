@@ -24,6 +24,9 @@
 
 <script lang="ts" setup>
 defineProps({
-  visible: Boolean,
+  visible: {
+    type: Boolean,
+    default: () => true,
+  },
 })
 </script>

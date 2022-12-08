@@ -559,7 +559,7 @@ export default class Router<TComponentModule> {
           'X-Navigare': true,
           ...(properties.length
             ? {
-                'X-Navigare-Select': properties,
+                'X-Navigare-Properties': properties,
               }
             : {}),
           ...(errorBag && errorBag.length
@@ -601,60 +601,6 @@ export default class Router<TComponentModule> {
           ...response.data,
           visit,
         }
-
-        // Merge properties of fragments
-        /*if (properties.length) {
-        const selectedProperties = properties.map((property) => {
-          if (property.includes('/')) {
-            const [fragmentName, name] = property.split('/')
-
-            return {
-              fragmentName,
-              name,
-            }
-          }
-
-          return {
-            fragmentName: 'default',
-            name: property,
-          }
-        })
-        const selectedFragments = uniq(
-          selectedProperties.map((selectedProp) => {
-            return selectedProp.fragmentName
-          }),
-        )
-
-        for (const selectedFragmentName of selectedFragments) {
-          const selectedFragment = nextPage.fragments[selectedFragmentName]
-          const currentFragment = this.page.fragments[selectedFragmentName]
-
-          if (isArray(selectedFragment)) {
-            throwError('fragments from server cannot be arrays')
-          }
-
-          if (!selectedFragment) {
-            throwError('fragments from server cannot be null')
-          }
-
-          if (isArray(currentFragment)) {
-            selectedFragment.properties = {
-              ...currentFragment[currentFragment.length - 1].properties,
-              ...selectedFragment.properties,
-            }
-          } else if (currentFragment) {
-            selectedFragment.properties = {
-              ...currentFragment.properties,
-              ...selectedFragment.properties,
-            }
-          }
-        }
-
-        nextPage.properties = {
-          ...this.page.properties,
-          ...nextPage.properties,
-        }
-      }*/
 
         // Check if we need to manually preserve the scroll area
         preserveScroll = this.resolvePreserveOption(preserveScroll, nextPage)
@@ -829,19 +775,19 @@ export default class Router<TComponentModule> {
       : this.options.fragments
 
     // Merge current and incoming page into next page
-    const pageWithBase = mergePages(
-      page.base
-        ? {
+    const pageWithBase = page.base
+      ? mergePages(
+          {
             ...page.base,
             visit: page.visit,
-          }
-        : undefined,
-      {
-        ...page,
-        base: undefined,
-      },
-      fragments,
-    )
+          },
+          {
+            ...page,
+            base: undefined,
+          },
+          fragments,
+        )
+      : page
     const nextPage = mergePages(
       this.page,
       transformPagePropertyKeys(

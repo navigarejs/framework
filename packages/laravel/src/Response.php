@@ -20,13 +20,13 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use Navigare\Router\RawRoute;
-use Navigare\Support\SelectedProperty;
 use Navigare\View\DeferredProperty;
 use Navigare\View\LazyProperty;
 use Navigare\View\Location;
 use Navigare\View\Page;
 use Navigare\View\Component;
 use Navigare\View\Fragment;
+use Navigare\View\Property;
 use ReflectionParameter;
 
 class Response implements Responsable
@@ -246,18 +246,18 @@ class Response implements Responsable
         })
     );
 
-    // Parse "select" header into readable format
-    $selectedProperties = collect(
-      explode(',', $request->header('X-Navigare-Properties', ''))
+    // Determine which properties are actually selected
+    $requestedProperties = collect(
+      explode(',', $request->header('X-Navigare-Properties'))
     )
       ->filter()
       ->map(function ($property) {
-        return SelectedProperty::fromString($property);
+        return Property::fromString($property);
       });
 
     // Prepare fragments and their properties
     $fragments = collect($this->fragments)->map(function ($fragment) use (
-      $selectedProperties,
+      $requestedProperties,
       $request,
       $location
     ) {
@@ -265,23 +265,14 @@ class Response implements Responsable
         return null;
       }
 
-      $properties = collect(
-        $selectedProperties->count() > 0
-          ? $fragment->properties->only(
-            $selectedProperties
-              ->filter(function ($selectedProperty) use ($fragment) {
-                return $selectedProperty->fragmentName === $fragment->name;
-              })
-              ->map(function ($selectedProperty) {
-                return $selectedProperty->name;
-              })
-          )
-          : $fragment->properties
-      );
-
       $fragment->properties = $this->resolvePropertyInstances(
         $request,
-        $properties
+        $this->filterProperties(
+          $fragment->properties,
+          $requestedProperties,
+          $fragment
+        ),
+        $requestedProperties
       );
       $fragment->location = $location;
 
@@ -292,7 +283,11 @@ class Response implements Responsable
     $page = new Page(
       rawRoute: $rawRoute,
       fragments: $fragments,
-      properties: $this->resolvePropertyInstances($request, $this->properties),
+      properties: $this->resolvePropertyInstances(
+        $request,
+        $this->filterProperties($this->properties, $requestedProperties),
+        $requestedProperties
+      ),
       layout: $this->layout,
       version: $this->version,
       location: $location,
@@ -445,25 +440,83 @@ class Response implements Responsable
    *
    * @param  \Illuminate\Http\Request  $request
    * @param  Collection  $properties
+   * @param  ?Fragment  $fragment
+   * @return Collection
+   */
+  public function filterProperties(
+    Collection $properties,
+    Collection $requestedProperties,
+    ?Fragment $fragment = null
+  ): Collection {
+    $rejectedProperties = $requestedProperties->filter(function (
+      $selectedProperty
+    ) {
+      return $selectedProperty->negated;
+    });
+    $selectedProperties = $requestedProperties->filter(function (
+      $selectedProperty
+    ) {
+      return !$selectedProperty->negated;
+    });
+
+    if ($selectedProperties->count() === 0) {
+      $selectedProperties->push(new Property('*'));
+    }
+
+    return $properties
+      ->filter(function ($value, $propertyName) use (
+        $selectedProperties,
+        $fragment
+      ) {
+        return $selectedProperties->some(
+          fn($selectedProperty) => $selectedProperty->matches(
+            $propertyName,
+            $fragment
+          )
+        );
+      })
+      ->reject(function ($value, $propertyName) use (
+        $rejectedProperties,
+        $fragment
+      ) {
+        return $rejectedProperties->some(
+          fn($rejectedProperty) => $rejectedProperty->matches(
+            $propertyName,
+            $fragment
+          )
+        );
+      });
+  }
+
+  /**
+   * Resolve all necessary class instances in the given properties.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  Collection  $properties
+   * @param  ?Collection  $requestedProperties
    * @return Collection
    */
   public function resolvePropertyInstances(
     Request $request,
-    Collection $properties
+    Collection $properties,
+    ?Collection $requestedProperties = null
   ): Collection {
-    return $properties->map(function ($value) use ($request) {
+    return $properties->map(function ($value) use (
+      $request,
+      $requestedProperties
+    ) {
       if ($value instanceof Closure) {
         $value = App::call($value);
       }
 
       if ($value instanceof LazyProperty) {
-        if ($request->headers->has('X-Navigare-Properties')) {
+        if ($requestedProperties?->count() > 0) {
           $value = App::call($value);
         }
       }
 
       if ($value instanceof DeferredProperty) {
-        if ($request->headers->has('X-Navigare-Properties')) {
+        if ($requestedProperties?->count() > 0) {
           $value = App::call($value);
         } else {
           $value = [

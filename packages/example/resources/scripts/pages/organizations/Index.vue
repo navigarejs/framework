@@ -133,7 +133,7 @@ import PageTitle from '../../components/PageTitle.vue'
 import Pagination from '../../components/Pagination.vue'
 import PushButton from '../../components/PushButton.vue'
 import { DeferredProperty } from '@navigare/core'
-import { NavigareLink, NavigareDeferred } from '@navigare/vue3'
+import { NavigareLink, NavigareDeferred, useFragment } from '@navigare/vue3'
 import { PropType } from 'vue'
 
 defineProps({
@@ -143,4 +143,6 @@ defineProps({
     type: Object as PropType<DeferredProperty>,
   },
 })
+
+const fragment = useFragment()
 </script>

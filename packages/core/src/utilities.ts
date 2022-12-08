@@ -265,7 +265,8 @@ export function assignPageToFragments(page: Page) {
         continue
       }
 
-      fragment.page = cloneDeep(page)
+      const { fragments, ...pageWithoutFragments } = page
+      fragment.page = pageWithoutFragments
     }
   }
 }
@@ -275,10 +276,17 @@ export function mergePages<TComponentModule>(
   nextPage: Page,
   options: RouterOptions<TComponentModule>['fragments'] = {},
 ): Page {
+  // Merge properties
+  nextPage.properties = {
+    ...page?.properties,
+    ...nextPage.properties,
+  }
+
   // Assign pages to fragments
   if (page) {
     assignPageToFragments(page)
   }
+
   assignPageToFragments(nextPage)
 
   // Merge fragments

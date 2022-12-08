@@ -78,7 +78,7 @@ export type Fragment = {
   location: RouterLocation
   defaults: PageDefaults
   parameters: Record<string, RouteParameter>*/
-  page?: Page
+  page?: Omit<Page, 'fragments'>
   fallback: boolean
 }
 
