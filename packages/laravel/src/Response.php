@@ -28,10 +28,13 @@ use Navigare\View\Component;
 use Navigare\View\Fragment;
 use Navigare\View\Property;
 use ReflectionParameter;
+use WeakMap;
 
 class Response implements Responsable
 {
   use Macroable;
+
+  private WeakMap $cache;
 
   public function __construct(
     protected Configuration $configuration,
@@ -46,6 +49,7 @@ class Response implements Responsable
   ) {
     $this->properties = $properties ?? collect([]);
     $this->viewData = $viewData ?? collect([]);
+    $this->cache = new WeakMap();
   }
 
   /**
@@ -534,6 +538,9 @@ class Response implements Responsable
       $request,
       $requestedProperties
     ) {
+      $resolvedValue = null;
+
+      // In case the property is wrapped in a function, we call the function to get the inner value
       if ($value instanceof Closure) {
         $value = App::call($value);
       } elseif ($value instanceof LazyProperty) {
@@ -544,14 +551,19 @@ class Response implements Responsable
         if ($requestedProperties?->count() > 0) {
           $value = App::call($value);
         } else {
-          $value = [
+          $resolvedValue = [
             '__deferred' => true,
           ];
         }
       }
 
-      if ($value instanceof PromiseInterface) {
-        $value = $value->wait();
+      // Depending on the type of the value we resolve the actual output
+      if ($resolvedValue) {
+        // Value was resolved before
+      } elseif (is_object($value) && isset($this->cache[$value])) {
+        $resolvedValue = $this->cache[$value];
+      } elseif ($value instanceof PromiseInterface) {
+        $resolvedValue = $value->wait();
       } elseif (
         $value instanceof ResourceResponse ||
         $value instanceof JsonResource ||
@@ -565,12 +577,22 @@ class Response implements Responsable
           false
         )
       ) {
-        $value = $value->toResponse($request)->getData(true);
+        $resolvedValue = $value->toResponse($request)->getData(true);
       } elseif (is_array($value) || $value instanceof Arrayable) {
-        $value = $this->resolvePropertyInstances($request, collect($value));
+        $resolvedValue = $this->resolvePropertyInstances(
+          $request,
+          collect($value)
+        );
+      } else {
+        $resolvedValue = $value;
       }
 
-      return $value;
+      // Store result in cache
+      if (is_object($value)) {
+        $this->cache[$value] = $resolvedValue;
+      }
+
+      return $resolvedValue;
     });
   }
 }
