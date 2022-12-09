@@ -157,7 +157,7 @@ describe('mergeFragments', () => {
       })
     })
 
-    it('merges stacked fragments by reusing previous fragments', () => {
+    it('merges stacked fragments by reusing previous fragments (1)', () => {
       const initialModalFragment = createFragment({
         initial: true,
       })
@@ -181,6 +181,49 @@ describe('mergeFragments', () => {
         ),
       ).toEqual({
         modal: [nextModalFragment],
+      })
+    })
+
+    it.only('merges stacked fragments by reusing previous fragments (2)', () => {
+      const initialModalFragment = createFragment(
+        {
+          initial: true,
+        },
+        createPage('/1', '1'),
+      )
+      const nextModalFragment = createFragment(
+        {
+          initial: false,
+        },
+        createPage('/2', '2'),
+      )
+      const nextNextModalFragment = createFragment(
+        {
+          initial: false,
+        },
+        createPage('/3', '3'),
+      )
+
+      expect(
+        mergeFragments(
+          {
+            modal: [
+              initialModalFragment,
+              nextModalFragment,
+              nextNextModalFragment,
+            ],
+          },
+          {
+            modal: [initialModalFragment],
+          },
+          {
+            modal: {
+              stacked: true,
+            },
+          },
+        ),
+      ).toEqual({
+        modal: [initialModalFragment],
       })
     })
 

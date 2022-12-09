@@ -20,7 +20,9 @@ export default function useRouter() {
   const fragment = useFragment()
   const parameters = computed(() => fragment.parameters)
   const route = computed(() => {
-    return new Route(fragment.rawRoute, fragment.parameters, false)
+    return new Route(fragment.rawRoute, fragment.parameters, {
+      absolute: false,
+    })
   })
   const fragments = computed(() => {
     return page.fragments
@@ -111,7 +113,10 @@ export default function useRouter() {
     match: markRaw((comparableRoute, route) => {
       const matches = router.match(
         comparableRoute,
-        route ?? new Route(fragment.rawRoute, fragment.parameters, true),
+        route ??
+          new Route(fragment.rawRoute, fragment.parameters, {
+            absolute: true,
+          }),
         fragment.location,
         fragment.defaults,
       )

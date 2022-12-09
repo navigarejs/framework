@@ -1,7 +1,7 @@
 import '@navigare/core'
 
 declare module '@navigare/core' {
-  export interface Routes {
+  export interface TestRoutes {
     home: {
       uri: '/'
       methods: ['GET', 'HEAD']

@@ -4,12 +4,13 @@ import { Default, Wildcard } from './symbols'
 import { RawRoute, RawRouteParameters, RouteName, RouteOptions } from './types'
 import { isFunction } from './utilities'
 import { ConditionalPick } from 'type-fest'
-import type { IsEmptyObject } from 'type-fest'
 
 export default function createRoute<
   TName extends RouteName,
   TRawRoute extends RawRoute<TName>,
   TParameters extends RawRouteParameters<TName>,
+  TKeys = keyof TParameters,
+  TEmpty extends boolean = TKeys extends [never] ? true : false,
   TPartial extends boolean = keyof ConditionalPick<
     TParameters,
     typeof Wildcard
@@ -18,7 +19,7 @@ export default function createRoute<
     : true,
 >(
   rawRoute: TName | TRawRoute,
-  ...args: IsEmptyObject<TParameters> extends true
+  ...args: TEmpty extends true
     ? [
         (
           | TParameters

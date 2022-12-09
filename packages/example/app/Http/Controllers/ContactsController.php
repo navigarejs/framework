@@ -8,6 +8,7 @@ use App\Models\Contact;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Navigare\Navigare;
 
@@ -42,6 +43,7 @@ class ContactsController extends Controller
   public function create()
   {
     return Navigare::withModal('contacts/Create', [
+      'organization_id' => Session::get('organization_id'),
       'organizations' => Auth::user()
         ->account->organizations()
         ->orderBy('name')

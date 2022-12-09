@@ -809,6 +809,12 @@ export default class Router<TComponentModule> {
       (!isSSR() && nextPage.location.href === window.location.href)
     ) {
       this.replaceState(nextPage, preserveURL)
+    } else if (nextPage.location.href === this.previousPage?.location.href) {
+      this.internalPages[this.pageIndex - 1] = {
+        ...nextPage,
+        visit: this.previousPage.visit,
+      }
+      this.back()
     } else {
       this.pushState(nextPage)
     }
@@ -833,6 +839,12 @@ export default class Router<TComponentModule> {
     const deferredProperties = getDeferredPageProperties(this.page)
     if (!isSSR() && getKeys(deferredProperties).length > 0) {
       setTimeout(() => {
+        for (const [, property] of Object.entries(deferredProperties)) {
+          if (property) {
+            property.__requested = true
+          }
+        }
+
         this.reload({
           headers: {
             'X-Navigare-Properties': getKeys(deferredProperties)

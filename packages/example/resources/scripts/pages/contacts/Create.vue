@@ -6,7 +6,8 @@
       :form="form"
       class="space-y-2"
     >
-      {{ form.dirty }}
+      <div>Dirty: {{ form.dirty }}</div>
+
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label :for="form.getInputId('first_name')">First Name</label>
@@ -23,16 +24,28 @@
         <div>
           <label :for="form.getInputId('organization_id')">Organization</label>
 
-          <select-input name="organization_id">
-            <option value=""></option>
-            <option
-              v-for="organization in organizations"
-              :key="organization.id"
-              :value="organization.id"
+          <div class="flex flex-row space-x-2">
+            <select-input name="organization_id">
+              <option value=""></option>
+              <option
+                v-for="organization in organizations"
+                :key="organization.id"
+                :value="organization.id"
+              >
+                {{ organization.name }}
+              </option>
+            </select-input>
+
+            <push-button
+              :route="
+                $route('organizations.create', {
+                  from_contact_create: true,
+                })
+              "
             >
-              {{ organization.name }}
-            </option>
-          </select-input>
+              Create
+            </push-button>
+          </div>
         </div>
 
         <div>
@@ -92,11 +105,13 @@
       </div>
     </navigare-form>
 
-    {{ contactForm.dirty }}
     <navigare-form
-      :form="contactForm"
+      :form="partialForm"
       class="space-y-2"
-    >
+      ><div class="text-lg">Partial</div>
+
+      <div>Dirty: {{ partialForm.dirty }}</div>
+
       <div>
         <label :for="form.getInputId('email')">Email</label>
 
@@ -127,10 +142,11 @@ import {
   useRouter,
 } from '@navigare/vue3'
 import { toRef } from '@vue/reactivity'
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 
-defineProps({
+const props = defineProps({
   organizations: Object,
+  organization_id: Number,
 })
 
 const router = useRouter()
@@ -141,7 +157,8 @@ const form = createForm(
   () => ({
     first_name: '',
     last_name: '',
-    organization_id: router.page.parameters.organization_id ?? '',
+    organization_id:
+      props.organization_id ?? router.page.parameters.organization_id ?? '',
     email: '',
     phone: '',
     address: '',
@@ -155,14 +172,21 @@ const form = createForm(
   },
 )
 
-const contactForm = form.partial(
-  'contacts.create.contact',
+const partialForm = form.partial(
+  'contacts.create.partial',
   () => () => {},
   (values) => {
     return reactive({
       email: toRef(values, 'email'),
       phone: toRef(values, 'phone'),
     })
+  },
+)
+
+watch(
+  () => props.organization_id,
+  (nextOrganizationId) => {
+    form.values.organization_id = nextOrganizationId
   },
 )
 </script>

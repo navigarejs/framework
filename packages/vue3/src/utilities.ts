@@ -5,6 +5,7 @@ import {
   isArray,
   isFunction,
   isObject,
+  Fragment,
 } from '@navigare/core'
 import { PropType, Slot, VNode } from 'vue'
 
@@ -43,4 +44,12 @@ export function getRouteProp() {
   return {
     type: getRouteType(),
   }
+}
+
+export function getFragmentKey(fragment: Fragment): string {
+  return [
+    fragment.page?.visit.id,
+    // page.value.location.href,
+    fragment.component.id,
+  ].join('-')
 }

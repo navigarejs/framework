@@ -175,18 +175,26 @@ class RawRoute implements Arrayable
   ) {
     $configuration = $configuration ?? Navigare::getConfiguration();
 
-    return [
+    $rawRoute = [
       'name' => $this->name,
       'uri' => $this->uri,
       'methods' => $this->methods,
-      'wheres' => (array) $this->wheres,
       'domain' => $this->domain,
-      'bindings' => (array) $this->bindings,
       'components' => $this->components
         ->map(function ($component) use ($ssr, $configuration) {
           return $component->toArray($ssr, $configuration);
         })
         ->toArray(),
     ];
+
+    if (!empty($this->wheres)) {
+      $rawRoute['wheres'] = $this->wheres;
+    }
+
+    if (!empty($this->bindings)) {
+      $rawRoute['bindings'] = $this->bindings;
+    }
+
+    return $rawRoute;
   }
 }

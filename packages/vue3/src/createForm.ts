@@ -98,6 +98,9 @@ export default function createForm<
     return getInitialValues
   }
   const initialValues = ref<TValues>(cloneDeep(getInitialOrRestoredValues()))
+  const computedInitialValues = computed(() => {
+    return getInitialOrRestoredValues()
+  })
   const values = reactive(getInitialOrRestoredValues())
   const keys = computed(() => {
     return getKeys(values).filter((key) => isSymbol(key)) as any as Exclude<
@@ -228,6 +231,14 @@ export default function createForm<
     },
     {
       deep: true,
+    },
+  )
+
+  // Update initial values
+  watch(
+    () => computedInitialValues.value,
+    (nextInitialValues) => {
+      initialValues.value = nextInitialValues
     },
   )
 

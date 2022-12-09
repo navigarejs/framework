@@ -2,7 +2,7 @@
   <div class="h-full flex items-center justify-between">
     <div class="flex flex-row">
       <img
-        class="mx-auto h-8 w-auto mr-4"
+        class="mx-auto h-8 w-8 mr-4 border-0"
         src="https://raw.githubusercontent.com/navigarejs/framework/main/assets/logo.svg"
         alt="Navigare"
       />

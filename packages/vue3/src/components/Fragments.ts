@@ -1,3 +1,4 @@
+import { getFragmentKey } from '../utilities'
 import useRouter from './../compositions/useRouter'
 import { FragmentContext } from './../contexts/provideFragmentContext'
 import { ContextOf } from './../types'
@@ -32,7 +33,7 @@ export default defineComponent({
         return h(
           FragmentVue,
           {
-            // key: `${fragment.component.uri}-${fragment.location.url}`,
+            key: getFragmentKey(fragment),
             name: props.name,
             fragment,
             ...attrs,
@@ -53,7 +54,15 @@ export default defineComponent({
       }
 
       if (defaultSlot) {
+        const [firstFragment] = fragments.value
+
         return defaultSlot({
+          fragment: firstFragment
+            ? {
+                ...firstFragment,
+                component: renderFragment(firstFragment),
+              }
+            : null,
           fragments: fragments.value.map((fragment) => {
             return {
               ...fragment,

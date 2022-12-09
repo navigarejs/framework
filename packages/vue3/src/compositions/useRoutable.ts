@@ -108,7 +108,9 @@ export default function useRoutable(
       .some((route) => {
         const matches = router.match(
           route,
-          new Route(fragment.rawRoute, fragment.parameters, true),
+          new Route(fragment.rawRoute, fragment.parameters, {
+            absolute: true,
+          }),
         )
 
         return matches

@@ -173,12 +173,6 @@ export function mergeFragments<TComponentModule>(
       | null
       | undefined
 
-    // Determine current fragment details
-    const currentFragment: Fragment | null | undefined =
-      cumulatedFragments?.[cumulatedFragments?.length - 1]
-    const currentLocation = currentFragment?.page?.location.href
-    const currentComponentId = currentFragment?.component.id
-
     // For simplicity we assume that there is only one next fragment
     const nextFragment = castArray(nextFragments)[0]
     const nextLocation = nextFragment?.page?.location.href
@@ -210,31 +204,47 @@ export function mergeFragments<TComponentModule>(
 
     if (nextFragment) {
       if (cumulatedFragments) {
-        // Skip fallback fragments that are already defined
-        if (nextFragment.fallback && currentFragment) {
-        }
-        // Replace previous fragment
-        else if (!stacked || (!!stacked && currentLocation === nextLocation)) {
-          nextFragment.properties = {
-            ...currentFragment?.properties,
-            ...nextFragment.properties,
-          }
+        cumulatedFragments = [...cumulatedFragments]
 
-          // Reuse component by using the same visit
-          if (
-            (lazy && currentComponentId === nextComponentId) ||
-            currentLocation === nextLocation
+        let index = 0
+        for (const currentFragment of cumulatedFragments) {
+          let stop = !stacked
+          const currentLocation = currentFragment?.page?.location.href
+          const currentComponentId = currentFragment?.component.id
+
+          // Skip fallback fragments that are already defined
+          if (nextFragment.fallback && currentFragment) {
+          }
+          // Replace previous fragment
+          else if (
+            !stacked ||
+            (!!stacked && currentLocation === nextLocation)
           ) {
-            nextFragment.page!.visit = currentFragment?.page?.visit!
+            nextFragment.properties = {
+              ...currentFragment?.properties,
+              ...nextFragment.properties,
+            }
+
+            // Reuse component by using the same visit
+            if (
+              (lazy && currentComponentId === nextComponentId) ||
+              currentLocation === nextLocation
+            ) {
+              nextFragment.page!.visit = currentFragment?.page?.visit!
+            }
+
+            cumulatedFragments.splice(index, 9e9, nextFragment)
+            stop = true
+          } else {
+            cumulatedFragments.push(nextFragment)
           }
 
-          cumulatedFragments.splice(
-            cumulatedFragments.length - 1,
-            1,
-            nextFragment,
-          )
-        } else {
-          cumulatedFragments.push(nextFragment)
+          // In case this fragment is not stacked, we can safely stop after the first iteration
+          if (stop) {
+            break
+          }
+
+          index++
         }
       } else if (cumulatedFragments === null && nextFragment?.fallback) {
         cumulatedFragments = null
@@ -613,12 +623,14 @@ export function getPageProperties(page: Page): Properties {
   }
 }
 
-export function getDeferredPageProperties(page: Page): Partial<Properties> {
+export function getDeferredPageProperties(
+  page: Page,
+): Record<string, DeferredValue> {
   return Object.fromEntries(
     Object.entries(getPageProperties(page)).filter(([, property]) => {
-      return isDeferred(property)
+      return isDeferred(property) && !property.__requested
     }),
-  )
+  ) as Record<string, DeferredValue>
 }
 
 export function transformPropertyKey(

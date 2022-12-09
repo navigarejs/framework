@@ -2,7 +2,6 @@ import Route from './Route'
 import { GeneratedRoutes } from './routes'
 import { Default, Wildcard } from './symbols'
 import { AxiosResponse, AxiosStatic, Canceler, CancelToken } from 'axios'
-import { IsEmptyObject } from 'type-fest'
 
 // Router
 export type FragmentOption<TReturn> =
@@ -53,6 +52,7 @@ export type RouterLocation = {
 // Pages
 export type DeferredValue = {
   __deferred: true
+  __requested?: true
 }
 
 export type DeferredProperty<TValue = any> = DeferredValue | TValue
@@ -348,7 +348,7 @@ export type RouteParameters<TRouteName extends RouteName> =
   Routes[TRouteName] extends {
     bindings: any
   }
-    ? IsEmptyObject<Routes[TRouteName]['bindings']> extends true
+    ? keyof Routes[TRouteName]['bindings'] extends never
       ? Record<never, never>
       : Record<keyof Routes[TRouteName]['bindings'], RouteParameter>
     : Record<never, never>
@@ -363,7 +363,7 @@ export type RawRouteParameters<TRouteName extends RouteName = RouteName> =
   Routes[TRouteName] extends {
     bindings: any
   }
-    ? IsEmptyObject<Routes[TRouteName]['bindings']> extends true
+    ? keyof Routes[TRouteName]['bindings'] extends never
       ? Record<never, never>
       : Record<
           keyof Routes[TRouteName]['bindings'],

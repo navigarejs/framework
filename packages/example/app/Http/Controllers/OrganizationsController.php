@@ -8,6 +8,7 @@ use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 use Navigare\Navigare;
 
 class OrganizationsController extends Controller
@@ -17,7 +18,7 @@ class OrganizationsController extends Controller
     return Navigare::render('organizations/Index', [
       'filters' => Request::all('search', 'trashed'),
       'organizations' => Navigare::deferred(function () {
-        sleep(3);
+        sleep(1);
 
         return Auth::user()
           ->account->organizations()
@@ -47,14 +48,19 @@ class OrganizationsController extends Controller
 
   public function store(StoreRequest $request)
   {
-    Auth::user()
+    $organization = Auth::user()
       ->account->organizations()
       ->create($request->validated());
 
-    return Redirect::route('organizations.index')->with(
-      'success',
-      'Organization created.'
-    );
+    if ($request->input('from_contact_create')) {
+      $redirect = Redirect::route('contacts.create');
+
+      Session::flash('organization_id', $organization->id);
+    } else {
+      $redirect = Redirect::back();
+    }
+
+    return $redirect->with('success', 'Organization created.');
   }
 
   public function edit(Organization $organization)

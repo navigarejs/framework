@@ -282,10 +282,11 @@ it('can generate a URL with no parameters', () => {
   ).toEqual('/posts')
 
   expect(
-    new Route(rawRoutes['posts.index'] as never, {}, true).getHref(
-      location,
-      defaults,
-    ),
+    new Route(
+      rawRoutes['posts.index'] as never,
+      {},
+      { absolute: true },
+    ).getHref(location, defaults),
   ).toEqual('https://navigare.test:1337/posts')
 })
 
@@ -302,7 +303,7 @@ it('can generate a URL with default parameters', () => {
       {
         locale: Default,
       },
-      true,
+      { absolute: true },
     ).getHref(location, defaults),
   ).toEqual('https://navigare.test:1337/en/posts')
 })
@@ -324,7 +325,7 @@ it('can generate a URL with filled optional parameters', () => {
         subscriber: 123,
         conversation_id: 1234,
       },
-      true,
+      { absolute: true },
     ).getHref(location, defaults),
   ).toEqual(
     'https://navigare.test:1337/subscribers/123/conversations/email/1234',
@@ -423,7 +424,10 @@ it('can return base URL if path is "/"', () => {
   ).toEqual('/')
 
   expect(
-    new Route(rawRoutes['home'] as never, {}, true).getHref(location, defaults),
+    new Route(rawRoutes['home'] as never, {}, { absolute: true }).getHref(
+      location,
+      defaults,
+    ),
   ).toEqual('https://navigare.test:1337')
 })
 

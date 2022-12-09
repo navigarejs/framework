@@ -82,13 +82,16 @@ import {
   NavigareForm,
   NavigareInput,
   useFragment,
+  useParameter,
   useRouter,
 } from '@navigare/vue3'
+
+const fromContactCreate = useParameter('from_contact_create')
 
 const form = createForm(
   'organizations.create',
   route('organizations.store'),
-  {
+  () => ({
     name: '',
     email: '',
     phone: '',
@@ -97,7 +100,8 @@ const form = createForm(
     region: '',
     country: '',
     postal_code: '',
-  },
+    from_contact_create: fromContactCreate.value,
+  }),
   {
     validation: true,
   },

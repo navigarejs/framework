@@ -7,8 +7,13 @@ import {
   RouterEvent,
   isString,
 } from '@navigare/core'
-import { DefineComponent, normalizeClass, PropType } from 'vue'
-import { defineComponent, h } from 'vue'
+import {
+  defineComponent,
+  h,
+  DefineComponent,
+  normalizeClass,
+  PropType,
+} from 'vue'
 
 export default defineComponent({
   name: 'Link',

@@ -4,9 +4,11 @@
   >
     <div
       class="rounded bg-white shadow w-[500px] max-w-[80%] relative"
-      :class="{
-        'p-4': padded,
-      }"
+      :class="[
+        {
+          'p-4': padded,
+        },
+      ]"
     >
       <button
         class="absolute top-2 right-2 !border-0 !rounded-full !p-2 !m-0"

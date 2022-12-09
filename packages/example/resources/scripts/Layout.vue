@@ -29,15 +29,18 @@
           </transition>
 
           <div class="w-full">
-            <navigare-fragments name="default">
-              <template #fragment="{ component, properties }">
-                <transition
-                  name="fade"
-                  mode="out-in"
-                >
-                  <component :is="component" />
-                </transition>
-              </template>
+            <navigare-fragments
+              name="default"
+              #default="{ fragment }"
+            >
+              <transition
+                name="fade"
+                mode="out-in"
+              >
+                <div :key="fragment.component.key">
+                  <component :is="fragment.component" />
+                </div>
+              </transition>
             </navigare-fragments>
           </div>
         </div>
@@ -65,12 +68,11 @@
                     fragment.page.properties.breadcrumbs.length - 2
                   ]?.url
                 "
+                :class="{
+                  'scale-75 opacity-25': index < fragments.length - 1,
+                }"
               >
-                <component
-                  :is="fragment.component"
-                  :class="{
-                    'scale-75': index < fragments.length - 1,
-                  }"
+                <component :is="fragment.component"
               /></modal>
             </template>
           </transition-group>

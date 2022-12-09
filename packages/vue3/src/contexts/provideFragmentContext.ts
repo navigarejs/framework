@@ -1,3 +1,4 @@
+import { getFragmentKey } from '../utilities'
 import { ContextOf } from './../types'
 import { injectRouterContext } from './injectRouterContext'
 import { Fragment, Page } from '@navigare/core'
@@ -6,7 +7,7 @@ import { computed, InjectionKey, provide, reactive, watch } from 'vue'
 export const FragmentContext: InjectionKey<{
   name: string
   fragment: Fragment
-  page: Page
+  page: Omit<Page, 'fragments'>
   exposed: Record<string, Record<string, any>>
   key: string
 }> = Symbol('FragmentContext')
@@ -23,11 +24,7 @@ export default function provideFragmentContext(
     return fragment.value.page!
   })
   const key = computed(() => {
-    return [
-      page.value.visit.id,
-      // page.value.location.href,
-      fragment.value.component.id,
-    ].join('-')
+    return getFragmentKey(fragment.value)
   })
   const exposed: Record<string, Record<string, any>> = reactive({})
 
