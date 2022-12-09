@@ -238,8 +238,8 @@ export type FormOptions<
   TValues extends FormValues = FormValues,
   TRoutable extends Routable = never,
 > = TRoutable extends never
-  ? FormVisitOptions<TValues>
-  : FormBaseOptions<TValues>
+  ? FormBaseOptions<TValues>
+  : FormVisitOptions<TValues>
 
 export type FormInputName = string | number
 
