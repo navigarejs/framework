@@ -4,6 +4,7 @@ import { Fragment, safe } from '@navigare/core'
 import {
   computed,
   defineAsyncComponent,
+  DefineComponent,
   defineComponent,
   h,
   markRaw,
@@ -43,16 +44,28 @@ export default defineComponent({
     })
     const componentModule = computed(() => {
       const module = router.instance.getComponentModule(component.value)
+      const prepareModule = (module: DefineComponent): DefineComponent => {
+        // Disable inheritance of attributes
+        safe(() => {
+          Object.assign(module, {
+            inheritAttrs: false,
+          })
+        })
+
+        return module
+      }
 
       if (module instanceof Promise) {
         return markRaw(
-          defineAsyncComponent(async () => {
-            return module
+          defineAsyncComponent({
+            loader: async () => {
+              return prepareModule(await module)
+            },
           }),
         )
       }
 
-      return module
+      return prepareModule(module)
     })
 
     return () => {
