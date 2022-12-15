@@ -61,7 +61,7 @@ export default function createApp({
       Root,
       props: {
         router,
-        layout: options.initialPage.layout,
+        layout: options.initialPage.layout ?? null,
       },
       initialPage: initialPageWithFallback,
       router,
