@@ -8,7 +8,7 @@ export default defineComponent({
 
   props: {
     layout: {
-      type: [String, undefined] as PropType<string | undefined>,
+      type: [String, null] as PropType<string | null>,
       required: true,
     },
   },
