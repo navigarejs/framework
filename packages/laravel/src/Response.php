@@ -257,7 +257,7 @@ class Response implements Responsable
 
     // Determine which properties are actually selected
     $requestedProperties = collect(
-      explode(',', $request->header('X-Navigare-Properties'))
+      explode(',', $request->header('X-Navigare-Properties', ''))
     )
       ->filter()
       ->map(function ($property) {
