@@ -534,7 +534,7 @@ class Response implements Responsable
     Collection $properties,
     ?Collection $requestedProperties = null
   ): Collection {
-    return $properties->map(function ($value, $key) use (
+    return $properties->map(function ($value) use (
       $request,
       $requestedProperties
     ) {
