@@ -206,12 +206,14 @@ class ResponseFactory
    * @param  string  $fragmentName
    * @param  ?string  $componentName
    * @param  ?array|Arrayable|null  $properties
+   * @param  ?array $options
    * @return Response
    */
   public function withFragment(
     string $fragmentName,
     string $componentName = null,
-    array|Arrayable|null $properties = []
+    array|Arrayable|null $properties = [],
+    array $options = []
   ): Response {
     $response = new Response(
       rootView: $this->rootView,
@@ -223,7 +225,12 @@ class ResponseFactory
     );
 
     if ($componentName) {
-      $response->withFragment($fragmentName, $componentName, $properties);
+      $response->withFragment(
+        $fragmentName,
+        $componentName,
+        $properties,
+        $options
+      );
     }
 
     return $response;
@@ -281,11 +288,13 @@ class ResponseFactory
     if (Str::startsWith($method, 'with')) {
       $componentName = $arguments[0];
       $properties = $arguments[1] ?? [];
+      $options = $arguments[2] ?? [];
 
       return $this->withFragment(
         Str::camel(Str::after($method, 'with')),
         $componentName,
-        $properties
+        $properties,
+        $options
       );
     }
 

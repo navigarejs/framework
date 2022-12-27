@@ -102,18 +102,28 @@ class Response implements Responsable
    * @param  string  $fragmentName
    * @param  string|null  $componentName
    * @param  array|Arrayable|null  $properties
+   * @param  array $options
    * @return self
    */
   public function withFragment(
     string $fragmentName,
     string|null $componentName,
     array|Arrayable|null $properties = [],
-    bool $fallback = false
+    array $options = []
   ): self {
+    // Return early if the fragment's condition is not truthy
+    $condition = !!($options['condition'] ?? true);
+    if (!$condition) {
+      return $this;
+    }
+
+    // Only add fallback fragments if none has been set before
+    $fallback = !!($options['fallback'] ?? false);
     if ($fallback && Arr::exists($this->fragments, $fragmentName)) {
       return $this;
     }
 
+    // Instantiate fragment
     $this->fragments[$fragmentName] = is_null($componentName)
       ? null
       : new Fragment(
@@ -132,19 +142,19 @@ class Response implements Responsable
    * @param  string  $fragmentName
    * @param  string|null  $componentName
    * @param  array|Arrayable|null  $properties
+   * @param  array  $options
    * @return self
    */
   public function withFallbackFragment(
     string $fragmentName,
     string|null $componentName,
-    array|Arrayable|null $properties = []
+    array|Arrayable|null $properties = [],
+    array $options = []
   ): self {
-    return $this->withFragment(
-      $fragmentName,
-      $componentName,
-      $properties,
-      true
-    );
+    return $this->withFragment($fragmentName, $componentName, $properties, [
+      ...$options,
+      'fallback' => true,
+    ]);
   }
 
   /**
