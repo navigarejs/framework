@@ -10,4 +10,6 @@
 import Card from '../../components/Card.vue'
 
 defineProps({})
+
+throw new Error('test')
 </script>

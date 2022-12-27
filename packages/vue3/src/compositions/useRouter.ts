@@ -133,6 +133,14 @@ export default function useRouter() {
     }),
 
     instance: markRaw(router),
+
+    generateErrorLink: markRaw((file, row, column, url) => {
+      return router.options.generateErrorLink?.(file, row, column, url) ?? null
+    }),
+
+    reportError: markRaw((error: unknown) => {
+      router.reportError(error)
+    }),
   })
 
   return control

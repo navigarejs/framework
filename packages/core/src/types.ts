@@ -29,6 +29,12 @@ export type RouterOptions<TComponent> = {
   transformClientPropertyKey?: (key: PropertyKey) => PropertyKey
   transformServerPropertyKey?: (key: PropertyKey) => PropertyKey
   axios?: AxiosStatic
+  generateErrorLink?: (
+    file: string,
+    row: number,
+    column: number,
+    url: string,
+  ) => string | null
 }
 
 export type ComponentModuleResolver<TComponent> = (

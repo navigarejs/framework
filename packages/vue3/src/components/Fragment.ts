@@ -1,4 +1,5 @@
 import useRouter from '../compositions/useRouter'
+import { RouterControl } from '../types'
 import provideFragmentContext from './../contexts/provideFragmentContext'
 import { Fragment, safe } from '@navigare/core'
 import {
@@ -10,6 +11,7 @@ import {
   markRaw,
   PropType,
   reactive,
+  ref,
   toRefs,
 } from 'vue'
 
@@ -30,7 +32,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, { slots, attrs }) {
+  setup(props, { slots, attrs, expose }) {
     const context = provideFragmentContext(props.name, () => props.fragment)
     const router = useRouter()
     const properties = computed(() => {
@@ -67,8 +69,88 @@ export default defineComponent({
 
       return prepareModule(module)
     })
+    const error = ref<Error | null>(null)
+
+    // Expose control
+    expose({
+      error,
+      router,
+    })
 
     return () => {
+      if (error.value) {
+        if (process.env.NODE_ENV !== 'production') {
+          return h(
+            'div',
+            {
+              style: {
+                background: '#E83B46',
+                color: '#FFFFFF',
+                padding: '1rem',
+              },
+            },
+            [
+              h(
+                'div',
+                {
+                  style: {
+                    fontWeight: 'bold',
+                    fontSize: '1.5rem',
+                  },
+                },
+                error.value.message,
+              ),
+              h(
+                'div',
+                {
+                  style: {
+                    fontFamily: 'Consolas, Menlo, monospace',
+                  },
+                },
+                error.value.stack
+                  ?.split('\n')
+                  .slice(1)
+                  .map((line) => {
+                    const [at, location] = line.split('(')
+                    const parts = location.slice(0, -1).split(':')
+                    const url = parts.slice(0, -2).join(':')
+                    const { pathname: file } = new URL(url)
+                    const row = Number(parts[parts.length - 2])
+                    const column = Number(parts[parts.length - 1])
+
+                    return [
+                      h(
+                        'div',
+                        {
+                          style: {},
+                        },
+                        at,
+                      ),
+                      h(
+                        'a',
+                        {
+                          href: router.generateErrorLink(
+                            file,
+                            row,
+                            column,
+                            url,
+                          ),
+                          style: {
+                            fontSize: '0.8rem',
+                          },
+                        },
+                        file.slice(1),
+                      ),
+                    ]
+                  }),
+              ),
+            ],
+          )
+        }
+
+        return null
+      }
+
       const defaultSlot = slots.default
 
       // Disable inheritance of attributes
@@ -102,5 +184,23 @@ export default defineComponent({
 
       return renderedComponentModule
     }
+  },
+
+  errorCaptured(error, instance, _info) {
+    if (!instance?.$parent) {
+      return
+    }
+
+    // Inform component about error
+    Object.assign(instance.$parent, {
+      error,
+    })
+
+    // Inform router about error
+    if ('router' in instance.$parent) {
+      ;(instance.$parent.router as RouterControl).reportError(error)
+    }
+
+    return false
   },
 })

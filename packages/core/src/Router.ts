@@ -58,7 +58,7 @@ import {
 import { SetRequired } from 'type-fest'
 
 export default class Router<TComponentModule> {
-  protected options: RouterOptions<TComponentModule>
+  public options: RouterOptions<TComponentModule>
 
   protected activeVisit: Visit
 
@@ -1260,5 +1260,12 @@ export default class Router<TComponentModule> {
       key,
       this.options.transformServerPropertyKey?.bind(this),
     )
+  }
+
+  public reportError(error: unknown) {
+    this.emit('exception', {
+      visit: this.activeVisit,
+      error: error as Error,
+    })
   }
 }

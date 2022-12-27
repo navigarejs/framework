@@ -109,6 +109,13 @@ export type RouterControl = {
     listener: RouterEventListener<TEventName>,
   ): void
   instance: Router<DefineComponent>
+  generateErrorLink: (
+    file: string,
+    row: number,
+    column: number,
+    url: string,
+  ) => string | null
+  reportError: (error: unknown) => void
 }
 
 // Fragments
