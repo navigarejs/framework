@@ -48,18 +48,18 @@
   },
   "devDependencies": {
     "@navigare/core": "^1.0.101",
-    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/changelog": "^6.0.2",
     "@semantic-release/exec": "^6.0.3",
     "@trivago/prettier-plugin-sort-imports": "^3.4.0",
     "@types/semantic-release": "^17.2.4",
-    "axios": "^1.2.0",
-    "eslint": "^8.28.0",
+    "axios": "^1.2.1",
+    "eslint": "^8.30.0",
     "microbundle": "^0.15.1",
-    "prettier": "^2.8.0",
+    "prettier": "^2.8.1",
     "semantic-release": "^19.0.5",
     "semantic-release-monorepo": "^7.0.5",
-    "type-fest": "^3.2.0",
-    "vitest": "^0.24.5"
+    "type-fest": "^3.5.0",
+    "vitest": "^0.26.2"
   },
   "peerDependencies": {
     "@navigare/core": "^1.0.101",
@@ -68,6 +68,6 @@
   },
   "dependencies": {
     "@vue/devtools-api": "^6.4.5",
-    "@vueuse/head": "^1.0.18"
+    "@vueuse/head": "^1.0.22"
   }
 }
