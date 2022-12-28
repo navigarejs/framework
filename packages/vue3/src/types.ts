@@ -110,9 +110,9 @@ export type RouterControl = {
   ): void
   instance: Router<DefineComponent>
   generateErrorLink: (
-    file: string,
-    row: number,
-    column: number,
+    fileName: string | null,
+    row: number | null,
+    column: number | null,
     url: string,
   ) => string | null
   reportError: (error: unknown) => void

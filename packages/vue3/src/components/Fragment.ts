@@ -109,14 +109,65 @@ export default defineComponent({
                 },
                 error.value.stack
                   ?.split('\n')
-                  .slice(1)
+                  .filter((line) => {
+                    return !!line.match(/^\s*at .*(\S+:\d+|\(native\))/m)
+                  })
                   .map((line) => {
-                    const [location] = line.match(/(https?:\/\/[^ ]*)/) ?? ['']
-                    const parts = location.slice(0, -1).split(':')
-                    const url = parts.slice(0, -2).join(':')
-                    const { pathname: file } = new URL(url)
-                    const row = Number(parts[parts.length - 2])
-                    const column = Number(parts[parts.length - 1])
+                    const extractLocation = (maybeURL: string) => {
+                      // Fail-fast but return locations like "(native)"
+                      if (maybeURL.indexOf(':') === -1) {
+                        return {
+                          url: maybeURL,
+                          row: null,
+                          column: null,
+                        }
+                      }
+
+                      const [url, row, column] =
+                        /(.+?)(?::(\d+))?(?::(\d+))?$/.exec(
+                          maybeURL.replace(/[()]/g, ''),
+                        ) ?? ['']
+                      return {
+                        url,
+                        row: Number(row ?? 0),
+                        column: Number(column ?? 0),
+                      }
+                    }
+
+                    if (line.includes('(eval ')) {
+                      line = line
+                        .replace(/eval code/g, 'eval')
+                        .replace(/(\(eval at [^()]*)|(,.*$)/g, '')
+                    }
+
+                    let sanitizedLine = line
+                      .replace(/^\s+/, '')
+                      .replace(/\(eval code/g, '(')
+                      .replace(/^.*?\s+/, '')
+
+                    // capture and preserve the parenthesized location "(/foo/my bar.js:12:87)" in
+                    // case it has spaces in it, as the string is split on \s+ later on
+                    const location = sanitizedLine.match(/ (\(.+\)$)/)
+
+                    // Remove the parenthesized location from the line, if it was matched
+                    if (location) {
+                      sanitizedLine = sanitizedLine.replace(location[0], '')
+                    }
+
+                    // if a location was matched, pass it to extractLocation() otherwise pass all sanitizedLine
+                    // because this line doesn't have function name
+                    const { url, row, column } = extractLocation(
+                      location ? location[1] : sanitizedLine,
+                    )
+                    const functionName = (location && sanitizedLine) || ''
+                    const fileName = ['eval', '<anonymous>'].includes(url)
+                      ? ''
+                      : safe(
+                          () => {
+                            return new URL(url).pathname.substring(1)
+                          },
+                          () => '',
+                        )
 
                     return [
                       h(
@@ -124,13 +175,13 @@ export default defineComponent({
                         {
                           style: {},
                         },
-                        at,
+                        functionName,
                       ),
                       h(
                         'a',
                         {
                           href: router.generateErrorLink(
-                            file,
+                            fileName,
                             row,
                             column,
                             url,
@@ -139,7 +190,7 @@ export default defineComponent({
                             fontSize: '0.8rem',
                           },
                         },
-                        file.slice(1),
+                        fileName,
                       ),
                     ]
                   }),
@@ -200,5 +251,7 @@ export default defineComponent({
     if ('router' in instance.$parent) {
       ;(instance.$parent.router as RouterControl).reportError(error)
     }
+
+    return false
   },
 })
