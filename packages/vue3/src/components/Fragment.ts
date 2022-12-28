@@ -111,7 +111,7 @@ export default defineComponent({
                   ?.split('\n')
                   .slice(1)
                   .map((line) => {
-                    const [at, location] = line.split('(')
+                    const [location] = line.match(/(https?:\/\/[^ ]*)/) ?? ['']
                     const parts = location.slice(0, -1).split(':')
                     const url = parts.slice(0, -2).join(':')
                     const { pathname: file } = new URL(url)
