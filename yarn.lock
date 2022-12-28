@@ -2273,7 +2273,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navigare/cli@^1.0.8, @navigare/cli@workspace:packages/cli":
+"@navigare/cli@^1.0.9, @navigare/cli@workspace:packages/cli":
   version: 0.0.0-use.local
   resolution: "@navigare/cli@workspace:packages/cli"
   dependencies:
@@ -2381,7 +2381,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@navigare/example@workspace:packages/example"
   dependencies:
-    "@navigare/cli": ^1.0.8
+    "@navigare/cli": ^1.0.9
     "@navigare/core": ^1.0.102
     "@navigare/ssr": ^1.0.24
     "@navigare/vite": ^1.0.36
