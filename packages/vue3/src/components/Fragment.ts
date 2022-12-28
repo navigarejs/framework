@@ -200,7 +200,5 @@ export default defineComponent({
     if ('router' in instance.$parent) {
       ;(instance.$parent.router as RouterControl).reportError(error)
     }
-
-    return false
   },
 })
