@@ -2385,7 +2385,7 @@ __metadata:
     "@navigare/core": ^1.0.103
     "@navigare/ssr": ^1.0.24
     "@navigare/vite": ^1.0.36
-    "@navigare/vue3": ^1.0.141
+    "@navigare/vue3": ^1.0.142
     "@prettier/plugin-php": ^0.19.2
     "@vitejs/plugin-vue": ^4.0.0
     autoprefixer: ^10.4.13
@@ -2514,7 +2514,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@navigare/vue3@^1.0.141, @navigare/vue3@workspace:packages/vue3":
+"@navigare/vue3@^1.0.142, @navigare/vue3@workspace:packages/vue3":
   version: 0.0.0-use.local
   resolution: "@navigare/vue3@workspace:packages/vue3"
   dependencies:
