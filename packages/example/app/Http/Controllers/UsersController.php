@@ -115,7 +115,7 @@ class UsersController extends Controller
 
   public function destroy(User $user)
   {
-    if (App::environment('demo') && $user->isDemoUser()) {
+    if ($user->isDemoUser()) {
       return Redirect::back()->with(
         'error',
         'Deleting the demo user is not allowed.'
