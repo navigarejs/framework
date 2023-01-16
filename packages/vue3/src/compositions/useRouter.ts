@@ -3,6 +3,9 @@ import { RouterControl } from './../types'
 import useFragment from './useFragment'
 import usePage from './usePage'
 import { RouterEventListener, Route } from '@navigare/core'
+import { PartialRoute } from '@navigare/core'
+import { RouteName } from '@navigare/core'
+import { Routable } from '@navigare/core'
 import { computed, markRaw, onMounted, onUnmounted, reactive, ref } from 'vue'
 
 export default function useRouter() {
@@ -28,6 +31,25 @@ export default function useRouter() {
     return page.fragments
   })
   const processing = ref(false)
+  const match = computed(() => {
+    const fragmentRoute = new Route(fragment.rawRoute, fragment.parameters, {
+      absolute: true,
+    })
+
+    return (
+      comparableRoute: Routable | PartialRoute<RouteName>,
+      route?: Route<RouteName>,
+    ): boolean => {
+      const matches = router.match(
+        comparableRoute,
+        route ?? fragmentRoute,
+        fragment.location,
+        fragment.defaults,
+      )
+
+      return matches
+    }
+  })
 
   // Listen to current page
   const handleFinish: RouterEventListener<'finish'> = () => {
@@ -110,19 +132,7 @@ export default function useRouter() {
       return await router.back(fallback)
     }),
 
-    match: markRaw((comparableRoute, route) => {
-      const matches = router.match(
-        comparableRoute,
-        route ??
-          new Route(fragment.rawRoute, fragment.parameters, {
-            absolute: true,
-          }),
-        fragment.location,
-        fragment.defaults,
-      )
-
-      return matches
-    }),
+    match,
 
     on: markRaw((name, listener) => {
       return router.on(name, listener)
