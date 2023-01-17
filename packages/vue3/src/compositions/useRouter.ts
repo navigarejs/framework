@@ -22,7 +22,7 @@ export default function useRouter() {
   })
   const fragment = useFragment()
   const parameters = computed(() => fragment.parameters)
-  const route = computed(() => {
+  const route = computed<Route>(() => {
     return new Route(fragment.rawRoute, fragment.parameters, {
       absolute: false,
     })
@@ -32,17 +32,13 @@ export default function useRouter() {
   })
   const processing = ref(false)
   const match = computed(() => {
-    const fragmentRoute = new Route(fragment.rawRoute, fragment.parameters, {
-      absolute: true,
-    })
-
     return (
       comparableRoute: Routable | PartialRoute<RouteName>,
-      route?: Route<RouteName>,
+      baseRoute?: Route<RouteName>,
     ): boolean => {
       const matches = router.match(
         comparableRoute,
-        route ?? fragmentRoute,
+        baseRoute ?? route.value,
         fragment.location,
         fragment.defaults,
       )

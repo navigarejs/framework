@@ -19,7 +19,7 @@ class HandleNavigareRequests extends \Navigare\Middleware
    */
   public function share(Request $request, NavigareResponse $response): void
   {
-    $response->withHeader('partials/Header', [
+    $response->withFallbackHeader('partials/Header', [
       'time' => Carbon::now(),
     ]);
 

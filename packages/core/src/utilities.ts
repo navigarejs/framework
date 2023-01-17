@@ -212,11 +212,9 @@ export function mergeFragments<TComponentModule>(
           const currentLocation = currentFragment?.page?.location.href
           const currentComponentId = currentFragment?.component.id
 
-          // Skip fallback fragments that are already defined
-          if (nextFragment.fallback && currentFragment) {
-          }
           // Replace previous fragment
-          else if (
+          if (
+            (nextFragment.fallback && currentFragment) ||
             !stacked ||
             (!!stacked && currentLocation === nextLocation)
           ) {

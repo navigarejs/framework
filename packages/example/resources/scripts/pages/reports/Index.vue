@@ -11,5 +11,7 @@ import Card from '../../components/Card.vue'
 
 defineProps({})
 
-throw new Error('test')
+throw new Error(
+  'Exceptions are caught in the fragment and do not affect the whole page.',
+)
 </script>
