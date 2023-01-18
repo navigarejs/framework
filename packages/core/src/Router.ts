@@ -593,7 +593,7 @@ export default class Router<TComponentModule> {
 
       if (!visit.background) {
         if (!this.isNavigareResponse(response)) {
-          return Promise.reject({ response })
+          throw response
         }
 
         // Prepare next page
