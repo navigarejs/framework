@@ -6,7 +6,9 @@ import { AxiosResponse, AxiosStatic, Canceler, CancelToken } from 'axios'
 // Router
 export type FragmentOption<TReturn> =
   | TReturn
+  | undefined
   | ((options: {
+      name: string
       currentFragments: Fragments
       nextFragments: Fragments
     }) => TReturn | undefined)
@@ -18,6 +20,7 @@ export type RouterOptions<TComponent> = {
   fragments?: Record<
     string,
     {
+      modal?: FragmentOption<boolean>
       stacked?: FragmentOption<boolean>
       lazy?: FragmentOption<boolean>
       inert?: FragmentOption<boolean>

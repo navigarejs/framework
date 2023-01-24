@@ -28,21 +28,14 @@ export default createNavigareApp({
   fragments: {
     default: {},
 
-    header: {
-      inert: ({ nextFragments }) => {
-        return !!nextFragments.modal
-      },
-    },
+    header: {},
 
     left: {
       lazy: true,
-      inert: ({ nextFragments }) => {
-        return !!nextFragments.modal
-      },
     },
 
     modal: {
-      stacked: true,
+      modal: true,
     },
   },
 })

@@ -92,6 +92,7 @@ export default defineComponent({
 
   emits: {
     click: (_event: MouseEvent) => true,
+    mouseenter: (_event: MouseEvent) => true,
     before: (_event: RouterEvent<'before'>) => true,
     start: (_event: RouterEvent<'start'>) => true,
     progress: (_event: RouterEvent<'progress'>) => true,
@@ -146,6 +147,15 @@ export default defineComponent({
           ]),
           ...routable.getAttributes({
             disabled: !!attrs.disabled,
+
+            events: {
+              click(event) {
+                emit('click', event)
+              },
+              mouseenter(event) {
+                emit('mouseenter', event)
+              },
+            },
 
             visit: {
               replace: props.replace,

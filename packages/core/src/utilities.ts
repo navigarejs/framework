@@ -190,6 +190,7 @@ export function mergeFragments<TComponentModule>(
       if (isFunction(option)) {
         return (
           option({
+            name,
             currentFragments: allCurrentFragments,
             nextFragments: allNextFragments,
           }) ?? defaultValue
@@ -198,8 +199,18 @@ export function mergeFragments<TComponentModule>(
 
       return option ?? defaultValue
     }
-    const stacked = resolveOption(options[name]?.stacked, false)
-    const inert = resolveOption(options[name]?.inert, name === 'default')
+    const stacked = resolveOption(
+      options[name]?.stacked,
+      resolveOption(options[name]?.modal, false),
+    )
+    const inert = resolveOption(
+      options[name]?.inert,
+      (() => {
+        return Object.keys(allNextFragments).some((nextFragmentName) => {
+          return resolveOption(options[nextFragmentName]?.modal, false)
+        })
+      })(),
+    )
     const lazy = resolveOption(options[name]?.lazy, true)
 
     if (nextFragment) {

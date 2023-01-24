@@ -11,9 +11,7 @@
         and consume it in the other:
       </p>
 
-      <push-button @click="leftFragment.exposed?.shuffle()">
-        Shuffle list
-      </push-button>
+      <push-button @click="handleClick"> Shuffle list </push-button>
     </card>
   </div>
 </template>
@@ -33,4 +31,8 @@ fragment.exposed.counter = 0
 setInterval(() => {
   fragment.exposed.counter++
 }, 500)
+
+const handleClick = () => {
+  leftFragment.exposed?.shuffle()
+}
 </script>
