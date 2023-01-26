@@ -2,7 +2,7 @@ import PartialRoute from './PartialRoute'
 import Route from './Route'
 import modal from './modal'
 import {
-  LocationVisit,
+  Redirect,
   RouteMethod,
   Page,
   VisitPreserveOption,
@@ -148,8 +148,8 @@ export default class Router<TComponentModule> {
       setTimeout(() => {
         if (this.isBackForwardVisit()) {
           this.handleBackForwardVisit(this.page)
-        } else if (this.isLocationVisit()) {
-          this.handleLocationVisit(this.page)
+        } else if (this.isRedirect()) {
+          this.handleRedirect(this.page)
         } else {
           this.handleInitialPageVisit(this.page)
         }
@@ -295,17 +295,14 @@ export default class Router<TComponentModule> {
     this.restoreScrollPositions()
   }
 
-  protected locationVisit(
+  protected redirect(
     location: RouterLocation,
-    preserveScroll: LocationVisit['preserveScroll'],
+    preserveScroll: Redirect['preserveScroll'],
   ): boolean | void {
     try {
-      const locationVisit: LocationVisit = { preserveScroll }
+      const redirect: Redirect = { preserveScroll }
 
-      window.sessionStorage.setItem(
-        'navigareLocationVisit',
-        serialize(locationVisit),
-      )
+      window.sessionStorage.setItem('navigareRedirect', serialize(redirect))
 
       window.location.href = location.href
 
@@ -317,36 +314,36 @@ export default class Router<TComponentModule> {
     }
   }
 
-  protected isLocationVisit(): boolean {
+  protected isRedirect(): boolean {
     try {
-      return window.sessionStorage.getItem('navigareLocationVisit') !== null
+      return window.sessionStorage.getItem('navigareRedirect') !== null
     } catch (error) {
       return false
     }
   }
 
-  protected async handleLocationVisit(page: Page): Promise<void> {
-    const locationVisit: LocationVisit = JSON.parse(
-      window.sessionStorage.getItem('navigareLocationVisit') || '',
+  protected async handleRedirect(page: Page): Promise<void> {
+    const redirect: Redirect = JSON.parse(
+      window.sessionStorage.getItem('navigareRedirect') || '',
     )
 
-    window.sessionStorage.removeItem('navigareLocationVisit')
+    window.sessionStorage.removeItem('navigareRedirect')
 
     page.location.hash = window.location.hash
     page.rememberedState = window.history.state?.rememberedState ?? {}
     page.scrollRegions = window.history.state?.scrollRegions ?? []
 
     await this.setPage(page, {
-      preserveScroll: locationVisit.preserveScroll,
+      preserveScroll: redirect.preserveScroll,
       preserveState: true,
     })
 
-    if (locationVisit.preserveScroll) {
+    if (redirect.preserveScroll) {
       this.restoreScrollPositions()
     }
   }
 
-  protected isLocationVisitResponse(response: AxiosResponse): boolean {
+  protected isRedirectResponse(response: AxiosResponse): boolean {
     if (!response) {
       return false
     }
@@ -672,10 +669,13 @@ export default class Router<TComponentModule> {
         )
       }
     } catch (error) {
+      let throwException = true
+
       if (Axios.isAxiosError(error) && error.response) {
         if (this.isNavigareResponse(error.response)) {
           this.setPage(error.response.data)
-        } else if (this.isLocationVisitResponse(error.response)) {
+          throwException = false
+        } else if (this.isRedirectResponse(error.response)) {
           const redirectHref = String(
             this.getHeader(error.response.headers, 'X-Navigare-Location'),
           )
@@ -696,7 +696,8 @@ export default class Router<TComponentModule> {
             redirectLocation.hash = location.hash
           }
 
-          this.locationVisit(redirectLocation, preserveScroll === true)
+          this.redirect(redirectLocation, preserveScroll === true)
+          throwException = false
         } else if (visit.background) {
           await this.emit(
             'error',
@@ -707,6 +708,7 @@ export default class Router<TComponentModule> {
             },
             events?.error,
           )
+          throwException = false
         } else if (
           await this.emit(
             'invalid',
@@ -721,14 +723,16 @@ export default class Router<TComponentModule> {
         }
       }
 
-      await this.emit(
-        'exception',
-        {
-          visit,
-          error: error as Error,
-        },
-        events?.exception,
-      )
+      if (throwException) {
+        await this.emit(
+          'exception',
+          {
+            visit,
+            error: error as Error,
+          },
+          events?.exception,
+        )
+      }
     }
 
     this.finishVisit(visit)

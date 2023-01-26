@@ -268,7 +268,7 @@ export type VisitProgress = {
   download?: boolean
 }
 
-export type LocationVisit = {
+export type Redirect = {
   preserveScroll: boolean
 }
 
