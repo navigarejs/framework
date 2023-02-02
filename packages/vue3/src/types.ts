@@ -97,7 +97,11 @@ export type RouterControl = {
   ): Promise<Visit>
   back(fallback?: Routable): Promise<void>
   match(
-    comparableRoute: Routable | PartialRoute<RouteName>,
+    comparableRoute:
+      | Routable
+      | PartialRoute<RouteName>
+      | string
+      | [Routable, ...(PartialRoute | string)[]],
     route?: Route<RouteName>,
   ): boolean
   on<TEventName extends RouterEventNames>(

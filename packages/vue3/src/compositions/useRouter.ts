@@ -2,7 +2,7 @@ import { injectRouterContext } from './../contexts/injectRouterContext'
 import { RouterControl } from './../types'
 import useFragment from './useFragment'
 import usePage from './usePage'
-import { RouterEventListener, Route } from '@navigare/core'
+import { RouterEventListener, Route, isArray } from '@navigare/core'
 import { PartialRoute } from '@navigare/core'
 import { RouteName } from '@navigare/core'
 import { Routable } from '@navigare/core'
@@ -32,10 +32,20 @@ export default function useRouter() {
   })
   const processing = ref(false)
   const match = computed(() => {
-    return (
-      comparableRoute: Routable | PartialRoute<RouteName>,
+    const match = (
+      comparableRoute:
+        | Routable
+        | PartialRoute<RouteName>
+        | string
+        | [Routable, ...(PartialRoute | string)[]],
       baseRoute?: Route<RouteName>,
     ): boolean => {
+      if (isArray(comparableRoute)) {
+        return comparableRoute.some((route) => {
+          return match(route)
+        })
+      }
+
       const matches = router.match(
         comparableRoute,
         baseRoute ?? route.value,
@@ -45,6 +55,8 @@ export default function useRouter() {
 
       return matches
     }
+
+    return match
   })
 
   // Listen to current page
