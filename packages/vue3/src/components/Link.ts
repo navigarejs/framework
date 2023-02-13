@@ -1,5 +1,5 @@
 import useRoutable from '../compositions/useRoutable'
-import { getRouteProp } from './../utilities'
+import { getRoutePropType } from './../utilities'
 import {
   RawRouteMethod,
   VisitData,
@@ -36,7 +36,9 @@ export default defineComponent({
       type: String,
     },
 
-    route: getRouteProp(),
+    route: {
+      type: getRoutePropType(),
+    },
 
     method: {
       type: String as PropType<RawRouteMethod>,

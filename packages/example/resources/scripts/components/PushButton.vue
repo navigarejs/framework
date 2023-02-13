@@ -47,7 +47,7 @@
 
 <script lang="ts" setup>
 import ActivityIndicator from './ActivityIndicator.vue'
-import { getRouteProp, NavigareLink } from '@navigare/vue3'
+import { getRoutePropType, NavigareLink } from '@navigare/vue3'
 import { PropType } from 'vue'
 
 defineProps({
@@ -57,7 +57,9 @@ defineProps({
 
   variant: String as PropType<'primary' | 'danger' | 'secondary'>,
 
-  route: getRouteProp(),
+  route: {
+    type: getRoutePropType(),
+  },
 
   active: Boolean,
 

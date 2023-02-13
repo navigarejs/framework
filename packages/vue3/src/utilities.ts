@@ -34,16 +34,10 @@ export function getVNodeText(
   return getVNodesText(isFunction(vnode) ? vnode() : castArray(vnode))
 }
 
-export function getRouteType(): PropType<
+export function getRoutePropType(): PropType<
   Routable | [Routable, ...(PartialRoute | string)[]]
 > {
   return [String, Object, Array] as any
-}
-
-export function getRouteProp() {
-  return {
-    type: getRouteType(),
-  }
 }
 
 export function getFragmentKey(fragment: Fragment): string {
