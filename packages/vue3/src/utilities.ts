@@ -1,6 +1,5 @@
+import { MatchingRoutePropType } from './types'
 import {
-  PartialRoute,
-  Routable,
   castArray,
   isArray,
   isFunction,
@@ -34,10 +33,8 @@ export function getVNodeText(
   return getVNodesText(isFunction(vnode) ? vnode() : castArray(vnode))
 }
 
-export function getRoutePropType(): PropType<
-  Routable | [Routable, ...(PartialRoute | string)[]]
-> {
-  return [String, Object, Array] as any
+export function getRoutePropType(): PropType<MatchingRoutePropType> {
+  return [String, Object, Array] as PropType<MatchingRoutePropType>
 }
 
 export function getFragmentKey(fragment: Fragment): string {

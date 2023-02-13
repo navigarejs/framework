@@ -365,6 +365,11 @@ export interface FormControl<
   clearErrors(paths?: (FormInputName | FormInputPath)[]): void
 }
 
+// Prop types
+export type MatchingRoutePropType =
+  | Routable
+  | [Routable, ...(PartialRoute | string)[]]
+
 // Helpers
 export type ContextOf<TContext> = TContext extends InjectionKey<infer TInner>
   ? TInner
