@@ -243,9 +243,7 @@ export default defineComponent({
     }
 
     // Inform component about error
-    Object.assign(instance.$parent, {
-      error,
-    })
+    ;(instance.$parent as any).error = error
 
     // Inform router about error
     if ('router' in instance.$parent) {
