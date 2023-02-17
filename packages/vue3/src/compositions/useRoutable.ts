@@ -177,8 +177,12 @@ export default function useRoutable(
     const { disabled = false, visit: visitOptions, events } = options
 
     return {
-      href: location.value?.href,
-      rel: foreign.value ? 'noopener noreferrer' : undefined,
+      ...(resolvedMethod.value === RouteMethod.GET
+        ? {
+            href: location.value?.href,
+            rel: foreign.value ? 'noopener noreferrer' : undefined,
+          }
+        : {}),
 
       onClick: (event: MouseEvent) => {
         events?.click?.(event)
