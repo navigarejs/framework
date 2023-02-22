@@ -167,6 +167,7 @@ export default class Router<TComponentModule> {
     this.on('finish', options.events?.finish)
     this.on('cancel', options.events?.cancel)
     this.on('success', options.events?.success)
+    this.on('redirect', options.events?.redirect)
     this.on('error', options.events?.error)
     this.on('invalid', options.events?.invalid)
     this.on('exception', options.events?.exception)
@@ -695,6 +696,15 @@ export default class Router<TComponentModule> {
           ) {
             redirectLocation.hash = location.hash
           }
+
+          await this.emit(
+            'redirect',
+            {
+              visit,
+              location: redirectLocation,
+            },
+            events?.redirect,
+          )
 
           this.redirect(redirectLocation, preserveScroll === true)
           throwException = false

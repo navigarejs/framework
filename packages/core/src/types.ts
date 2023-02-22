@@ -194,6 +194,14 @@ export type RouterEvents = {
     result: void
   }
 
+  redirect: {
+    details: {
+      visit: Visit
+      location: RouterLocation
+    }
+    result: void
+  }
+
   error: {
     details: {
       visit: Visit
