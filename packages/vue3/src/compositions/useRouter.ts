@@ -150,6 +150,10 @@ export default function useRouter() {
       return router.off(name, listener)
     }),
 
+    resolve: markRaw((routable: Routable) => {
+      return router.resolveRoutable(routable).location.href
+    }),
+
     instance: markRaw(router),
 
     generateErrorLink: markRaw((file, row, column, url) => {

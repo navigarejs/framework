@@ -112,6 +112,7 @@ export type RouterControl = {
     name: TEventName,
     listener: RouterEventListener<TEventName>,
   ): void
+  resolve(routable: Routable): string
   instance: Router<DefineComponent>
   generateErrorLink: (
     fileName: string | null,
