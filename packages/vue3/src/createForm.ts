@@ -29,7 +29,6 @@ import {
   defaults,
   PageErrors,
 } from '@navigare/core'
-import { r } from 'vitest/dist/index-40ebba2b'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
 const globalDisabled = ref(false)
