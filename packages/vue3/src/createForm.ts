@@ -424,6 +424,13 @@ export default function createForm<
               )
             },
 
+            redirect(event) {
+              emitter.emit('redirect', event.detail, [
+                options.events?.redirect,
+                submitOptions.events?.redirect,
+              ])
+            },
+
             finish(_event) {
               finish()
             },

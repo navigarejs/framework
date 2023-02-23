@@ -175,6 +175,13 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
     result: void
   }
 
+  redirect: {
+    details: {
+      location: RouterLocation
+    }
+    result: void
+  }
+
   error: {
     details: {
       errors: PageErrors
