@@ -198,6 +198,13 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
     }
     result: void
   }
+
+  exception: {
+    details: {
+      error: Error
+    }
+    result: boolean | void
+  }
 }
 
 export type FormEventNames = keyof FormEvents

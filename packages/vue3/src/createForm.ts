@@ -27,7 +27,9 @@ import {
   cloneDeep,
   createQueue,
   defaults,
+  PageErrors,
 } from '@navigare/core'
+import { r } from 'vitest/dist/index-40ebba2b'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 
 const globalDisabled = ref(false)
@@ -334,17 +336,37 @@ export default function createForm<
 
       // Submit via callback
       if (callback.value) {
-        const flash = await callback.value(clonedValues)
+        try {
+          const flash = await callback.value(clonedValues)
 
-        successful.value = true
+          successful.value = true
 
-        emitter.emit(
-          'success',
-          {
-            flash,
-          },
-          [options.events?.success, submitOptions.events?.success],
-        )
+          emitter.emit(
+            'success',
+            {
+              flash,
+            },
+            [options.events?.success, submitOptions.events?.success],
+          )
+        } catch (error) {
+          if (error instanceof Error) {
+            emitter.emit(
+              'exception',
+              {
+                error,
+              },
+              [options.events?.exception, submitOptions.events?.exception],
+            )
+          } else {
+            emitter.emit(
+              'error',
+              {
+                errors: error as PageErrors,
+              },
+              [options.events?.error, submitOptions.events?.error],
+            )
+          }
+        }
 
         finish()
 
