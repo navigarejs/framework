@@ -1,6 +1,5 @@
 import PartialRoute from './PartialRoute'
 import Route from './Route'
-import modal from './modal'
 import {
   Redirect,
   RouteMethod,
