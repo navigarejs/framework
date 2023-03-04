@@ -2,6 +2,7 @@ import useFragment from './compositions/useFragment'
 import useRouter from './compositions/useRouter'
 import {
   FormControl,
+  FormControlOf,
   FormError,
   FormErrors,
   FormEvents,
@@ -206,7 +207,7 @@ export default function createForm<
     max: 1,
   })
   watch(
-    [() => cloneDeep(values), () => initialValues.value],
+    [() => cloneDeep(values) as TValues, () => initialValues.value],
     ([nextValues, nextInitialValues], [previousValues]) => {
       changes.push(async () => {
         const transformedPreviousValues = await transform(
@@ -221,7 +222,7 @@ export default function createForm<
           emitter.emit(
             'change',
             {
-              values,
+              values: nextValues,
             },
             options.events?.change,
           )
@@ -294,20 +295,32 @@ export default function createForm<
         return
       }
 
+      // Take a copy of the submitted values
+      const clonedValues = cloneDeep(values) as TValues
+
       // Prepare helpers
       const finish = () => {
         processing.value = false
         globalDisabled.value = false
         trigger.value = null
 
-        emitter.emit('finish', {}, [
-          options.events?.finish,
-          submitOptions.events?.finish,
-        ])
+        emitter.emit(
+          'finish',
+          {
+            values: clonedValues,
+          },
+          [options.events?.finish, submitOptions.events?.finish],
+        )
       }
 
       // Run "before" hook
-      emitter.emit('before', {}, options.events?.before)
+      emitter.emit(
+        'before',
+        {
+          values: clonedValues,
+        },
+        options.events?.before,
+      )
 
       // Indicate processing state
       processing.value = true
@@ -315,9 +328,6 @@ export default function createForm<
 
       // Remember which element triggered the submission
       trigger.value = submitOptions.trigger ?? null
-
-      // Transform values before submission if required
-      const clonedValues = cloneDeep(values) as TValues
 
       // Run `validate` hook
       if (
@@ -343,6 +353,7 @@ export default function createForm<
           emitter.emit(
             'success',
             {
+              values: clonedValues,
               flash,
             },
             [options.events?.success, submitOptions.events?.success],
@@ -418,6 +429,7 @@ export default function createForm<
               emitter.emit(
                 'success',
                 {
+                  values: clonedValues,
                   flash: event.detail.page.properties.__flash,
                 },
                 [options.events?.success, submitOptions.events?.success],
@@ -559,12 +571,17 @@ export default function createForm<
     }),
 
     reset: markRaw((paths) => {
+      const clonedValues = cloneDeep(values) as TValues
+
       control.clearValues(paths)
       control.clearErrors(paths)
 
       initialValues.value = cloneDeep(getInitialOrRestoredValues())
 
-      emitter.emit('reset', {})
+      emitter.emit('reset', {
+        previousValues: clonedValues,
+        nextValues: initialValues.value,
+      })
     }),
 
     clearValues: markRaw((paths) => {
@@ -578,12 +595,16 @@ export default function createForm<
       }
     }),
 
-    setValue: markRaw((nextValues, nextValue) => {
-      set(values, nextValues, nextValue)
+    setValue: markRaw((path, nextValue) => {
+      set(values, path, nextValue)
     }),
 
     setValues: markRaw((nextValues) => {
       for (const key of getKeys(nextValues)) {
+        if (!(key in values)) {
+          continue
+        }
+
         Object.assign(values, {
           [key]: cloneDeep(nextValues[key]),
         })
@@ -621,7 +642,7 @@ export default function createForm<
         getInitialPartialValues,
         options,
       ) => {
-        return createForm(
+        const partialForm = createForm(
           getPartialName,
           getPartialRoutable,
           () => {
@@ -629,6 +650,16 @@ export default function createForm<
           },
           options,
         )
+
+        // Commit values to parent form
+        partialForm.on('finish', (event) => {
+          options?.commit?.(
+            event.detail.values as FormControlOf<typeof partialForm>,
+            control,
+          )
+        })
+
+        return partialForm
       },
     ),
 

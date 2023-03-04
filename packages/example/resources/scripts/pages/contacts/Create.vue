@@ -181,6 +181,12 @@ const partialForm = form.partial(
       phone: toRef(values, 'phone'),
     })
   },
+  {
+    commit: (values) => {
+      form.values.email = values.email
+      form.values.phone = values.phone
+    },
+  },
 )
 
 watch(

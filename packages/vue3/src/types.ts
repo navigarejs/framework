@@ -164,12 +164,15 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
   }
 
   before: {
-    details: {}
+    details: {
+      values: TValues
+    }
     result: void
   }
 
   success: {
     details: {
+      values: TValues
       flash: DefaultPageProperties['__flash']
     }
     result: void
@@ -190,18 +193,23 @@ export type FormEvents<TValues extends FormValues = FormValues> = {
   }
 
   finish: {
-    details: {}
+    details: {
+      values: TValues
+    }
     result: void
   }
 
   reset: {
-    details: {}
+    details: {
+      previousValues: TValues
+      nextValues: TValues
+    }
     result: void
   }
 
   change: {
     details: {
-      values: UnwrapNestedRefs<TValues>
+      values: TValues
     }
     result: void
   }
@@ -347,16 +355,18 @@ export interface FormControl<
 
   disable(): void
 
-  partial<TPartialValues extends FormValues>(
+  partial<TPartialValues extends FormValues, TPartialRoutable extends Routable>(
     getName: string | (() => string),
     getRoutable:
-      | Routable
-      | (() => Routable)
+      | TPartialRoutable
+      | (() => TPartialRoutable)
       | (() => (values: TPartialValues) => any | Promise<any>),
     getInitialPartialValues: (
       values: UnwrapNestedRefs<TValues>,
     ) => TPartialValues,
-    options?: FormOptions,
+    options: FormOptions<TPartialValues, TPartialRoutable> & {
+      commit: (values: TPartialValues, parentForm: FormControl<TValues>) => void
+    },
   ): FormControl<TPartialValues>
 
   getInputId(path: FormInputName | FormInputPath | InputEvent): string
@@ -397,3 +407,7 @@ export type PropsOf<
     }
   },
 > = InstanceType<TComponent>['$props']
+
+export type FormControlOf<TForm> = TForm extends FormControl<infer TValues>
+  ? TValues
+  : never
