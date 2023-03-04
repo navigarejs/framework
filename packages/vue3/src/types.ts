@@ -365,7 +365,10 @@ export interface FormControl<
       values: UnwrapNestedRefs<TValues>,
     ) => TPartialValues,
     options: FormOptions<TPartialValues, TPartialRoutable> & {
-      commit: (values: TPartialValues, parentForm: FormControl<TValues>) => void
+      commit?: (
+        values: TPartialValues,
+        parentForm: FormControl<TValues>,
+      ) => void
     },
   ): FormControl<TPartialValues>
 
