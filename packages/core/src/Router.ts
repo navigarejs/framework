@@ -729,7 +729,9 @@ export default class Router<TComponentModule> {
             events?.invalid,
           )
         ) {
-          modal.show(error.response.data as any)
+          document.open()
+          document.write(error.response.data)
+          document.close()
         }
       }
 
