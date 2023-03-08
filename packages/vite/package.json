@@ -83,7 +83,7 @@
     "@navigare/core": "^1.3.2",
     "@navigare/ssr": "^1.0.24",
     "react": "^18.2.0",
-    "vite": "^3.0.0",
+    "vite": "^4.0.0",
     "vue": "^3.2.41"
   },
   "dependencies": {
