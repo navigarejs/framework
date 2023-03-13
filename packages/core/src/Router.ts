@@ -357,7 +357,9 @@ export default class Router<TComponentModule> {
     return true
   }
 
-  protected replacePage(content: string): void {
+  protected replacePage(location: RouterLocation, content: string): void {
+    window.history.pushState(undefined, '', location.href)
+
     document.open()
     document.write(content)
     document.close()
@@ -744,7 +746,7 @@ export default class Router<TComponentModule> {
               events?.invalid,
             )
           ) {
-            this.replacePage(response.data)
+            this.replacePage(visit.location, response.data)
             throwException = false
           }
         } else if (
@@ -759,7 +761,7 @@ export default class Router<TComponentModule> {
             events?.invalid,
           ))
         ) {
-          this.replacePage(error.data)
+          this.replacePage(visit.location, error.data)
           throwException = false
         }
       }
