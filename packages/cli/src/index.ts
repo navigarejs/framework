@@ -10,7 +10,7 @@ const program = new commander.Command().version(getVersion())
 const log = (message: string, options: LogOptions = {}) => {
   const now = new Date()
   const time = options.timestamp
-    ? `${colorette.grey(
+    ? `${colorette.gray(
         now.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'numeric',
