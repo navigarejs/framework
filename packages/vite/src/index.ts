@@ -61,7 +61,7 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
   const resolvedOptions: ResolvedOptions = {
     routes: Adapter.Laravel,
     configuration: Adapter.Laravel,
-    interval: 15000,
+    interval: 45 * 1000,
     buildId: Date.now(),
     ...options,
   }
