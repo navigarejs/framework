@@ -2,7 +2,7 @@ import { getVersion } from './internals.js'
 import { isDefined } from '@navigare/core'
 import { serve } from '@navigare/ssr'
 import { LogOptions } from '@navigare/ssr'
-import chalk from 'chalk'
+import colorette from 'colorette'
 import * as commander from 'commander'
 
 const program = new commander.Command().version(getVersion())
@@ -10,13 +10,13 @@ const program = new commander.Command().version(getVersion())
 const log = (message: string, options: LogOptions = {}) => {
   const now = new Date()
   const time = options.timestamp
-    ? `${chalk.grey(
+    ? `${colorette.grey(
         now.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
         }),
-      )} ${chalk.white(
+      )} ${colorette.white(
         now.toLocaleTimeString('en-US', {
           hour: 'numeric',
           minute: 'numeric',

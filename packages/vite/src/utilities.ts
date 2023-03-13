@@ -1,6 +1,6 @@
 import { PhpFinderOptions } from './types'
 import { isDefined } from '@navigare/core'
-import chalk from 'chalk'
+import colorette from 'colorette'
 import crypto from 'crypto'
 import makeDebugger from 'debug'
 import * as execa from 'execa'
@@ -120,6 +120,6 @@ export function callShell(executable: string, ...parameters: string[]): string {
  */
 export function warn(prefix: string, message: string, ...args: any[]) {
   console.warn(
-    chalk.yellow.bold(`(!) ${chalk.cyan(prefix)} ${message}`, ...args),
+    colorette.yellow.bold(`(!) ${colorette.cyan(prefix)} ${message}`, ...args),
   )
 }

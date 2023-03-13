@@ -92,7 +92,7 @@
     "@babel/template": "^7.20.7",
     "@babel/traverse": "^7.20.10",
     "@babel/types": "^7.20.7",
-    "chalk": "^4.1.2",
+    "colorette": "^2.0.0",
     "debug": "^4.3.4",
     "execa": "^5.1.1",
     "get-port": "^5.1.1",
