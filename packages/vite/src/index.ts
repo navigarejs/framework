@@ -314,208 +314,209 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
       }
     },
 
+    closeWatcher() {},
+
     async transform(code: string, id: string) {
-      let updatedCode = code
+      // Only replace routes when it is a script and not a module from node_modules
+      if (id.includes('node_modules') || !/\.(js|ts|tsx|mjs|mts)/.test(id)) {
+        return code
+      }
+
+      // Remember used routes
       const usedRoutes: string[] = []
 
-      // Only replace routes when it is not a module from node_modules
-      if (!id.includes('node_modules')) {
-        let manipulated = false
+      // Parse code
+      let updatedCode = code
+      let manipulated = false
+      const ast = parse(updatedCode, {
+        sourceType: 'module',
+        plugins: ['jsx', 'typescript'],
+      })
 
-        // Parse code
-        const ast = parse(updatedCode, {
-          sourceType: 'module',
-          plugins: ['jsx', 'typescript'],
-        })
-
-        const replaceArgumentWithRoute = (routeCall: CallExpression) => {
-          if (!isStringLiteral(routeCall.arguments[0])) {
-            /*console.log(routeCall)
+      const replaceArgumentWithRoute = (routeCall: CallExpression) => {
+        if (!isStringLiteral(routeCall.arguments[0])) {
+          /*console.log(routeCall)
           throwError(
             'the first parameter of "route" function must be a string literal',
             routeCall.arguments,
           )*/
-            return
-          }
+          return
+        }
 
-          // Extract route name
-          const routeName = routeCall.arguments[0].value
-          let rawRoute: RawRoute | undefined = cloneDeep(
-            currentRoutes?.[routeName],
-          )
-          if (!rawRoute) {
-            /*// Set a dummy route that will only fail at runtime
+        // Extract route name
+        const routeName = routeCall.arguments[0].value
+        let rawRoute: RawRoute | undefined = cloneDeep(
+          currentRoutes?.[routeName],
+        )
+        if (!rawRoute) {
+          /*// Set a dummy route that will only fail at runtime
             rawRoute = {
               name: routeName as any,
               methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'],
               uri: '',
             }*/
-            this.warn(`"${routeName}" is not a valid route name`)
-            return
-          }
+          this.warn(`"${routeName}" is not a valid route name`)
+          return
+        }
 
-          // Update path of used components based on the build manifest
-          if (environment.command === 'build' && isObject(rawRoute)) {
-            rawRoute.components = rawRoute.components?.map((component) => {
-              return {
-                ...component,
-                buildId: resolvedOptions.buildId,
-                originalPath: component.path,
-                path: generateChunkName(
-                  resolvedOptions.buildId,
-                  component.path,
-                ),
+        // Update path of used components based on the build manifest
+        if (environment.command === 'build' && isObject(rawRoute)) {
+          rawRoute.components = rawRoute.components?.map((component) => {
+            return {
+              ...component,
+              buildId: resolvedOptions.buildId,
+              originalPath: component.path,
+              path: generateChunkName(resolvedOptions.buildId, component.path),
+            }
+          })
+        }
+
+        // Replace route name with the raw route
+        routeCall.arguments[0] = identifier(JSON.stringify(rawRoute))
+
+        // Remember that we used the route and also indicate that we manipulated the AST
+        usedRoutes.push(routeName)
+        manipulated = true
+      }
+      const replaceWithRouteCall = (
+        program: NodePath<Program>,
+        path: NodePath,
+        args: (
+          | Expression
+          | ArgumentPlaceholder
+          | JSXNamespacedName
+          | SpreadElement
+        )[],
+      ) => {
+        const routeIdentifier = program.scope.generateUidIdentifier('route')
+        const [importDeclarationPath] = program.unshiftContainer(
+          'body',
+          importDeclaration(
+            [importSpecifier(routeIdentifier, identifier('route'))],
+            stringLiteral('@navigare/core'),
+          ),
+        )
+        program.scope.registerDeclaration(importDeclarationPath)
+
+        const binding = program.scope.getBinding(routeIdentifier.name)
+        const [routeCallExpressionPath] = path.replaceWith(
+          callExpression(routeIdentifier, args),
+        )
+        binding?.reference(routeCallExpressionPath.get('callee'))
+
+        // Remember that we changed something, so we can output the new formatted AST later
+        manipulated = true
+      }
+
+      traverse(ast, {
+        Program(path) {
+          const program = path
+
+          // Turn special cases into route(...) calls:
+          // - _ctx.$route(...)
+          // - $setup.$route(...)
+          // - __unref($route)(...)
+          const objectIdentifierNames = ['_ctx', '$setup']
+          const calleeIdentifierNames = ['_unref']
+          const propertyIdentifierNames = ['$route']
+
+          traverse(ast, {
+            CallExpression(path) {
+              const { callee } = path.node
+
+              // Member expressions like _ctx.route(...) or $setup.route(...)
+              if (isMemberExpression(callee)) {
+                if (!isIdentifier(callee.object)) {
+                  return
+                }
+
+                if (!isIdentifier(callee.property)) {
+                  return
+                }
+
+                if (!objectIdentifierNames.includes(callee.object.name)) {
+                  return
+                }
+
+                if (!propertyIdentifierNames.includes(callee.property.name)) {
+                  return
+                }
+
+                replaceWithRouteCall(program, path, path.node.arguments)
+                return
               }
-            })
-          }
 
-          // Replace route name with the raw route
-          routeCall.arguments[0] = identifier(JSON.stringify(rawRoute))
-
-          // Remember that we used the route and also indicate that we manipulated the AST
-          usedRoutes.push(routeName)
-          manipulated = true
-        }
-        const replaceWithRouteCall = (
-          program: NodePath<Program>,
-          path: NodePath,
-          args: (
-            | Expression
-            | ArgumentPlaceholder
-            | JSXNamespacedName
-            | SpreadElement
-          )[],
-        ) => {
-          const routeIdentifier = program.scope.generateUidIdentifier('route')
-          const [importDeclarationPath] = program.unshiftContainer(
-            'body',
-            importDeclaration(
-              [importSpecifier(routeIdentifier, identifier('route'))],
-              stringLiteral('@navigare/core'),
-            ),
-          )
-          program.scope.registerDeclaration(importDeclarationPath)
-
-          const binding = program.scope.getBinding(routeIdentifier.name)
-          const [routeCallExpressionPath] = path.replaceWith(
-            callExpression(routeIdentifier, args),
-          )
-          binding?.reference(routeCallExpressionPath.get('callee'))
-
-          // Remember that we changed something, so we can output the new formatted AST later
-          manipulated = true
-        }
-
-        traverse(ast, {
-          Program(path) {
-            const program = path
-
-            // Turn special cases into route(...) calls:
-            // - _ctx.$route(...)
-            // - $setup.$route(...)
-            // - __unref($route)(...)
-            const objectIdentifierNames = ['_ctx', '$setup']
-            const calleeIdentifierNames = ['_unref']
-            const propertyIdentifierNames = ['$route']
-
-            traverse(ast, {
-              CallExpression(path) {
-                const { callee } = path.node
-
-                // Member expressions like _ctx.route(...) or $setup.route(...)
-                if (isMemberExpression(callee)) {
-                  if (!isIdentifier(callee.object)) {
-                    return
-                  }
-
-                  if (!isIdentifier(callee.property)) {
-                    return
-                  }
-
-                  if (!objectIdentifierNames.includes(callee.object.name)) {
-                    return
-                  }
-
-                  if (!propertyIdentifierNames.includes(callee.property.name)) {
-                    return
-                  }
-
-                  replaceWithRouteCall(program, path, path.node.arguments)
+              // Call expressions like __unref($route)(...)
+              if (isCallExpression(callee)) {
+                if (!isIdentifier(callee.callee)) {
                   return
                 }
 
-                // Call expressions like __unref($route)(...)
-                if (isCallExpression(callee)) {
-                  if (!isIdentifier(callee.callee)) {
-                    return
-                  }
-
-                  if (!calleeIdentifierNames.includes(callee.callee.name)) {
-                    return
-                  }
-
-                  if (!isIdentifier(callee.arguments[0])) {
-                    return
-                  }
-
-                  if (
-                    !propertyIdentifierNames.includes(callee.arguments[0].name)
-                  ) {
-                    return
-                  }
-
-                  replaceWithRouteCall(program, path, path.node.arguments)
-                  return
-                }
-              },
-            })
-
-            // Catch function calls like route(...)
-            traverse(ast, {
-              ImportDeclaration(path) {
-                const { specifiers, source } = path.node
-
-                if (source.value !== '@navigare/core') {
+                if (!calleeIdentifierNames.includes(callee.callee.name)) {
                   return
                 }
 
-                // Check if the route function was imported
-                const routeIdentifiers = specifiers
-                  .map((specifier) => {
-                    if (!isImportSpecifier(specifier)) {
-                      return null
-                    }
-
-                    if (!isIdentifier(specifier.imported)) {
-                      return null
-                    }
-
-                    if (specifier.imported.name !== 'route') {
-                      return null
-                    }
-
-                    return specifier.local.name
-                  })
-                  .filter((identifier): identifier is string => !!identifier)
-
-                for (const routeIdentifier of routeIdentifiers) {
-                  const binding = program.scope?.getBinding(routeIdentifier)
-                  for (const reference of binding?.referencePaths ?? []) {
-                    if (!isCallExpression(reference.parent)) {
-                      return
-                    }
-
-                    replaceArgumentWithRoute(reference.parent)
-                  }
+                if (!isIdentifier(callee.arguments[0])) {
+                  return
                 }
-              },
-            })
-          },
-        })
 
-        if (manipulated) {
-          updatedCode = generate(ast, {}).code
-        }
+                if (
+                  !propertyIdentifierNames.includes(callee.arguments[0].name)
+                ) {
+                  return
+                }
+
+                replaceWithRouteCall(program, path, path.node.arguments)
+                return
+              }
+            },
+          })
+
+          // Catch function calls like route(...)
+          traverse(ast, {
+            ImportDeclaration(path) {
+              const { specifiers, source } = path.node
+
+              if (source.value !== '@navigare/core') {
+                return
+              }
+
+              // Check if the route function was imported
+              const routeIdentifiers = specifiers
+                .map((specifier) => {
+                  if (!isImportSpecifier(specifier)) {
+                    return null
+                  }
+
+                  if (!isIdentifier(specifier.imported)) {
+                    return null
+                  }
+
+                  if (specifier.imported.name !== 'route') {
+                    return null
+                  }
+
+                  return specifier.local.name
+                })
+                .filter((identifier): identifier is string => !!identifier)
+
+              for (const routeIdentifier of routeIdentifiers) {
+                const binding = program.scope?.getBinding(routeIdentifier)
+                for (const reference of binding?.referencePaths ?? []) {
+                  if (!isCallExpression(reference.parent)) {
+                    return
+                  }
+
+                  replaceArgumentWithRoute(reference.parent)
+                }
+              }
+            },
+          })
+        },
+      })
+
+      if (manipulated) {
+        updatedCode = generate(ast, {}).code
       }
 
       // Remember all used routes per module
