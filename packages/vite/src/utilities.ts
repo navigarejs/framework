@@ -120,6 +120,9 @@ export function callShell(executable: string, ...parameters: string[]): string {
  */
 export function warn(prefix: string, message: string, ...args: any[]) {
   console.warn(
-    colorette.yellow.bold(`(!) ${colorette.cyan(prefix)} ${message}`, ...args),
+    colorette.bold(
+      colorette.yellow(`(!) ${colorette.cyan(prefix)} ${message}`),
+    ),
+    ...args,
   )
 }
