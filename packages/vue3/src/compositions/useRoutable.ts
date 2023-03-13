@@ -1,10 +1,9 @@
 import useRouter from '../compositions/useRouter'
+import { MatchingRoutePropType } from '../types'
 import useFragment from './useFragment'
 import {
   isDefined,
-  PartialRoute,
   RawRouteMethod,
-  Routable,
   RouteMethod,
   RouterLocation,
   VisitData,
@@ -18,10 +17,11 @@ import {
 } from '@navigare/core'
 import { Component, computed, markRaw, reactive, ref } from 'vue'
 
-type MatchingRoute = (Routable | PartialRoute) | (Routable | PartialRoute)[]
-
 export default function useRoutable(
-  getRoute: MatchingRoute | undefined | (() => MatchingRoute | undefined),
+  getRoute:
+    | MatchingRoutePropType
+    | undefined
+    | (() => MatchingRoutePropType | undefined),
   options: {
     data?: VisitData | (() => VisitData)
     method?: RawRouteMethod | (() => RawRouteMethod)
