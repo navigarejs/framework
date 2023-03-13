@@ -1,5 +1,5 @@
 import useRouter from '../compositions/useRouter'
-import { MatchingRoutePropType } from '../types'
+import { FragmentControl, MatchingRoutePropType } from '../types'
 import useFragment from './useFragment'
 import {
   isDefined,
@@ -36,6 +36,7 @@ export default function useRoutable(
   preload: () => Promise<void>
   visit: (options?: VisitOptions) => Promise<void>
   pending: boolean
+  fragment: FragmentControl
   shouldInterceptLink: (event: KeyboardEvent | MouseEvent) => boolean
   getAttributes: (
     options?: Partial<{
