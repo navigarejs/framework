@@ -322,6 +322,11 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
         return code
       }
 
+      // Heuristic check if we need to parse the code expensively
+      if (!['route', '@navigare'].some((keyword) => code.includes(keyword))) {
+        return code
+      }
+
       // Remember used routes
       const usedRoutes: string[] = []
 
