@@ -214,7 +214,7 @@ export type RouterEvents = {
   invalid: {
     details: {
       visit: Visit
-      response: AxiosResponse
+      response: AxiosResponse | undefined
     }
     result: boolean | void
   }

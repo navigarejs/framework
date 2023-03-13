@@ -343,7 +343,9 @@ export default class Router<TComponentModule> {
     }
   }
 
-  protected isRedirectResponse(response: AxiosResponse): boolean {
+  protected isRedirectResponse(
+    response: AxiosResponse | undefined,
+  ): response is AxiosResponse<{}> {
     if (!response) {
       return false
     }
@@ -353,6 +355,12 @@ export default class Router<TComponentModule> {
     }
 
     return true
+  }
+
+  protected replacePage(content: string): void {
+    document.open()
+    document.write(content)
+    document.close()
   }
 
   protected isNavigareResponse(
@@ -671,66 +679,88 @@ export default class Router<TComponentModule> {
     } catch (error) {
       let throwException = true
 
-      if (Axios.isAxiosError(error) && error.response) {
-        if (this.isNavigareResponse(error.response)) {
-          this.setPage(error.response.data)
-          throwException = false
-        } else if (this.isRedirectResponse(error.response)) {
-          const redirectHref = String(
-            this.getHeader(error.response.headers, 'X-Navigare-Location'),
-          )
+      if (
+        isObject(error) &&
+        'request' in error &&
+        error.request instanceof XMLHttpRequest
+      ) {
+        const response =
+          'response' in error ? (error.response as AxiosResponse) : undefined
 
-          if (!redirectHref) {
-            throw new Error(
-              '"X-Navigare-Location" header is missing in response',
+        if (response) {
+          if (this.isNavigareResponse(response)) {
+            this.setPage(response.data)
+            throwException = false
+          } else if (this.isRedirectResponse(response)) {
+            const redirectHref = String(
+              this.getHeader(response.headers, 'X-Navigare-Location'),
             )
-          }
 
-          // In case the redirect location points to the current location, we will restore the hash
-          const redirectLocation = this.createLocation(redirectHref)
-          if (
-            location.hash &&
-            !redirectLocation.hash &&
-            location.href === redirectLocation.href
+            if (!redirectHref) {
+              throw new Error(
+                '"X-Navigare-Location" header is missing in response',
+              )
+            }
+
+            // In case the redirect location points to the current location, we will restore the hash
+            const redirectLocation = this.createLocation(redirectHref)
+            if (
+              location.hash &&
+              !redirectLocation.hash &&
+              location.href === redirectLocation.href
+            ) {
+              redirectLocation.hash = location.hash
+            }
+
+            await this.emit(
+              'redirect',
+              {
+                visit,
+                location: redirectLocation,
+              },
+              events?.redirect,
+            )
+
+            this.redirect(redirectLocation, preserveScroll === true)
+            throwException = false
+          } else if (visit.background) {
+            await this.emit(
+              'error',
+              {
+                visit,
+                errors: {},
+                response,
+              },
+              events?.error,
+            )
+            throwException = false
+          } else if (
+            await this.emit(
+              'invalid',
+              {
+                visit,
+                response,
+              },
+              events?.invalid,
+            )
           ) {
-            redirectLocation.hash = location.hash
+            this.replacePage(response.data)
+            throwException = false
           }
-
-          await this.emit(
-            'redirect',
-            {
-              visit,
-              location: redirectLocation,
-            },
-            events?.redirect,
-          )
-
-          this.redirect(redirectLocation, preserveScroll === true)
-          throwException = false
-        } else if (visit.background) {
-          await this.emit(
-            'error',
-            {
-              visit,
-              errors: {},
-              response: error.response,
-            },
-            events?.error,
-          )
-          throwException = false
         } else if (
-          await this.emit(
+          'data' in error &&
+          isString(error.data) &&
+          (await this.emit(
             'invalid',
             {
               visit,
-              response: error.response,
+              response,
             },
             events?.invalid,
-          )
+          ))
         ) {
-          document.open()
-          document.write(error.response.data)
-          document.close()
+          this.replacePage(error.data)
+          throwException = false
         }
       }
 
