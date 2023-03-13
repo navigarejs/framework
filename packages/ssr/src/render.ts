@@ -1,7 +1,7 @@
 import { Logger, RenderApp } from './types'
 import { renderHead } from './utilities'
 import { Page, RenderedApp } from '@navigare/core'
-import chalk from 'chalk'
+import colorette from 'colorette'
 import { Manifest, ViteDevServer } from 'vite'
 
 export interface Options {
@@ -46,7 +46,7 @@ export default async function render(
   }
 
   if (!page) {
-    logger?.info(`${chalk.green(`← (empty)`)}`, {
+    logger?.info(`${colorette.green(`← (empty)`)}`, {
       timestamp: true,
     })
 

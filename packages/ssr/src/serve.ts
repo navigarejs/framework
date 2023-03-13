@@ -3,7 +3,7 @@ import render from './render'
 import { Logger, RenderApp, Server } from './types'
 import { Page, safeParse } from '@navigare/core'
 import bodyParser from 'body-parser'
-import chalk from 'chalk'
+import colorette from 'colorette'
 import compression from 'compression'
 import express from 'express'
 import fs from 'fs'
@@ -202,7 +202,7 @@ export default async function (
     try {
       // Log when the request entered
       logger?.info(
-        `${chalk.yellow(`→ [${id}] Requesting ${chalk.bold(href)}`)}`,
+        `${colorette.yellow(`→ [${id}] Requesting ${colorette.bold(href)}`)}`,
         {
           timestamp: true,
         },
@@ -316,10 +316,10 @@ export default async function (
 
       // Log how long it took to render the page
       logger?.info(
-        `${chalk.green(
-          `← [${id}] Rendered response for ${chalk.bold(href)} in ${chalk.bold(
-            Date.now() - time,
-          )}ms`,
+        `${colorette.green(
+          `← [${id}] Rendered response for ${colorette.bold(
+            href,
+          )} in ${colorette.bold(Date.now() - time)}ms`,
         )}`,
         {
           timestamp: true,
@@ -341,10 +341,10 @@ export default async function (
         }
 
         logger?.error(
-          `${chalk.red(
-            `← [${id}] Error while rendering ${chalk.bold(href)}: ${message} (${
-              Date.now() - time
-            }ms)`,
+          `${colorette.red(
+            `← [${id}] Error while rendering ${colorette.bold(
+              href,
+            )}: ${message} (${Date.now() - time}ms)`,
           )}`,
           {
             timestamp: true,
@@ -381,16 +381,16 @@ export default async function (
           },
           printUrls() {
             logger?.info(
-              `\n  ${chalk.magenta(
-                `${chalk.bold('NAVIGARE')} v${getVersion()}  core v${chalk.bold(
-                  getCoreVersion(),
-                )}`,
+              `\n  ${colorette.magenta(
+                `${colorette.bold(
+                  'NAVIGARE',
+                )} v${getVersion()}  core v${colorette.bold(getCoreVersion())}`,
               )}\n`,
             )
             logger?.info(
-              `  ${chalk.magenta('➜')}  ${chalk.bold('SSR')}: ${chalk.cyan(
-                `http://${host}:${finalPort}`,
-              )}`,
+              `  ${colorette.magenta('➜')}  ${colorette.bold(
+                'SSR',
+              )}: ${colorette.cyan(`http://${host}:${finalPort}`)}`,
             )
           },
         })
