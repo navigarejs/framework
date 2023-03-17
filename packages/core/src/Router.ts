@@ -54,7 +54,6 @@ import {
   AxiosResponseHeaders,
   RawAxiosResponseHeaders,
   AxiosStatic,
-  isAxiosError,
 } from 'axios'
 import { SetRequired } from 'type-fest'
 
@@ -699,7 +698,7 @@ export default class Router<TComponentModule> {
     } catch (error) {
       let throwException = true
 
-      if (isAxiosError(error)) {
+      if (Axios.isAxiosError(error)) {
         const { response } = error
 
         if (this.isRedirectResponse(response)) {
