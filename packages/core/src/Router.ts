@@ -744,6 +744,8 @@ export default class Router<TComponentModule> {
             events?.error,
           )
           throwException = false
+        } else if (isString(error.response?.data)) {
+          this.replacePage(visit.location, error.response!.data)
         }
       }
 
