@@ -318,7 +318,10 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
 
     async transform(code: string, id: string) {
       // Only replace routes when it is a script and not a module from node_modules
-      if (id.includes('node_modules') || !/\.(js|ts|tsx|mjs|mts)/.test(id)) {
+      if (
+        id.includes('node_modules') ||
+        !/\.(js|ts|tsx|mjs|mts|vue)/.test(id)
+      ) {
         return code
       }
 
