@@ -1,6 +1,6 @@
 import { PhpFinderOptions } from './types'
 import { isDefined } from '@navigare/core'
-import colorette from 'colorette'
+import * as colorette from 'colorette'
 import crypto from 'crypto'
 import makeDebugger from 'debug'
 import * as execa from 'execa'

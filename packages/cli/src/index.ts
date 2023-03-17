@@ -2,7 +2,7 @@ import { getVersion } from './internals.js'
 import { isDefined } from '@navigare/core'
 import { serve } from '@navigare/ssr'
 import { LogOptions } from '@navigare/ssr'
-import colorette from 'colorette'
+import * as colorette from 'colorette'
 import * as commander from 'commander'
 
 const program = new commander.Command().version(getVersion())

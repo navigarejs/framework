@@ -466,14 +466,14 @@ export function createEmitter<
 
     emit: <
       TEventName extends keyof TEvents,
-      TListener extends (event: CustomEvent) => void = (
+      TListener extends (event: CustomEvent) => any = (
         event: CustomEvent<TEvents[TEventName]['details']>,
       ) => TEvents[TEventName]['result'],
     >(
       name: TEventName,
       details: TEvents[TEventName]['details'],
       priorityListeners?: TListener | (TListener | undefined)[],
-    ) => Promise<boolean>
+    ) => Promise<TEvents[TEventName]['result']>
   } = {
     on: (name, listener) => {
       const listeners = all[name]
@@ -514,11 +514,8 @@ export function createEmitter<
       for (const listener of listeners) {
         const result = await listener?.(event as any)
 
-        const handle = events[name]?.handle
-        if (handle) {
-          if (!handle(result)) {
-            return false
-          }
+        if (result) {
+          return result
         }
 
         if (!event.cancelable) {

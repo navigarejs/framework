@@ -1,7 +1,7 @@
 import { Logger, RenderApp } from './types'
 import { renderHead } from './utilities'
 import { Page, RenderedApp } from '@navigare/core'
-import colorette from 'colorette'
+import * as colorette from 'colorette'
 import { Manifest, ViteDevServer } from 'vite'
 
 export interface Options {

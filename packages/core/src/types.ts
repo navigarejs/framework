@@ -206,7 +206,7 @@ export type RouterEvents = {
     details: {
       visit: Visit
       errors: PageErrors
-      response: AxiosResponse
+      response: AxiosResponse | undefined
     }
     result: void
   }
@@ -216,7 +216,7 @@ export type RouterEvents = {
       visit: Visit
       response: AxiosResponse | undefined
     }
-    result: boolean | void
+    result: Page | void
   }
 
   exception: {

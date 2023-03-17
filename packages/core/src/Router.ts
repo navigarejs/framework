@@ -22,6 +22,7 @@ import {
   RouterEventDetails,
   ResolvedRoutable,
   PropertyKey,
+  RouterEventResult,
 } from './types'
 import {
   isSSR,
@@ -53,6 +54,7 @@ import {
   AxiosResponseHeaders,
   RawAxiosResponseHeaders,
   AxiosStatic,
+  isAxiosError,
 } from 'axios'
 import { SetRequired } from 'type-fest'
 
@@ -598,13 +600,29 @@ export default class Router<TComponentModule> {
         },
       })
 
-      if (!visit.background) {
-        if (!this.isNavigareResponse(response)) {
-          throw response
+      // Catch invalid responses and let user influence the result via events
+      if (!this.isNavigareResponse(response)) {
+        const data = await this.emit(
+          'invalid',
+          {
+            visit,
+            response,
+          },
+          events?.invalid,
+        )
+
+        if (!data) {
+          this.replacePage(visit.location, response.data)
+          return visit
         }
 
+        response.data = data
+      }
+
+      if (!visit.background) {
         // Prepare next page
         const nextPage: Page = {
+          timestamp: Date.now(),
           ...response.data,
           visit,
         }
@@ -681,87 +699,51 @@ export default class Router<TComponentModule> {
     } catch (error) {
       let throwException = true
 
-      if (
-        isObject(error) &&
-        'request' in error &&
-        error.request instanceof XMLHttpRequest
-      ) {
-        const response =
-          'response' in error ? (error.response as AxiosResponse) : undefined
+      if (isAxiosError(error)) {
+        const { response } = error
 
-        if (response) {
-          if (this.isNavigareResponse(response)) {
-            this.setPage(response.data)
-            throwException = false
-          } else if (this.isRedirectResponse(response)) {
-            const redirectHref = String(
-              this.getHeader(response.headers, 'X-Navigare-Location'),
+        if (this.isRedirectResponse(response)) {
+          const redirectHref = String(
+            this.getHeader(response.headers, 'X-Navigare-Location'),
+          )
+
+          if (!redirectHref) {
+            throw new Error(
+              '"X-Navigare-Location" header is missing in response',
             )
-
-            if (!redirectHref) {
-              throw new Error(
-                '"X-Navigare-Location" header is missing in response',
-              )
-            }
-
-            // In case the redirect location points to the current location, we will restore the hash
-            const redirectLocation = this.createLocation(redirectHref)
-            if (
-              location.hash &&
-              !redirectLocation.hash &&
-              location.href === redirectLocation.href
-            ) {
-              redirectLocation.hash = location.hash
-            }
-
-            await this.emit(
-              'redirect',
-              {
-                visit,
-                location: redirectLocation,
-              },
-              events?.redirect,
-            )
-
-            this.redirect(redirectLocation, preserveScroll === true)
-            throwException = false
-          } else if (visit.background) {
-            await this.emit(
-              'error',
-              {
-                visit,
-                errors: {},
-                response,
-              },
-              events?.error,
-            )
-            throwException = false
-          } else if (
-            await this.emit(
-              'invalid',
-              {
-                visit,
-                response,
-              },
-              events?.invalid,
-            )
-          ) {
-            this.replacePage(visit.location, response.data)
-            throwException = false
           }
-        } else if (
-          'data' in error &&
-          isString(error.data) &&
-          (await this.emit(
-            'invalid',
+
+          // In case the redirect location points to the current location, we will restore the hash
+          const redirectLocation = this.createLocation(redirectHref)
+          if (
+            location.hash &&
+            !redirectLocation.hash &&
+            location.href === redirectLocation.href
+          ) {
+            redirectLocation.hash = location.hash
+          }
+
+          await this.emit(
+            'redirect',
             {
               visit,
+              location: redirectLocation,
+            },
+            events?.redirect,
+          )
+
+          this.redirect(redirectLocation, preserveScroll === true)
+          throwException = false
+        } else if (visit.background) {
+          await this.emit(
+            'error',
+            {
+              visit,
+              errors: {},
               response,
             },
-            events?.invalid,
-          ))
-        ) {
-          this.replacePage(visit.location, error.data)
+            events?.error,
+          )
           throwException = false
         }
       }
@@ -1285,7 +1267,7 @@ export default class Router<TComponentModule> {
     name: TEventName,
     details: RouterEventDetails<TEventName>,
     initialListener?: RouterEventListener<TEventName>,
-  ): Promise<boolean> {
+  ): Promise<RouterEventResult<TEventName>> {
     return this.emitter.emit(name, details, initialListener)
   }
 
