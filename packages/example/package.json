@@ -9,7 +9,7 @@
     "build": "vite build && vite build --ssr"
   },
   "dependencies": {
-    "@navigare/cli": "^1.1.1"
+    "@navigare/cli": "^1.1.2"
   },
   "devDependencies": {
     "@navigare/core": "^1.3.6",
