@@ -1181,7 +1181,6 @@ export default class Router<TComponentModule> {
       finalData = transformPropertyKeys(
         merged.data,
         this.transformClientPropertyKey.bind(this),
-        false,
       )
     }
 

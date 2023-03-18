@@ -8,6 +8,7 @@ import {
   VisitData,
   Properties,
   PropertyKey,
+  PropertyKeyTransformer,
 } from './types'
 import {
   FormDataConvertible,
@@ -640,35 +641,39 @@ export function getDeferredPageProperties(
 }
 
 export function transformPropertyKey(
-  property: PropertyKey,
-  transform: (value: PropertyKey) => PropertyKey = (value) => value,
+  key: PropertyKey,
+  transform: PropertyKeyTransformer = (key) => key,
 ): string {
-  if (isString(property) && property.includes('.')) {
-    return property
+  if (isString(key) && key.includes('.')) {
+    return key
       .split('.')
-      .map((part) => transform(part))
+      .map((part) => transform(part, {}))
       .join('.')
   }
 
-  return String(transform(property))
+  return String(transform(key, {}))
 }
 
 export function transformPropertyKeys(
   properties: Properties,
-  transform: (value: PropertyKey) => PropertyKey = (value) => value,
-  deep: boolean = true,
+  transform: PropertyKeyTransformer,
+  parent?: Properties,
 ): Properties {
   return Object.fromEntries(
     Object.entries(properties).map(([key, value]) => {
       return [
         // We don't want `__errors` or `__flash` to be transformed
-        key.startsWith('__') ? key : transform(key),
-        deep &&
+        key.startsWith('__')
+          ? key
+          : transform(key, {
+              context: properties,
+              parent,
+            }),
         isObject(value) &&
         !isArray(value) &&
         !(value instanceof Blob) &&
         !(value instanceof Date)
-          ? transformPropertyKeys(value, transform)
+          ? transformPropertyKeys(value, transform, properties)
           : value,
       ]
     }),

@@ -4,6 +4,14 @@ import { Default, Wildcard } from './symbols'
 import { AxiosResponse, AxiosStatic, Canceler, CancelToken } from 'axios'
 
 // Router
+export type PropertyKeyTransformer = (
+  key: PropertyKey,
+  options: {
+    context?: Record<string, any>
+    parent?: Record<string, any>
+  },
+) => PropertyKey
+
 export type FragmentOption<TReturn> =
   | TReturn
   | undefined
@@ -29,8 +37,8 @@ export type RouterOptions<TComponent> = {
   events?: Partial<{
     [TEventName in RouterEventNames]: RouterEventListener<TEventName>
   }>
-  transformClientPropertyKey?: (key: PropertyKey) => PropertyKey
-  transformServerPropertyKey?: (key: PropertyKey) => PropertyKey
+  transformClientPropertyKey?: PropertyKeyTransformer
+  transformServerPropertyKey?: PropertyKeyTransformer
   axios?: AxiosStatic
   generateErrorLink?: (
     fileName: string | null,
