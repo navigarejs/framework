@@ -656,12 +656,14 @@ export function transformPropertyKey(
 export function transformPropertyKeys(
   properties: Properties,
   transform: (value: PropertyKey) => PropertyKey = (value) => value,
+  deep: boolean = true,
 ): Properties {
   return Object.fromEntries(
     Object.entries(properties).map(([key, value]) => {
       return [
         // We don't want `__errors` or `__flash` to be transformed
         key.startsWith('__') ? key : transform(key),
+        deep &&
         isObject(value) &&
         !isArray(value) &&
         !(value instanceof Blob) &&
