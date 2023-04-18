@@ -91,7 +91,7 @@ class Component implements Arrayable
    */
   public function resolveClientPath(Configuration $configuration): string
   {
-    $path = $this->path . '?timestamp=' . Carbon::now()->timestamp;
+    $path = $this->path; // . '?timestamp=' . Carbon::now()->timestamp;
 
     if ($manifest = $configuration->getClientManifest()) {
       $path = $manifest->resolve($this->path);

@@ -64,7 +64,8 @@ export const getRoutes = async (
   options: Options,
   env: NodeJS.ProcessEnv,
   ssr: boolean,
-): Promise<RawRoutes> => {
+  hash?: string,
+): Promise<RawRoutes | undefined> => {
   // Prefer already defined routes
   if (isObject(options.routes)) {
     return options.routes
@@ -78,7 +79,7 @@ export const getRoutes = async (
   // Otherwise try to retrieve them from adapter
   switch (options.routes) {
     case Adapter.Laravel: {
-      return await getLaravelRoutes(options, env, ssr)
+      return await getLaravelRoutes(options, env, ssr, hash)
       break
     }
 
@@ -95,6 +96,7 @@ export async function getLaravelRoutes(
   options: Options,
   env: NodeJS.ProcessEnv,
   ssr: boolean,
+  hash?: string,
 ): Promise<RawRoutes> {
   const executable = findPhpPath({ env, path: options.php })
 
@@ -102,7 +104,14 @@ export async function getLaravelRoutes(
     // Asks artisan for the routes
     debug('reading Laravel routes')
     const json = JSON.parse(
-      callArtisan(executable, 'navigare:routes', ssr ? '--ssr' : undefined),
+      callArtisan(
+        executable,
+        ...[
+          'navigare:routes',
+          ssr ? '--ssr' : undefined,
+          hash ? `--hash ${hash}` : undefined,
+        ],
+      ),
     ) as RawRoutes
 
     if (!json) {

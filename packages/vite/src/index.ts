@@ -32,6 +32,7 @@ import {
 } from '@babel/types'
 import { RawRoute, RawRoutes } from '@navigare/core'
 import { Server as SSRServer, serveSSR } from '@navigare/ssr'
+import crypto from 'crypto'
 import makeDebugger from 'debug'
 import getPort from 'get-port'
 import globby from 'globby'
@@ -68,6 +69,7 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
   let currentRoutes: RawRoutes = isObject(resolvedOptions.routes)
     ? resolvedOptions.routes
     : {}
+  let currentRoutesHash = ''
   let currentConfiguration: Configuration | null = isObject(
     resolvedOptions.configuration,
   )
@@ -117,8 +119,21 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
       // Read routes regularly in case no routes were provided
       const updateRoutes = async () => {
         try {
-          currentRoutes = await getRoutes(resolvedOptions, env, ssr)
+          const nextRoutes = await getRoutes(
+            resolvedOptions,
+            env,
+            ssr,
+            currentRoutesHash,
+          )
           debug('read routes: %O', currentRoutes)
+
+          if (nextRoutes) {
+            currentRoutes = nextRoutes
+            currentRoutesHash = crypto
+              .createHash('md5')
+              .update(JSON.stringify(nextRoutes))
+              .digest('hex')
+          }
 
           // Write types
           if (currentRoutes) {
@@ -375,6 +390,16 @@ export default function cresateNavigarePlugin(options: Options = {}): Plugin {
               buildId: resolvedOptions.buildId,
               originalPath: component.path,
               path: generateChunkName(resolvedOptions.buildId, component.path),
+            }
+          })
+        }
+
+        // Update path of used components based on the build manifest
+        if (environment.command === 'serve') {
+          rawRoute.components = rawRoute.components?.map((component) => {
+            return {
+              ...component,
+              path: `${component.path}?timestamp=${Date.now()}`,
             }
           })
         }

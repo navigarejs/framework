@@ -14,7 +14,7 @@ class PrintRoutesCommand extends Command
    *
    * @var string
    */
-  public $signature = 'navigare:routes {--ssr : Resolve paths for SSR.} {--export= : Path to a file to write the routes into.}';
+  public $signature = 'navigare:routes {--ssr : Resolve paths for SSR.} {--export= : Path to a file to write the routes into.} {--hash= : Hash of stringified routes.}';
 
   /**
    * The console command description.
@@ -39,14 +39,21 @@ class PrintRoutesCommand extends Command
   {
     $routes = $this->getRoutesAsJSON();
 
+    // Stop early if hash is matching
+    if (md5($routes) === $this->option('hash', '')) {
+      return self::SUCCESS;
+    }
+
+    // Export if requested
     if ($path = $this->option('export')) {
       File::put($path, $routes);
 
-      $this->info("Route file written to <comment>${path}</comment>.");
+      $this->info("Route file written to <comment>{$path}</comment>.");
 
       return self::SUCCESS;
     }
 
+    // And always output the routes
     $this->output->write($routes);
 
     return self::SUCCESS;
