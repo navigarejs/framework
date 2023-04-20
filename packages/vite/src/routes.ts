@@ -109,7 +109,7 @@ export async function getLaravelRoutes(
         ...[
           'navigare:routes',
           ssr ? '--ssr' : undefined,
-          hash ? `--hash ${hash}` : undefined,
+          hash ? `--hash=${hash}` : undefined,
         ],
       ),
     ) as RawRoutes

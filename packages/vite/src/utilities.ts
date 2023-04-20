@@ -8,6 +8,9 @@ import { loadEnv } from 'vite'
 
 const debug = makeDebugger('navigare:laravel:utilities')
 
+/**
+ * Generate chunk name from given build id and name.
+ */
 export const generateChunkName = (buildId: string | number, name: string) => {
   const hash = crypto
     .createHash('md5')
@@ -15,46 +18,6 @@ export const generateChunkName = (buildId: string | number, name: string) => {
     .digest('hex')
 
   return `${hash}.mjs`
-}
-
-export function parseUrl(href?: string) {
-  if (!href) {
-    return null
-  }
-
-  try {
-    return new URL(href)
-  } catch {
-    return null
-  }
-}
-
-export function finish(
-  str: string | undefined,
-  character: string,
-  _default: string = '',
-): string {
-  if (!str) {
-    return _default
-  }
-
-  if (!str.endsWith(character)) {
-    return str + character
-  }
-
-  return str
-}
-
-export function wrap<T>(input: undefined | T | T[], _default: T[]): T[] {
-  if (!input) {
-    return _default
-  }
-
-  if (Array.isArray(input)) {
-    return input
-  }
-
-  return [input]
 }
 
 /**
