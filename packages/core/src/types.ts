@@ -373,7 +373,7 @@ export type RouteParameters<TRouteName extends RouteName> =
   Routes[TRouteName] extends {
     bindings: any
   }
-    ? keyof Routes[TRouteName]['bindings'] extends never
+    ? [keyof Routes[TRouteName]['bindings']] extends [never]
       ? Record<never, never>
       : Record<keyof Routes[TRouteName]['bindings'], RouteParameter>
     : Record<never, never>
@@ -388,7 +388,7 @@ export type RawRouteParameters<TRouteName extends RouteName = RouteName> =
   Routes[TRouteName] extends {
     bindings: any
   }
-    ? keyof Routes[TRouteName]['bindings'] extends never
+    ? [keyof Routes[TRouteName]['bindings']] extends [never]
       ? Record<never, never>
       : Record<
           keyof Routes[TRouteName]['bindings'],

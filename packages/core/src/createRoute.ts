@@ -11,10 +11,9 @@ export default function createRoute<
   TParameters extends RawRouteParameters<TName>,
   TKeys = keyof TParameters,
   TEmpty extends boolean = TKeys extends [never] ? true : false,
-  TPartial extends boolean = keyof ConditionalPick<
-    TParameters,
-    typeof Wildcard
-  > extends never
+  TPartial extends boolean = [
+    keyof ConditionalPick<TParameters, typeof Wildcard>,
+  ] extends [never]
     ? false
     : true,
 >(

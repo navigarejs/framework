@@ -271,7 +271,7 @@ export type FormVisitOptions<TValues extends FormValues = FormValues> =
 export type FormOptions<
   TValues extends FormValues = FormValues,
   TRoutable extends Routable = never,
-> = TRoutable extends never
+> = [TRoutable] extends [never]
   ? FormBaseOptions<TValues>
   : FormVisitOptions<TValues>
 
