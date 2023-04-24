@@ -153,7 +153,6 @@ const router = useRouter()
 
 const form = createForm(
   'contacts.create',
-  route('contacts.store'),
   () => ({
     first_name: '',
     last_name: '',
@@ -167,6 +166,7 @@ const form = createForm(
     country: '',
     postal_code: '',
   }),
+  route('contacts.store'),
   {
     validation: true,
   },

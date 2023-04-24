@@ -90,12 +90,12 @@ defineProps({
 
 const router = useRouter()
 
-const form = createForm('contacts.create', route('contacts.store'), () => ({
+const form = createForm('contacts.create', () => ({
   first_name: '',
   last_name: '',
   organization_id: router.page.parameters.organization_id ?? '',
   email: '',
-}))
+}), route('contacts.store'))
 </script>
 ```
 
@@ -168,11 +168,15 @@ const props = defineProps({
   email: String,
 })
 
-const form = createForm('contacts.create', route('contacts.store'), () => ({
-  first_name: '',
-  last_name: '',
-  email: props.email,
-}))
+const form = createForm(
+  'contacts.create',
+  () => ({
+    first_name: '',
+    last_name: '',
+    email: props.email,
+  }),
+  route('contacts.store'),
+)
 ```
 
 To submit the form, simply use `submit`
@@ -239,10 +243,10 @@ To have form helper data and errors automatically remembered in history state, y
 ```typescript
 const form = createForm(
   'contacts.create',
-  route('contacts.store'),
   () => ({
     first_name: '',
   }),
+  route('contacts.store'),
   {
     remember: true,
   },
@@ -266,12 +270,12 @@ In case you don't want to send the form to the server, you can also provide a do
 ```typescript
 const form = createForm(
   'contacts.validate',
-  () => (values) => {
-    console.log('The form was submitted: %o', values)
-  },
   () => ({
     first_name: '',
   }),
+  () => (values) => {
+    console.log('The form was submitted: %o', values)
+  },
   {
     remember: true,
   },

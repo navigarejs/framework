@@ -39,11 +39,11 @@ export default function createForm<
   TRoutable extends Routable = never,
 >(
   getName: string | (() => string),
+  getInitialValues: TValues | (() => TValues),
   getRoutable:
     | TRoutable
     | (() => TRoutable)
     | (() => (values: TValues) => any | Promise<any>),
-  getInitialValues: TValues | (() => TValues),
   options: FormOptions<TValues, TRoutable> = {},
 ): FormControl<TValues> {
   const fragment = useFragment()
@@ -644,10 +644,10 @@ export default function createForm<
       ) => {
         const partialForm = createForm(
           getPartialName,
-          getPartialRoutable,
           () => {
             return getInitialPartialValues(values)
           },
+          getPartialRoutable,
           options,
         )
 

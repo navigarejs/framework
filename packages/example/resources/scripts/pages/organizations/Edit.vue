@@ -264,9 +264,6 @@ const breadcrumbs = useBreadcrumbs()
 
 const form = createForm(
   'organizations.edit',
-  route('organizations.update', {
-    organization: props.organization,
-  }),
   () => ({
     name: props.organization.name,
     email: props.organization.email,
@@ -276,6 +273,9 @@ const form = createForm(
     region: props.organization.region,
     country: props.organization.country,
     postal_code: props.organization.postal_code,
+  }),
+  route('organizations.update', {
+    organization: props.organization,
   }),
   {
     validation: true,

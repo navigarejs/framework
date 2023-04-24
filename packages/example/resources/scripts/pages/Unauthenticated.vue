@@ -140,12 +140,12 @@ const breadcrumbs = useBreadcrumbs()
 
 const form = createForm(
   'login',
-  route('auth.login.store'),
   {
     email: 'johndoe@example.com',
     password: '',
     remember: true,
   },
+  route('auth.login.store'),
   {
     validation: true,
   },

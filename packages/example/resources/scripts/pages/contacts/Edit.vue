@@ -168,9 +168,6 @@ const props = defineProps({
 
 const form = createForm(
   'contacts.create',
-  route('contacts.update', {
-    contact: props.contact,
-  }),
   () => ({
     first_name: props.contact.first_name,
     last_name: props.contact.last_name,
@@ -182,6 +179,9 @@ const form = createForm(
     region: props.contact.region,
     country: props.contact.country,
     postal_code: props.contact.postal_code,
+  }),
+  route('contacts.update', {
+    contact: props.contact,
   }),
   {
     validation: true,

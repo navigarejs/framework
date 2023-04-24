@@ -153,9 +153,6 @@ const props = defineProps({
 
 const form = createForm(
   'users.create',
-  route('users.update', {
-    user: props.user,
-  }),
   () => ({
     first_name: props.user.first_name,
     last_name: props.user.last_name,
@@ -164,6 +161,9 @@ const form = createForm(
     address: props.user.address,
     owner: props.user.owner,
     photo: props.user.photo,
+  }),
+  route('users.update', {
+    user: props.user,
   }),
   {
     validation: true,

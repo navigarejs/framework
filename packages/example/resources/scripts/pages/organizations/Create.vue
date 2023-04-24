@@ -90,7 +90,6 @@ const fromContactCreate = useParameter('from_contact_create')
 
 const form = createForm(
   'organizations.create',
-  route('organizations.store'),
   () => ({
     name: '',
     email: '',
@@ -102,6 +101,7 @@ const form = createForm(
     postal_code: '',
     from_contact_create: fromContactCreate.value,
   }),
+  route('organizations.store'),
   {
     validation: true,
   },
