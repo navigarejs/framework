@@ -1,5 +1,5 @@
 import { Options, Adapter } from './types'
-import { callArtisan, findPhpPath } from './utilities'
+import { callArtisan, findPHPPath } from './utilities'
 import { RawRoutes, throwError } from '@navigare/core'
 import makeDebugger from 'debug'
 import isObject from 'lodash.isobject'
@@ -98,7 +98,7 @@ export async function getLaravelRoutes(
   ssr: boolean,
   hash?: string,
 ): Promise<RawRoutes> {
-  const executable = findPhpPath({ env, path: options.php })
+  const executable = findPHPPath({ env, path: options.php })
 
   try {
     // Asks artisan for the routes

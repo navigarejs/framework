@@ -1,5 +1,5 @@
 import { Options, Configuration, Adapter } from './types'
-import { callArtisan, findPhpPath } from './utilities'
+import { callArtisan, findPHPPath } from './utilities'
 import { throwError } from '@navigare/core'
 import makeDebugger from 'debug'
 import isObject from 'lodash.isobject'
@@ -45,7 +45,7 @@ export async function getLaravelConfiguration(
   options: Options,
   env: NodeJS.ProcessEnv,
 ): Promise<Configuration> {
-  const executable = findPhpPath({ env, path: options.php })
+  const executable = findPHPPath({ env, path: options.php })
 
   try {
     // Asks PHP for the configuration

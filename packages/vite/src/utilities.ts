@@ -23,7 +23,7 @@ export const generateChunkName = (buildId: string | number, name: string) => {
 /**
  * Finds the path to PHP.
  */
-export function findPhpPath(options: PhpFinderOptions = {}): string {
+export function findPHPPath(options: PhpFinderOptions = {}): string {
   if (options.path) {
     return options.path
   }

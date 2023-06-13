@@ -58,11 +58,11 @@ const require = createRequire(import.meta.url)
 
 const debug = makeDebugger('navigare:laravel:index')
 
-export default function cresateNavigarePlugin(options: Options = {}): Plugin {
+export default function createNavigarePlugin(options: Options = {}): Plugin {
   const resolvedOptions: ResolvedOptions = {
     routes: Adapter.Laravel,
     configuration: Adapter.Laravel,
-    interval: 45 * 1000,
+    interval: 10 * 60 * 1000,
     buildId: Date.now(),
     ...options,
   }
